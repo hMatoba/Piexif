@@ -1,14 +1,14 @@
 Pyxif
 =====================
 
-To simplify exif manipulations.
+To simplify exif manipulations with python.
 
 
 Functions
 --------
     dump - converts dict to exif bytes
-    load - converts bytes to dict
-    load_from_file - converts file to dict
+    load - converts exif bytes to dict
+    load_from_file - loads exif from file, and converts to dict
     remove - removes exif from JPEG
     thumbnail - resizes proportionally without loosing exif(depend on PIL or Pillow)
     transplant - transplants exif to another JPEG
@@ -39,7 +39,7 @@ How to Use
     pyxif.transplant("exif_src.jpg", "image.jpg", "out.jpg")
 
 
-Depend on
+Depends on
 --------
   Function "thumbnail" depends on PIL, or Pillow.
   Others don't depend on any 3rd module.
@@ -47,4 +47,4 @@ Depend on
 
 Environment
 --------
-  Checked on Python 2.7 and 3.4
+  Python 2.7(partly checked on 3.4)
