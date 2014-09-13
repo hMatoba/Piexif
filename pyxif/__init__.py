@@ -1,5 +1,8 @@
+import sys
+sys.path.append("pyxif")
+
 from remove import remove
-from rwexif import load, load_from_file, dump
+from load_and_dump import load, dump, ImageGroup, PhotoGroup, GPSInfoGroup
 from transplant import transplant
 try:
     from thumbnail import thumbnail

@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import pyxif
 from PIL import Image
 
 
 def load_sample(input_file):
-    zeroth_dict, exif_dict, gps_dict = pyxif.load_from_file(input_file)
+    zeroth_dict, exif_dict, gps_dict = pyxif.load(input_file)
 
     print("******************************")
     print("0th IFD: {0}".format(len(zeroth_dict)))
@@ -16,14 +13,14 @@ def load_sample(input_file):
     print("\nEXIF IFD: {0}".format(len(exif_dict)))
     for key in exif_dict:
         if isinstance(exif_dict[key][1], (str, bytes)) and len(exif_dict[key][1]) > 30:
-            print(key, exif_dict[key][0], exif_dict[key][1][:10] + "...", len(exif_dict[key][1]))
+            print(key, exif_dict[key][0], exif_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
         else:
             print(key, exif_dict[key])
 
     print("\nGPS IFD: {0}".format(len(gps_dict)))
     for key in gps_dict:
         if isinstance(gps_dict[key][1], (str, bytes)) and len(gps_dict[key][1]) > 30:
-            print(key, gps_dict[key][0][:10], gps_dict[key][1][:10] + "...", len(exif_dict[key][1]))
+            print(key, gps_dict[key][0][:10], gps_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
         else:
             print(key, gps_dict[key])
 

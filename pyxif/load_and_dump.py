@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""Pure Python"""
-
 import io
 import struct
 
@@ -225,11 +220,6 @@ TAGS = {
            51009: {'group': 'OpcodeList2', 'type': 'Undefined'},
            51022: {'group': 'OpcodeList3', 'type': 'Undefined'},
            51041: {'group': 'NoiseProfile', 'type': 'Double'}},
- 'Iop': {1: {'group': 'InteroperabilityIndex', 'type': 'Ascii'},
-         2: {'group': 'InteroperabilityVersion', 'type': 'Undefined'},
-         4096: {'group': 'RelatedImageFileFormat', 'type': 'Ascii'},
-         4097: {'group': 'RelatedImageWidth', 'type': 'Long'},
-         4098: {'group': 'RelatedImageLength', 'type': 'Long'}},
  'Photo': {33434: {'group': 'ExposureTime', 'type': 'Rational'},
            33437: {'group': 'FNumber', 'type': 'Rational'},
            34850: {'group': 'ExposureProgram', 'type': 'Short'},
@@ -300,29 +290,330 @@ TAGS = {
            42036: {'group': 'LensModel', 'type': 'Ascii'},
            42037: {'group': 'LensSerialNumber', 'type': 'Ascii'}}}
 
+class ImageGroup:
+    """Exif tag number reference"""
+    ProcessingSoftware = 11
+    NewSubfileType = 254
+    SubfileType = 255
+    ImageWidth = 256
+    ImageLength = 257
+    BitsPerSample = 258
+    Compression = 259
+    PhotometricInterpretation = 262
+    Threshholding = 263
+    CellWidth = 264
+    CellLength = 265
+    FillOrder = 266
+    DocumentName = 269
+    ImageDescription = 270
+    Make = 271
+    Model = 272
+    StripOffsets = 273
+    Orientation = 274
+    SamplesPerPixel = 277
+    RowsPerStrip = 278
+    StripByteCounts = 279
+    XResolution = 282
+    YResolution = 283
+    PlanarConfiguration = 284
+    GrayResponseUnit = 290
+    GrayResponseCurve = 291
+    T4Options = 292
+    T6Options = 293
+    ResolutionUnit = 296
+    TransferFunction = 301
+    Software = 305
+    DateTime = 306
+    Artist = 315
+    HostComputer = 316
+    Predictor = 317
+    WhitePoint = 318
+    PrimaryChromaticities = 319
+    ColorMap = 320
+    HalftoneHints = 321
+    TileWidth = 322
+    TileLength = 323
+    TileOffsets = 324
+    TileByteCounts = 325
+    SubIFDs = 330
+    InkSet = 332
+    InkNames = 333
+    NumberOfInks = 334
+    DotRange = 336
+    TargetPrinter = 337
+    ExtraSamples = 338
+    SampleFormat = 339
+    SMinSampleValue = 340
+    SMaxSampleValue = 341
+    TransferRange = 342
+    ClipPath = 343
+    XClipPathUnits = 344
+    YClipPathUnits = 345
+    Indexed = 346
+    JPEGTables = 347
+    OPIProxy = 351
+    JPEGProc = 512
+    JPEGInterchangeFormat = 513
+    JPEGInterchangeFormatLength = 514
+    JPEGRestartInterval = 515
+    JPEGLosslessPredictors = 517
+    JPEGPointTransforms = 518
+    JPEGQTables = 519
+    JPEGDCTables = 520
+    JPEGACTables = 521
+    YCbCrCoefficients = 529
+    YCbCrSubSampling = 530
+    YCbCrPositioning = 531
+    ReferenceBlackWhite = 532
+    XMLPacket = 700
+    Rating = 18246
+    RatingPercent = 18249
+    ImageID = 32781
+    CFARepeatPatternDim = 33421
+    CFAPattern = 33422
+    BatteryLevel = 33423
+    Copyright = 33432
+    ExposureTime = 33434
+    ImageResources = 34377
+    ExifTag = 34665
+    InterColorProfile = 34675
+    GPSTag = 34853
+    Interlace = 34857
+    TimeZoneOffset = 34858
+    SelfTimerMode = 34859
+    FlashEnergy = 37387
+    SpatialFrequencyResponse = 37388
+    Noise = 37389
+    FocalPlaneXResolution = 37390
+    FocalPlaneYResolution = 37391
+    FocalPlaneResolutionUnit = 37392
+    ImageNumber = 37393
+    SecurityClassification = 37394
+    ImageHistory = 37395
+    ExposureIndex = 37397
+    TIFFEPStandardID = 37398
+    SensingMethod = 37399
+    XPTitle = 40091
+    XPComment = 40092
+    XPAuthor = 40093
+    XPKeywords = 40094
+    XPSubject = 40095
+    PrintImageMatching = 50341
+    DNGVersion = 50706
+    DNGBackwardVersion = 50707
+    UniqueCameraModel = 50708
+    LocalizedCameraModel = 50709
+    CFAPlaneColor = 50710
+    CFALayout = 50711
+    LinearizationTable = 50712
+    BlackLevelRepeatDim = 50713
+    BlackLevel = 50714
+    BlackLevelDeltaH = 50715
+    BlackLevelDeltaV = 50716
+    WhiteLevel = 50717
+    DefaultScale = 50718
+    DefaultCropOrigin = 50719
+    DefaultCropSize = 50720
+    ColorMatrix1 = 50721
+    ColorMatrix2 = 50722
+    CameraCalibration1 = 50723
+    CameraCalibration2 = 50724
+    ReductionMatrix1 = 50725
+    ReductionMatrix2 = 50726
+    AnalogBalance = 50727
+    AsShotNeutral = 50728
+    AsShotWhiteXY = 50729
+    BaselineExposure = 50730
+    BaselineNoise = 50731
+    BaselineSharpness = 50732
+    BayerGreenSplit = 50733
+    LinearResponseLimit = 50734
+    CameraSerialNumber = 50735
+    LensInfo = 50736
+    ChromaBlurRadius = 50737
+    AntiAliasStrength = 50738
+    ShadowScale = 50739
+    DNGPrivateData = 50740
+    MakerNoteSafety = 50741
+    CalibrationIlluminant1 = 50778
+    CalibrationIlluminant2 = 50779
+    BestQualityScale = 50780
+    RawDataUniqueID = 50781
+    OriginalRawFileName = 50827
+    OriginalRawFileData = 50828
+    ActiveArea = 50829
+    MaskedAreas = 50830
+    AsShotICCProfile = 50831
+    AsShotPreProfileMatrix = 50832
+    CurrentICCProfile = 50833
+    CurrentPreProfileMatrix = 50834
+    ColorimetricReference = 50879
+    CameraCalibrationSignature = 50931
+    ProfileCalibrationSignature = 50932
+    AsShotProfileName = 50934
+    NoiseReductionApplied = 50935
+    ProfileName = 50936
+    ProfileHueSatMapDims = 50937
+    ProfileHueSatMapData1 = 50938
+    ProfileHueSatMapData2 = 50939
+    ProfileToneCurve = 50940
+    ProfileEmbedPolicy = 50941
+    ProfileCopyright = 50942
+    ForwardMatrix1 = 50964
+    ForwardMatrix2 = 50965
+    PreviewApplicationName = 50966
+    PreviewApplicationVersion = 50967
+    PreviewSettingsName = 50968
+    PreviewSettingsDigest = 50969
+    PreviewColorSpace = 50970
+    PreviewDateTime = 50971
+    RawImageDigest = 50972
+    OriginalRawFileDigest = 50973
+    SubTileBlockSize = 50974
+    RowInterleaveFactor = 50975
+    ProfileLookTableDims = 50981
+    ProfileLookTableData = 50982
+    OpcodeList1 = 51008
+    OpcodeList2 = 51009
+    OpcodeList3 = 51022
+    NoiseProfile = 51041
+
+
+class PhotoGroup:
+    """Exif tag number reference"""
+    ExposureTime = 33434
+    FNumber = 33437
+    ExposureProgram = 34850
+    SpectralSensitivity = 34852
+    ISOSpeedRatings = 34855
+    OECF = 34856
+    SensitivityType = 34864
+    StandardOutputSensitivity = 34865
+    RecommendedExposureIndex = 34866
+    ISOSpeed = 34867
+    ISOSpeedLatitudeyyy = 34868
+    ISOSpeedLatitudezzz = 34869
+    ExifVersion = 36864
+    DateTimeOriginal = 36867
+    DateTimeDigitized = 36868
+    ComponentsConfiguration = 37121
+    CompressedBitsPerPixel = 37122
+    ShutterSpeedValue = 37377
+    ApertureValue = 37378
+    BrightnessValue = 37379
+    ExposureBiasValue = 37380
+    MaxApertureValue = 37381
+    SubjectDistance = 37382
+    MeteringMode = 37383
+    LightSource = 37384
+    Flash = 37385
+    FocalLength = 37386
+    SubjectArea = 37396
+    MakerNote = 37500
+    UserComment = 37510
+    SubSecTime = 37520
+    SubSecTimeOriginal = 37521
+    SubSecTimeDigitized = 37522
+    FlashpixVersion = 40960
+    ColorSpace = 40961
+    PixelXDimension = 40962
+    PixelYDimension = 40963
+    RelatedSoundFile = 40964
+    InteroperabilityTag = 40965
+    FlashEnergy = 41483
+    SpatialFrequencyResponse = 41484
+    FocalPlaneXResolution = 41486
+    FocalPlaneYResolution = 41487
+    FocalPlaneResolutionUnit = 41488
+    SubjectLocation = 41492
+    ExposureIndex = 41493
+    SensingMethod = 41495
+    FileSource = 41728
+    SceneType = 41729
+    CFAPattern = 41730
+    CustomRendered = 41985
+    ExposureMode = 41986
+    WhiteBalance = 41987
+    DigitalZoomRatio = 41988
+    FocalLengthIn35mmFilm = 41989
+    SceneCaptureType = 41990
+    GainControl = 41991
+    Contrast = 41992
+    Saturation = 41993
+    Sharpness = 41994
+    DeviceSettingDescription = 41995
+    SubjectDistanceRange = 41996
+    ImageUniqueID = 42016
+    CameraOwnerName = 42032
+    BodySerialNumber = 42033
+    LensSpecification = 42034
+    LensMake = 42035
+    LensModel = 42036
+    LensSerialNumber = 42037
+
+
+class GPSInfoGroup:
+    """Exif tag number reference"""
+    GPSVersionID = 0
+    GPSLatitudeRef = 1
+    GPSLatitude = 2
+    GPSLongitudeRef = 3
+    GPSLongitude = 4
+    GPSAltitudeRef = 5
+    GPSAltitude = 6
+    GPSTimeStamp = 7
+    GPSSatellites = 8
+    GPSStatus = 9
+    GPSMeasureMode = 10
+    GPSDOP = 11
+    GPSSpeedRef = 12
+    GPSSpeed = 13
+    GPSTrackRef = 14
+    GPSTrack = 15
+    GPSImgDirectionRef = 16
+    GPSImgDirection = 17
+    GPSMapDatum = 18
+    GPSDestLatitudeRef = 19
+    GPSDestLatitude = 20
+    GPSDestLongitudeRef = 21
+    GPSDestLongitude = 22
+    GPSDestBearingRef = 23
+    GPSDestBearing = 24
+    GPSDestDistanceRef = 25
+    GPSDestDistance = 26
+    GPSProcessingMethod = 27
+    GPSAreaInformation = 28
+    GPSDateStamp = 29
+    GPSDifferential = 30
+
+
 TYPES = {
-    "Byte":1,
-    "Ascii":2,
-    "Short":3,
-    "Long":4,
-    "Rational":5,
-    "Undefined":7,
-    "SLong":9,
-    "SRational":10}
+    "Byte": 1,
+    "Ascii": 2,
+    "Short": 3,
+    "Long": 4,
+    "Rational": 5,
+    "Undefined": 7,
+    "SLong": 9,
+    "SRational": 10}
+
 
 POINTERS = (34665, 34853)
+
+
 LITTLE_ENDIAN = b"\x49\x49"
+
+
 TIFF_HEADER_LENGTH = 8
-
-
-def printbytes(data):
-    print(':'.join(x.encode('hex') for x in data))
 
 
 class ExifReader(object):
     def __init__(self, data):
         if data[0:2] == b"\xff\xd8":
             pass
+        elif data[0:6] == b"\x45\x78\x69\x66\x00\x00":
+            self.exif_str = data
+            return
         else:
             with open(data, 'rb') as f:
                 data = f.read()
@@ -333,7 +624,7 @@ class ExifReader(object):
         if exif:
             self.exif_str = exif[10:]
         else:
-            self.exif_str = ""
+            self.exif_str = None
 
     def get_exif_ifd(self):
         endian = self.exif_str[0:2]
@@ -350,7 +641,7 @@ class ExifReader(object):
             exif_dict = self.get_ifd_info(pointer)
 
         if 34853 in exif_dict:
-            pointer = struct.unpack(self.endian_mark + "L", exif_dicr[34853][2])[0]
+            pointer = struct.unpack(self.endian_mark + "L", exif_dict[34853][2])[0]
             gps_dict = self.get_ifd_info(pointer)
 
         return zeroth_dict, exif_dict, gps_dict
@@ -376,17 +667,17 @@ class ExifReader(object):
         elif val[0] == 2: # ASCII
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-                data = self.exif_str[pointer: pointer+val[1]]
+                data = self.exif_str[pointer: pointer+val[1]].split(b"\x00")[0]
             else:
                 data = val[2][0: val[1]]
         elif val[0] == 3: # SHORT
             data = struct.unpack(self.endian_mark + "H", val[2][0:2])[0]
         elif val[0] == 4: # LONG
-            data = struct.unpack(self.endian_mark + "l", val[2])[0]
+            data = struct.unpack(self.endian_mark + "L", val[2])[0]
         elif val[0] == 5: # RATIONAL
             pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-            data = (int(self.exif_str[pointer: pointer + 4].encode("hex"), 16),
-                    int(self.exif_str[pointer + 4: pointer + 8].encode("hex"), 16))
+            data = (struct.unpack(self.endian_mark + "L", self.exif_str[pointer: pointer + 4])[0],
+                    struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0])
         elif val[0] == 7: # UNDEFINED BYTES
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
@@ -403,10 +694,12 @@ class ExifReader(object):
         return data
 
 
-def load_from_file(filename):
-    exifReader = ExifReader(filename)
+def load(input_str):
+    """converts JPEG or exif bytes to dicts"""
+    exifReader = ExifReader(input_str)
+    if exifReader.exif_str is None:
+        return {}, {}, {}
     zeroth_ifd, exif_ifd, gps_ifd = exifReader.get_exif_ifd()
-
     zeroth_dict = {key: (TAGS["Image"][key]["group"], exifReader.get_info(zeroth_ifd[key]))
                    for key in zeroth_ifd if key in TAGS["Image"]}
     exif_dict = {key: (TAGS["Photo"][key]["group"], exifReader.get_info(exif_ifd[key]))
@@ -417,39 +710,48 @@ def load_from_file(filename):
     return zeroth_dict, exif_dict, gps_dict
 
 
-def load(exif_bytes):
-    pass
-
-
 def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
-    exif_bytes = "Exif\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
-    exif_bytes += dict_to_bytes(zeroth_ifd, "Image", 0)
-    return exif_bytes
+    """converts dict to exif bytes"""
+    header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
+    if len(exif_ifd):
+        exif_bytes = dict_to_bytes(zeroth_ifd, "Image", 0, True)
+        if len(gps_ifd):
+            exif_bytes += dict_to_bytes(exif_ifd, "Photo", len(exif_bytes), True)
+            exif_bytes += dict_to_bytes(gps_ifd, "GPSInfo", len(exif_bytes))
+        else:
+            exif_bytes += dict_to_bytes(exif_ifd, "Photo", len(exif_bytes))
+    else:
+        exif_bytes = dict_to_bytes(zeroth_ifd, "Image", 0)
+    return header + exif_bytes
 
 
-def dict_to_bytes(ifd_dict, group, ifd_offset):
+def dict_to_bytes(ifd_dict, group, ifd_offset, next_ifd=False):
+    if next_ifd:
+        if group == "Image":
+            ifd_dict.update({34665: 1})
+        elif group == "Photo":
+            ifd_dict.update({34853: 1})
+
     tag_count = len(ifd_dict)
     entry_header = struct.pack(">H", tag_count)
     entries_length = 2 + tag_count * 12 + 4
-    entries = ""
-    values = ""
-    next_ifd_is = False
+    entries = b""
+    values = b""
 
     for n, key in enumerate(ifd_dict):
         if key in POINTERS:
-            next_ifd_is = True
             pointer_key = key
             continue
         raw_value = ifd_dict[key]
-        key_str = struct.pack(">I", key)[2:4]
+        key_str = struct.pack(">H", key)
         value_type = TAGS[group][key]["type"]
-        type_str = struct.pack(">I", TYPES[value_type])[2:4]
+        type_str = struct.pack(">H", TYPES[value_type])
         if value_type == "Byte":
             length = 1
-            value_str = struct.pack('>I', raw_value)[4] + "\x00"
+            value_str = struct.pack('>I', raw_value)[3] + b"\x00" * 3
         elif value_type == "Short":
             length = 2
-            value_str = struct.pack('>I', raw_value)[2:4] + "\x00" * 2
+            value_str = struct.pack('>I', raw_value)[2:4] + b"\x00" * 2
         elif value_type == "Long":
             length = 4
             value_str = struct.pack('>I', raw_value)
@@ -457,11 +759,12 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             length = 4
             value_str = struct.pack('>i', raw_value)
         elif value_type == "Ascii":
-            if len(raw_value) > 4:
-                length = len(raw_value)
+            raw_value = raw_value.encode()
+            length = len(raw_value)
+            if length > 4:
                 if length % 4:
-                    new_value = raw_value + "\x00" * (4 - length % 4)
-                    length = length + (4 - length % 4)
+                    new_value = raw_value + b"\x00" * (4 - length % 4)
+                    length = len(new_value)
                 else:
                     new_value = raw_value
                 offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
@@ -469,7 +772,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 values += new_value
             else:
                 length = len(raw_value)
-                value_str = raw_value + "\x00" * (4 - length)
+                value_str = raw_value + b"\x00" * (4 - length)
         elif value_type == "Rational":
             length = 1
             num, den = raw_value
@@ -485,10 +788,11 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "Undefined":
+            raw_value = raw_value.encode()
             if len(raw_value) > 4:
                 length = len(raw_value)
                 if length % 4:
-                    new_value = raw_value + " " * (4 - length % 4)
+                    new_value = raw_value + b"\x00" * (4 - length % 4)
                     length = length + (4 - length % 4)
                 else:
                     new_value = raw_value
@@ -497,23 +801,22 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 values += new_value
             else:
                 length = len(raw_value)
-                value_str = raw_value + "\x00" * (4 - length)
+                value_str = raw_value + b"\x00" * (4 - length)
 
-##        print key, value_type, length, raw_value
-##        printbytes(key_str + type_str + length_str + value_str)
         length_str = struct.pack(">I", length)
         entries += key_str + type_str + length_str + value_str
-##    print entries, len(entries)
-##    print values, len(values)
-    if next_ifd_is:
+
+    if next_ifd:
         pointer_value = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
         pointer_str = struct.pack(">I", pointer_value)
         if group == "Image":
             key = 34665
         elif group == "Photo":
             key = 34853
-        entryies += struck.pack(">H", key) + "\x00\01" + pointer_str
+        key_str = struct.pack(">H", key)
+        type_str = struct.pack(">H", TYPES["Long"])
+        length_str = struct.pack(">I", 1)
+        entries += key_str + type_str + length_str + pointer_str
 
-    ifd_str = entry_header + entries + "\x00\x00\x00\x00" + values
-##    print(len(entry_header), len(entries), len(values), "total: ", len(ifd_str))
+    ifd_str = entry_header + entries + b"\x00\x00\x00\x00" + values
     return ifd_str

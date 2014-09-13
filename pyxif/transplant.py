@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """PIL's image resize manipulation(includes thumbnail function) loses JPEG's.
 Helps to transplant Exif data into another JPEG.
 Tested on Python 2.7 and 3.4

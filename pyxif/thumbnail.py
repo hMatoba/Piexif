@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """'exifkeeper' has a function to resize JPEG without losing Exif.
 Depend on: PIL, or Pillow
 Tested on: 2.7, and 3.4
