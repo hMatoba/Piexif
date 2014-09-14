@@ -52,3 +52,8 @@ Environment
 Note
 --------
   Only for big endian files
+
+
+License
+--------
+  This software is released under the MIT License, see LICENSE.txt.

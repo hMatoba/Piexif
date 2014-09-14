@@ -1,3 +1,12 @@
+# Byte: int
+# Ascii: str
+# Short: int
+# Long: Long
+# Rational: (long, Long)
+# Undefined: str
+# SLong: long
+# SRational: (Long, Long)
+
 import io
 import struct
 
@@ -90,8 +99,8 @@ TAGS = {
            341: {'group': 'SMaxSampleValue', 'type': 'Short'},
            342: {'group': 'TransferRange', 'type': 'Short'},
            343: {'group': 'ClipPath', 'type': 'Byte'},
-           344: {'group': 'XClipPathUnits', 'type': 'SShort'},
-           345: {'group': 'YClipPathUnits', 'type': 'SShort'},
+           344: {'group': 'XClipPathUnits', 'type': 'Long'},
+           345: {'group': 'YClipPathUnits', 'type': 'Long'},
            346: {'group': 'Indexed', 'type': 'Short'},
            347: {'group': 'JPEGTables', 'type': 'Undefined'},
            351: {'group': 'OPIProxy', 'type': 'Short'},
@@ -122,7 +131,7 @@ TAGS = {
            34675: {'group': 'InterColorProfile', 'type': 'Undefined'},
            34853: {'group': 'GPSTag', 'type': 'Long'},
            34857: {'group': 'Interlace', 'type': 'Short'},
-           34858: {'group': 'TimeZoneOffset', 'type': 'SShort'},
+           34858: {'group': 'TimeZoneOffset', 'type': 'Long'},
            34859: {'group': 'SelfTimerMode', 'type': 'Short'},
            37387: {'group': 'FlashEnergy', 'type': 'Rational'},
            37388: {'group': 'SpatialFrequencyResponse', 'type': 'Undefined'},
