@@ -1,7 +1,8 @@
-This software is released under the MIT License, see LICENSE.txt.
+Pyxif
+=====================
 
 To simplify exif manipulations with python.
-Not a wrapper.
+Pyxif isn't a wrapper. Everywhere with Python(function'thumbnail' depends on PIL or Pillow).
 
 Functions
 --------
@@ -15,6 +16,7 @@ Functions
 How to Use
 --------
     # dump
+    from PIL import Image
     im = Image.open("in.jpg")
     im.thumbnail((100, 100), Image.ANTIALIAS)
     zeroth_ifd = {282: (96, 1),
@@ -41,3 +43,18 @@ Depends on
 --------
   Function "thumbnail" depends on PIL, or Pillow(Tested on Pillow 2.5.3).
   Others don't depend on any 3rd module.
+
+
+Environment
+--------
+  Checked on Python 2.7 and 3.4
+
+
+Note
+--------
+  Only for big endian files
+
+
+License
+--------
+  This software is released under the MIT License, see LICENSE.txt.

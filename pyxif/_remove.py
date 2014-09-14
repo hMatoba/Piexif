@@ -12,13 +12,15 @@ def remove(src, new_file=""):
     """Removes exif.
     remove(src, new_file[optional])
     src - filename or JPEG data(2.7 - str, 3.4 - bytes)
-    When "new_file" is not given, src is overwritten.
+    When "new_file" is not given, "src" is overwritten.
     """
+    output_is_file = False
     if src[0:2] == b"\xff\xd8":
         src_data = src
     else:
         with open(src, 'rb') as f:
             src_data = f.read()
+        output_is_file = True
     segments = split_into_segments(src_data)
     exif = get_exif(segments)
 
@@ -33,6 +35,8 @@ def remove(src, new_file=""):
     elif new_file:
         with open(new_file, "wb+") as f:
             f.write(new_data)
-    else:
+    elif output_is_file:
         with open(src, "wb+") as f:
             f.write(new_data)
+    else:
+        raise ValueError("Give a 2nd argment to 'remove' to output file")

@@ -708,7 +708,7 @@ def load(input_data):
     zeroth_dict, exif_dict, gps_dict = pyxif.load(input_data)
     input_data - filename or JPEG data(b"\xff\xd8......")
     """
-    exifReader = ExifReader(input_str)
+    exifReader = ExifReader(input_data)
     if exifReader.exif_str is None:
         return {}, {}, {}
     zeroth_ifd, exif_ifd, gps_ifd = exifReader.get_exif_ifd()

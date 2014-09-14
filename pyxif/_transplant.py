@@ -11,7 +11,7 @@ from ._common import *
 def transplant(exif_src, image, new_file=""):
     """Transplants exif to another JPEG
     transplant(exif_src, image, new_file[optional])
-    When "new_file" is not given, 'image' file is overwritten.
+    When "new_file" is not given, "image" file is overwritten.
     """
     if exif_src[0:2] == b"\xff\xd8":
         src_data = exif_src
@@ -23,11 +23,13 @@ def transplant(exif_src, image, new_file=""):
     if exif is None:
         raise ValueError("not found exif in input")
 
+    output_file = False
     if image[0:2] == b"\xff\xd8":
         image_data = image
     else:
         with open(image, 'rb') as f:
             image_data = f.read()
+        output_file = True
     segments = split_into_segments(image_data)
     image_exif = get_exif(segments)
 
@@ -43,10 +45,8 @@ def transplant(exif_src, image, new_file=""):
     elif new_file:
         with open(new_file, "wb+") as f:
             f.write(new_data)
-    elif isinstance(image, io.BytesIO):
-        image.seek(0)
-        image.write(new_data)
-        image.seek(0)
-    else:
+    elif output_file:
         with open(image, "wb+") as f:
             f.write(new_data)
+    else:
+        raise ValueError("Give a 3rd argment to 'transplant' to output file")

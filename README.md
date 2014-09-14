@@ -2,7 +2,7 @@ Pyxif
 =====================
 
 To simplify exif manipulations with python.
-Not a wrapper.
+Pyxif isn't a wrapper. Everywhere with Python(function'thumbnail' depends on PIL or Pillow).
 
 Functions
 --------
@@ -16,6 +16,7 @@ Functions
 How to Use
 --------
     # dump
+    from PIL import Image
     im = Image.open("in.jpg")
     im.thumbnail((100, 100), Image.ANTIALIAS)
     zeroth_ifd = {282: (96, 1),
