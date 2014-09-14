@@ -5,7 +5,7 @@ Tested on Python 2.7 and 3.4
 
 import io
 
-from _common import *
+from ._common import *
 
 
 def transplant(exif_src, image, new_file=""):

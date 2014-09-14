@@ -10,7 +10,7 @@
 import io
 import struct
 
-from _common import *
+from ._common import *
 
 TAGS = {
  'GPSInfo': {0: {'group': 'GPSVersionID', 'type': 'Byte'},

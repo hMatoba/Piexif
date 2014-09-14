@@ -6,7 +6,7 @@ Tested on: 2.7, and 3.4
 import io
 
 from PIL import Image
-from _common import *
+from ._common import *
 
 def thumbnail(data, output, size=(200, 200)):
     """Proportionally Resize without losing Exif.
