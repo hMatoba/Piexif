@@ -1,7 +1,7 @@
 This software is released under the MIT License, see LICENSE.txt.
 
 To simplify exif manipulations with python.
-
+Not a wrapper.
 
 Functions
 --------
@@ -28,13 +28,13 @@ How to Use
     zeroth_dict, exif_dict, gps_dict = pyxif.load("in.jpg")
 
     # remove
-    pyxif.remove("in.jpg", "out.jpg")
+    pyxif.remove("in.jpg")
 
     # thumbnail
-    pyxif.thumbnail("in.jpg", "out", (80, 80))
+    pyxif.thumbnail("in.jpg", "out.jpg", (80, 80))
 
     # transplant
-    pyxif.transplant("exif_src.jpg", "image.jpg", "out.jpg")
+    pyxif.transplant("exif_src.jpg", "image.jpg")
 
 
 Depends on

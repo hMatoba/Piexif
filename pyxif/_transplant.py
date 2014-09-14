@@ -10,6 +10,8 @@ from ._common import *
 
 def transplant(exif_src, image, new_file=""):
     """Transplants exif to another JPEG
+    transplant(exif_src, image, new_file[optional])
+    When "new_file" is not given, 'image' file is overwritten.
     """
     if exif_src[0:2] == b"\xff\xd8":
         src_data = exif_src
@@ -41,6 +43,10 @@ def transplant(exif_src, image, new_file=""):
     elif new_file:
         with open(new_file, "wb+") as f:
             f.write(new_data)
+    elif isinstance(image, io.BytesIO):
+        image.seek(0)
+        image.write(new_data)
+        image.seek(0)
     else:
         with open(image, "wb+") as f:
             f.write(new_data)

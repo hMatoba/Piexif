@@ -300,7 +300,7 @@ TAGS = {
            42037: {'group': 'LensSerialNumber', 'type': 'Ascii'}}}
 
 class ImageGroup:
-    """Exif tag number reference"""
+    """Exif tag number reference - 0th IFD"""
     ProcessingSoftware = 11
     NewSubfileType = 254
     SubfileType = 255
@@ -489,7 +489,7 @@ class ImageGroup:
 
 
 class PhotoGroup:
-    """Exif tag number reference"""
+    """Exif tag number reference - Exif IFD"""
     ExposureTime = 33434
     FNumber = 33437
     ExposureProgram = 34850
@@ -562,7 +562,7 @@ class PhotoGroup:
 
 
 class GPSInfoGroup:
-    """Exif tag number reference"""
+    """Exif tag number reference - GPS IFD"""
     GPSVersionID = 0
     GPSLatitudeRef = 1
     GPSLatitude = 2
@@ -703,8 +703,11 @@ class ExifReader(object):
         return data
 
 
-def load(input_str):
-    """converts JPEG or exif bytes to dicts"""
+def load(input_data):
+    """converts exif bytes to dicts
+    zeroth_dict, exif_dict, gps_dict = pyxif.load(input_data)
+    input_data - filename or JPEG data(b"\xff\xd8......")
+    """
     exifReader = ExifReader(input_str)
     if exifReader.exif_str is None:
         return {}, {}, {}
@@ -720,7 +723,12 @@ def load(input_str):
 
 
 def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
-    """converts dict to exif bytes"""
+    """converts dict to exif bytes
+    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd[optional], gps_ifd[optional])
+    zeroth_ifd - dict of 0th IFD
+    exif_ifd - dict of Exif IFD
+    gps_ifd - dict of GPS IFD
+    """
     header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
     if len(exif_ifd):
         exif_bytes = dict_to_bytes(zeroth_ifd, "Image", 0, True)
