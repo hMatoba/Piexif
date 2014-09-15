@@ -2,7 +2,7 @@ Pyxif
 =====================
 
 To simplify exif manipulations with python.
-Pyxif isn't a wrapper. Everywhere with Python(function'thumbnail' depends on PIL or Pillow).
+Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on PIL or Pillow).
 
 Functions
 --------

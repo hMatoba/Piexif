@@ -649,8 +649,8 @@ class ExifReader(object):
             pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34665][2])[0]
             exif_dict = self.get_ifd_info(pointer)
 
-        if 34853 in exif_dict:
-            pointer = struct.unpack(self.endian_mark + "L", exif_dict[34853][2])[0]
+        if 34853 in zeroth_dict:
+            pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34853][2])[0]
             gps_dict = self.get_ifd_info(pointer)
 
         return zeroth_dict, exif_dict, gps_dict
@@ -704,7 +704,7 @@ class ExifReader(object):
 
 
 def load(input_data):
-    """converts exif bytes to dicts
+    r"""converts exif bytes to dicts
     zeroth_dict, exif_dict, gps_dict = pyxif.load(input_data)
     input_data - filename or JPEG data(b"\xff\xd8......")
     """
@@ -730,35 +730,80 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
     gps_ifd - dict of GPS IFD
     """
     header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
+    exif_is = False
+    gps_is = False
     if len(exif_ifd):
-        exif_bytes = dict_to_bytes(zeroth_ifd, "Image", 0, True)
-        if len(gps_ifd):
-            exif_bytes += dict_to_bytes(exif_ifd, "Photo", len(exif_bytes), True)
-            exif_bytes += dict_to_bytes(gps_ifd, "GPSInfo", len(exif_bytes))
-        else:
-            exif_bytes += dict_to_bytes(exif_ifd, "Photo", len(exif_bytes))
+        zeroth_ifd.update({34665: 1})
+        exif_is = True
+    if len(gps_ifd):
+        zeroth_ifd.update({34853: 1})
+        gps_is = True
+##
+    zeroth_set = dict_to_bytes(zeroth_ifd, "Image", 0)
+    zeroth_length = len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 + len(zeroth_set[1])
+
+    if exif_is:
+        exif_set = dict_to_bytes(exif_ifd, "Photo", zeroth_length)
+        exif_bytes = b"".join(exif_set)
+        exif_length = len(exif_bytes)
     else:
-        exif_bytes = dict_to_bytes(zeroth_ifd, "Image", 0)
-    return header + exif_bytes
+        exif_bytes = b""
+        exif_length = 0
+
+    if gps_is:
+        gps_set = dict_to_bytes(gps_ifd, "GPSInfo", zeroth_length + exif_length)
+        gps_bytes = b"".join(gps_set)
+        gps_length = len(gps_bytes)
+    else:
+        gps_bytes = b""
+        gps_length = 0
+
+    if exif_is:
+        pointer_value = TIFF_HEADER_LENGTH + zeroth_length
+        pointer_str = struct.pack(">I", pointer_value)
+        key = 34665
+        key_str = struct.pack(">H", key)
+        type_str = struct.pack(">H", TYPES["Long"])
+        length_str = struct.pack(">I", 1)
+        exif_pointer = key_str + type_str + length_str + pointer_str
+    else:
+        exif_pointer = b""
+    if gps_is:
+        pointer_value = TIFF_HEADER_LENGTH + zeroth_length + exif_length
+        pointer_str = struct.pack(">I", pointer_value)
+        key = 34853
+        key_str = struct.pack(">H", key)
+        type_str = struct.pack(">H", TYPES["Long"])
+        length_str = struct.pack(">I", 1)
+        gps_pointer = key_str + type_str + length_str + pointer_str
+    else:
+        gps_pointer = b""
+
+    zeroth_bytes = zeroth_set[0] + exif_pointer + gps_pointer + b"\x00\x00\x00\x00" + zeroth_set[1]
+
+    return header + zeroth_bytes + exif_bytes + gps_bytes
 
 
-def dict_to_bytes(ifd_dict, group, ifd_offset, next_ifd=False):
-    if next_ifd:
-        if group == "Image":
-            ifd_dict.update({34665: 1})
-        elif group == "Photo":
-            ifd_dict.update({34853: 1})
-
+def dict_to_bytes(ifd_dict, group, ifd_offset):
+    exif_ifd_is = False
+    gps_ifd_is = False
     tag_count = len(ifd_dict)
     entry_header = struct.pack(">H", tag_count)
-    entries_length = 2 + tag_count * 12 + 4
+    if group == "Image":
+        entries_length = 2 + tag_count * 12 + 4
+    else:
+        entries_length = 2 + tag_count * 12
     entries = b""
     values = b""
 
     for n, key in enumerate(ifd_dict):
-        if key in POINTERS:
-            pointer_key = key
+        if key == 34665:
+            exif_ifd_is = True
             continue
+        elif key == 34853:
+            gps_ifd_is = True
+            continue
+
         raw_value = ifd_dict[key]
         key_str = struct.pack(">H", key)
         value_type = TAGS[group][key]["type"]
@@ -822,18 +867,4 @@ def dict_to_bytes(ifd_dict, group, ifd_offset, next_ifd=False):
 
         length_str = struct.pack(">I", length)
         entries += key_str + type_str + length_str + value_str
-
-    if next_ifd:
-        pointer_value = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
-        pointer_str = struct.pack(">I", pointer_value)
-        if group == "Image":
-            key = 34665
-        elif group == "Photo":
-            key = 34853
-        key_str = struct.pack(">H", key)
-        type_str = struct.pack(">H", TYPES["Long"])
-        length_str = struct.pack(">I", 1)
-        entries += key_str + type_str + length_str + pointer_str
-
-    ifd_str = entry_header + entries + b"\x00\x00\x00\x00" + values
-    return ifd_str
+    return (entry_header + entries, values)

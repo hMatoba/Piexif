@@ -1,3 +1,6 @@
+"""
+"""
+
 import pyxif
 from PIL import Image
 
@@ -25,6 +28,9 @@ def dump_sample(input_file, output_file):
 
     z, e, g = pyxif.load(output_file)
     print(z, e, g)
+
+    i = Image.open(output_file)
+    print(i._getexif())
 
 
 if __name__ == "__main__":

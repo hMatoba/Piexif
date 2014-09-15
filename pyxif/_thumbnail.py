@@ -11,7 +11,7 @@ from ._common import *
 def thumbnail(data, output, size=(200, 200)):
     """Proportionally Resize without losing Exif.
 
-    save_thumbnail(data, output, (w, h))
+    thumbnail(data, output, (w, h))
     data: input filename or binary jpeg data(2.x - str, 3.x - bytes)
     output: output filename or instance of io.BytesIO
 

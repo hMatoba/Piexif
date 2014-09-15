@@ -7,4 +7,4 @@ except ImportError:
     print("'thumbnail' function depends on PIL or Pillow.")
 
 
-VERSION = '0.1.4'
+VERSION = '0.1.5'
