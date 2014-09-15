@@ -36,7 +36,7 @@ def transplant(exif_src, image, new_file=""):
     if image_exif:
         new_data = image_data.replace(image_exif, exif)
     else:
-        p = src_data.find(b"\xff\xdb")
+        p = image_data.find(b"\xff\xdb")
         new_data = image_data[0:p] + exif + image_data[p:]
 
     if isinstance(new_file, io.BytesIO):

@@ -117,6 +117,21 @@ class ExifTests(unittest.TestCase):
         finally:
             i.close()
 
+    def test_insert(self):
+        zeroth_ifd = {282: (96, 1),
+                      283: (96, 1),
+                      296: 2,
+                      305: 'paint.net 4.0.3'}
+        exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
+        pyxif.insert(exif_bytes, INPUT_FILE1, r"samples\insert.jpg")
+        try:
+            i = Image.open(r"samples\insert.jpg")
+            i._getexif()
+        except:
+            self.fail("'insert' generated bad exif")
+        finally:
+            i.close()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -765,7 +765,7 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
     if len(gps_ifd):
         zeroth_ifd.update({34853: 1})
         gps_is = True
-##
+
     zeroth_set = dict_to_bytes(zeroth_ifd, "Image", 0)
     zeroth_length = len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 + len(zeroth_set[1])
 
@@ -776,7 +776,6 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
     else:
         exif_bytes = b""
         exif_length = 0
-
     if gps_is:
         gps_set = dict_to_bytes(gps_ifd, "GPSInfo", zeroth_length + exif_length)
         gps_bytes = b"".join(gps_set)
@@ -805,7 +804,6 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
         gps_pointer = key_str + type_str + length_str + pointer_str
     else:
         gps_pointer = b""
-
     zeroth_bytes = zeroth_set[0] + exif_pointer + gps_pointer + b"\x00\x00\x00\x00" + zeroth_set[1]
 
     return header + zeroth_bytes + exif_bytes + gps_bytes

@@ -19,11 +19,12 @@ How to Use
     from PIL import Image
     im = Image.open("in.jpg")
     im.thumbnail((100, 100), Image.ANTIALIAS)
-    zeroth_ifd = {282: (96, 1),
-                  283: (96, 1),
-                  296: 2,
-                  305: 'paint.net 4.0.3'}
-    exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
+    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
+                  pyxif.ImageGroup.XResolution: (96, 1),
+                  pyxif.ImageGroup.YResolution: (96, 1),
+                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+                  }
+    exif_bytes = pyxif.dump(zeroth_ifd)
     im.save(output_file, exif=exif_bytes)
 
     # load
@@ -38,6 +39,14 @@ How to Use
     # transplant
     pyxif.transplant("exif_src.jpg", "image.jpg")
 
+    # insert
+    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
+                  pyxif.ImageGroup.XResolution: (96, 1),
+                  pyxif.ImageGroup.YResolution: (96, 1),
+                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+                  }
+    exif_bytes = pyxif.dump(zeroth_ifd)
+    pyxif.insert(exif_bytes, "in.jpg")
 
 Depends on
 --------

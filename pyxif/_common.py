@@ -1,5 +1,6 @@
 import struct
 
+
 def split_into_segments(data):
     """Slices JPEG meta data into a list from JPEG binary data.
     """

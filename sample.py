@@ -26,10 +26,11 @@ def load_sample(input_file):
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {282: (96, 1),
-                  283: (96, 1),
-                  296: 2,
-                  305: 'paint.net 4.0.3'}
+    zeroth_ifd = {pyxif.ImageGroup.Make: "fooooooooooooo",
+                  pyxif.ImageGroup.XResolution: (96, 1),
+                  pyxif.ImageGroup.YResolution: (96, 1),
+                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+                  }
 
     exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
 
@@ -50,9 +51,19 @@ def transplant_sample():
     pyxif.transplant(r"samples\01.jpg", r"samples\02.jpg", "transplant_sample.jpg")
 
 
+def insert_sample():
+    zeroth_ifd = {282: (96, 1),
+                  283: (96, 1),
+                  296: 2,
+                  305: 'paint.net 4.0.3'}
+    exif_bytes = pyxif.dump(zeroth_ifd)
+    pyxif.insert(exif_bytes, r"samples\noexif.jpg", r"samples\insert_sample.jpg")
+
+
 if __name__ == "__main__":
     load_sample(r"samples\01.jpg")
     dump_sample(r"samples\01.jpg", r"dump_sample.jpg")
     remove_sample()
     thumbnail_sample()
     transplant_sample()
+    insert_sample()
