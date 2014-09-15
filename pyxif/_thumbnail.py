@@ -27,9 +27,6 @@ def thumbnail(data, output, size=(200, 200)):
     segments = split_into_segments(data)
     exif = get_exif(segments)
 
-    if isinstance(exif, bytearray):
-        exif = bytes(exif)
-
     input_buf = io.BytesIO()
     input_buf.write(data)
     input_buf.seek(0)
