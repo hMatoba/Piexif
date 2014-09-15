@@ -4,6 +4,9 @@ import unittest
 from PIL import Image
 import pyxif
 
+
+print(pyxif.VERSION)
+
 INPUT_FILE1 = r'samples\01.jpg'
 INPUT_FILE2 = r'samples\02.jpg'
 NOEXIF_FILE = r'samples\noexif.jpg'

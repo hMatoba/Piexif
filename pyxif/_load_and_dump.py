@@ -1,16 +1,43 @@
-# Byte: int
-# Ascii: str
-# Short: int
-# Long: Long
-# Rational: (long, Long)
-# Undefined: str
-# SLong: long
-# SRational: (Long, Long)
+"""EXIF is a set of several IFDs.
+Oth IFD can include "Make", "Model" and more...
+Exif IFD can include "ExposureTime", "ISOSpeed" and more...
+GPS IFD can include GPS information.
+
+Pass dict(s), that shows several IFD, to "dump" function.
+exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are optional.
+
+To use dict as IFD data, it needs...
+  A tag number means which property? - 256: ImageWidth, 272: Model...
+  Appropriate type for property. - long for ImageWidth, str for Model...
+    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
+                  pyxif.ImageGroup.XResolution: (96, 1),
+                  pyxif.ImageGroup.YResolution: (96, 1),
+                  pyxif.ImageGroup.Software: "Photoshop x.x.x",
+                  }
+
+Property name and tag number
+  For 0th IFD - under "pyxif.ImageGroup"
+  For Exif IFD - under "pyxif.PhotoGroup"
+  For GPS IFD - under "pyxif.GPSInfoGroup"
+
+Property and appropriate type
+  See variable"TAGS" in this script.
+
+"Byte": int
+"Ascii": str
+"Short": int
+"Long": Long
+"Rational": (long, long)
+"Undefined": str
+"SLong": long
+"SRational": (long, long)
+"""
 
 import io
 import struct
 
 from ._common import *
+
 
 TAGS = {
  'GPSInfo': {0: {'group': 'GPSVersionID', 'type': 'Byte'},
