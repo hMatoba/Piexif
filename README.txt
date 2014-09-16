@@ -7,6 +7,7 @@ Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on 
 Functions
 --------
     dump - converts dict to exif bytes
+    insert - inserts exif bytes to JPEG
     load - converts exif bytes to dict
     remove - removes exif from JPEG
     thumbnail - resizes proportionally without loosing exif(depend on PIL or Pillow)
@@ -50,7 +51,7 @@ Depends on
 
 Environment
 --------
-  Checked on Python 2.7 and 3.4.
+  Checked on Python 2.7, 3.3 and 3.4.
 
 
 Note

@@ -1,3 +1,5 @@
+import os
+
 import pyxif
 from PIL import Image
 
@@ -40,15 +42,20 @@ def dump_sample(input_file, output_file):
 
 
 def remove_sample():
-    pyxif.remove(r"samples\01.jpg", "remove_sample.jpg")
+    pyxif.remove(os.path.join("samples", "01.jpg"),
+                 "remove_sample.jpg")
 
 
 def thumbnail_sample():
-    pyxif.thumbnail(r"samples\01.jpg", "thumbnail_sample.jpg", (80, 80))
+    pyxif.thumbnail(os.path.join("samples", "01.jpg"),
+                    "thumbnail_sample.jpg",
+                    (80, 80))
 
 
 def transplant_sample():
-    pyxif.transplant(r"samples\01.jpg", r"samples\02.jpg", "transplant_sample.jpg")
+    pyxif.transplant(os.path.join("samples", "01.jpg"),
+                     os.path.join("samples", "02.jpg"),
+                     "transplant_sample.jpg")
 
 
 def insert_sample():
@@ -57,12 +64,14 @@ def insert_sample():
                   296: 2,
                   305: 'paint.net 4.0.3'}
     exif_bytes = pyxif.dump(zeroth_ifd)
-    pyxif.insert(exif_bytes, r"samples\noexif.jpg", r"samples\insert_sample.jpg")
+    pyxif.insert(exif_bytes,
+                 "remove_sample.jpg",
+                 "insert_sample.jpg")
 
 
 if __name__ == "__main__":
-    load_sample(r"samples\01.jpg")
-    dump_sample(r"samples\01.jpg", r"dump_sample.jpg")
+    load_sample(os.path.join("samples", "01.jpg"))
+    dump_sample(os.path.join("samples", "01.jpg"), "dump_sample.jpg")
     remove_sample()
     thumbnail_sample()
     transplant_sample()

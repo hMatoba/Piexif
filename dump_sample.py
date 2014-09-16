@@ -33,6 +33,8 @@ Property and appropriate type
 "SRational": (long, long)
 """
 
+import os
+
 import pyxif
 from PIL import Image
 
@@ -352,4 +354,5 @@ TAGS = {
 
 
 if __name__ == "__main__":
-    dump_sample(r"samples\01.jpg", r"samples\dump_sample.jpg")
+    dump_sample(os.path.join("samples", "01.jpg"),
+                os.path.join("samples", "dump_sample.jpg"))
