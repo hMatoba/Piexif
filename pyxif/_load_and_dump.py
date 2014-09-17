@@ -647,9 +647,6 @@ class ExifReader(object):
     def __init__(self, data):
         if data[0:2] == b"\xff\xd8":
             pass
-        elif data[0:6] == b"\x45\x78\x69\x66\x00\x00":
-            self.exif_str = data
-            return
         else:
             with open(data, 'rb') as f:
                 data = f.read()
@@ -673,19 +670,19 @@ class ExifReader(object):
         gps_dict = {}
 
         pointer = struct.unpack(self.endian_mark + "L", self.exif_str[4:8])[0]
-        zeroth_dict = self.get_ifd_info(pointer)
+        zeroth_dict = self.get_ifd_dict(pointer)
 
         if 34665 in zeroth_dict:
             pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34665][2])[0]
-            exif_dict = self.get_ifd_info(pointer)
+            exif_dict = self.get_ifd_dict(pointer)
 
         if 34853 in zeroth_dict:
             pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34853][2])[0]
-            gps_dict = self.get_ifd_info(pointer)
+            gps_dict = self.get_ifd_dict(pointer)
 
         return zeroth_dict, exif_dict, gps_dict
 
-    def get_ifd_info(self, pointer):
+    def get_ifd_dict(self, pointer):
         ifd_dict = {}
         tag_count = struct.unpack(self.endian_mark + "H", self.exif_str[pointer: pointer+2])[0]
         offset = pointer + 2
@@ -708,7 +705,11 @@ class ExifReader(object):
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
                 data = self.exif_str[pointer: pointer+val[1]].split(b"\x00")[0]
             else:
-                data = val[2][0: val[1]]
+                data = val[2][0: val[1]].split(b"\x00")[0]
+            try:
+                data = data.decode()
+            except:
+                pass
         elif val[0] == 3: # SHORT
             data = struct.unpack(self.endian_mark + "H", val[2][0:2])[0]
         elif val[0] == 4: # LONG
@@ -824,7 +825,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
     entries = b""
     values = b""
 
-    for n, key in enumerate(ifd_dict):
+    for n, key in enumerate(sorted(ifd_dict)):
         if key == 34665:
             exif_ifd_is = True
             continue

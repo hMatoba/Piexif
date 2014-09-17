@@ -95,8 +95,5 @@ $RECYCLE.BIN/
 *.msp
 
 setup.py
-up2pypi.bat
-dump_sample.jpg
-remove_sample.jpg
-thumbnail_sample.jpg
-transplant_sample.jpg
+*.bat
+*.jpg

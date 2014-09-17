@@ -21,15 +21,15 @@ class ExifTests(unittest.TestCase):
     def test_transplant(self):
         pyxif.transplant(INPUT_FILE1,
                          INPUT_FILE2,
-                         os.path.join("samples", "transplant.jpg"))
+                         "transplant.jpg")
         exif_src = pyxif.load(INPUT_FILE1)
         img_src = pyxif.load(INPUT_FILE2)
-        generated = pyxif.load(os.path.join("samples", "transplant.jpg"))
+        generated = pyxif.load("transplant.jpg")
 
         self.assertEqual(exif_src, generated)
         self.assertNotEqual(img_src, generated)
         try:
-            i = Image.open(os.path.join("samples", "transplant.jpg"))
+            i = Image.open("transplant.jpg")
             i._getexif()
         except:
             self.fail("'transplant' generated wrong file")
@@ -39,7 +39,7 @@ class ExifTests(unittest.TestCase):
         with  self.assertRaises(ValueError):
             pyxif.transplant(NOEXIF_FILE,
                              INPUT_FILE2,
-                             os.path.join("samples", "foo.jpg"))
+                             "foo.jpg")
 
 
     def test_transplant2(self):
@@ -59,11 +59,11 @@ class ExifTests(unittest.TestCase):
             i.close()
 
     def test_remove(self):
-        pyxif.remove(INPUT_FILE1, os.path.join("samples", "remove.jpg"))
-        exif = pyxif.load(os.path.join("samples", "remove.jpg"))[0]
+        pyxif.remove(INPUT_FILE1, "remove.jpg")
+        exif = pyxif.load("remove.jpg")[0]
         self.assertEqual(exif, {})
         try:
-            i = Image.open(os.path.join("samples", "remove.jpg"))
+            i = Image.open("remove.jpg")
             i._getexif()
         except:
             self.fail("'remove' generated wrong file")
@@ -91,11 +91,11 @@ class ExifTests(unittest.TestCase):
 
     def test_thumbnail(self):
         e1 = pyxif.load(INPUT_FILE1)
-        pyxif.thumbnail(INPUT_FILE1, os.path.join("samples", "thumbnail.jpg"), (50, 50))
-        e2 = pyxif.load(os.path.join("samples", "thumbnail.jpg"))
+        pyxif.thumbnail(INPUT_FILE1, "thumbnail.jpg", (50, 50))
+        e2 = pyxif.load("thumbnail.jpg")
         self.assertEqual(e1, e2)
         try:
-            i = Image.open(os.path.join("samples", "thumbnail.jpg"))
+            i = Image.open("thumbnail.jpg")
             i._getexif()
         except:
             self.fail("'thumbnail' generated wrong file")
@@ -124,7 +124,7 @@ class ExifTests(unittest.TestCase):
     def test_load(self):
         input_file = INPUT_FILE1
         zeroth_dict, exif_dict, gps_dict = pyxif.load(input_file)
-        self.assertEqual(zeroth_dict[272][1].decode("utf-8"), "QV-R51 ")
+        self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
         self.assertEqual(zeroth_dict[296][1], 2)
         self.assertEqual(zeroth_dict[282][1], (72, 1))
 
@@ -133,13 +133,13 @@ class ExifTests(unittest.TestCase):
         Passes binary data to input.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
-        self.assertEqual(zeroth_dict[272][1].decode("utf-8"), "QV-R51 ")
+        self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
         self.assertEqual(zeroth_dict[296][1], 2)
         self.assertEqual(zeroth_dict[282][1], (72, 1))
 
     def test_dump(self):
         input_file = INPUT_FILE1
-        output_file = os.path.join("samples", "dump.jpg")
+        output_file = "dump.jpg"
         zeroth_ifd = {282: (96, 1),
                       283: (96, 1),
                       296: 2,
@@ -165,9 +165,9 @@ class ExifTests(unittest.TestCase):
                       296: 2,
                       305: 'paint.net 4.0.3'}
         exif_bytes = pyxif.dump(zeroth_ifd)
-        pyxif.insert(exif_bytes, INPUT_FILE1, os.path.join("samples", "insert.jpg"))
+        pyxif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
         try:
-            i = Image.open(os.path.join("samples", "insert.jpg"))
+            i = Image.open("insert.jpg")
             i._getexif()
         except:
             self.fail("'insert' generated wrong file")

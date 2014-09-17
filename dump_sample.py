@@ -355,4 +355,4 @@ TAGS = {
 
 if __name__ == "__main__":
     dump_sample(os.path.join("samples", "01.jpg"),
-                os.path.join("samples", "dump_sample.jpg"))
+                "dump_sample.jpg")

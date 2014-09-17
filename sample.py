@@ -9,18 +9,18 @@ def load_sample(input_file):
 
     print("******************************")
     print("0th IFD: {0}".format(len(zeroth_dict)))
-    for key in zeroth_dict:
+    for key in sorted(zeroth_dict):
         print(key, zeroth_dict[key])
 
     print("\nEXIF IFD: {0}".format(len(exif_dict)))
-    for key in exif_dict:
+    for key in sorted(exif_dict):
         if isinstance(exif_dict[key][1], (str, bytes)) and len(exif_dict[key][1]) > 30:
             print(key, exif_dict[key][0], exif_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
         else:
             print(key, exif_dict[key])
 
     print("\nGPS IFD: {0}".format(len(gps_dict)))
-    for key in gps_dict:
+    for key in sorted(gps_dict):
         if isinstance(gps_dict[key][1], (str, bytes)) and len(gps_dict[key][1]) > 30:
             print(key, gps_dict[key][0][:10], gps_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
         else:
@@ -28,14 +28,13 @@ def load_sample(input_file):
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ImageGroup.Make: "fooooooooooooo",
+    zeroth_ifd = {pyxif.ImageGroup.Make: "foo",
                   pyxif.ImageGroup.XResolution: (96, 1),
                   pyxif.ImageGroup.YResolution: (96, 1),
                   pyxif.ImageGroup.Software: "paint.net 4.0.3",
                   }
 
     exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
-
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save(output_file, exif=exif_bytes)
