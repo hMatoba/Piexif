@@ -1,7 +1,7 @@
 Pyxif
 =====================
 
-To simplify exif manipulations with python.
+To simplify exif manipulations with python. Writing, reading, and more...
 Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on PIL or Pillow).
 
 Functions
