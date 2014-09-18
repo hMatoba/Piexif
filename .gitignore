@@ -95,6 +95,7 @@ $RECYCLE.BIN/
 *.msp
 
 setup.py
+load_sample.py
 *.bat
 *.jpg
 *.pdf
