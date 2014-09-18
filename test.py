@@ -41,7 +41,6 @@ class ExifTests(unittest.TestCase):
                              INPUT_FILE2,
                              "foo.jpg")
 
-
     def test_transplant2(self):
         """To use on server.
         Passes binary data to input,

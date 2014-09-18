@@ -662,10 +662,12 @@ class ExifReader(object):
     def get_exif_ifd(self):
         endian = self.exif_str[0:2]
         if endian  == LITTLE_ENDIAN:
-##            self.endian_mark = "<"
-            raise ValueError("Given file is not little endian.")
+            self.endian_mark = "<"
+            # Remove next line when 'load' can load little endian exif
+            raise ValueError("Given file is not big endian.")
         else:
             self.endian_mark = ">"
+        self.endian_mark = ">"
         exif_dict = {}
         gps_dict = {}
 
