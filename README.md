@@ -8,7 +8,7 @@ Functions
 --------
     dump - converts dict to exif bytes
     insert - inserts exif bytes to JPEG
-    load - get exif as dict from file
+    load - converts exif bytes to dict
     remove - removes exif from JPEG
     thumbnail - resizes proportionally without loosing exif(depend on PIL or Pillow)
     transplant - transplants exif to another JPEG
