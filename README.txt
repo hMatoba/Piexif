@@ -54,11 +54,6 @@ Environment
   Checked on Python 2.7, 3.3 and 3.4.
 
 
-Note
---------
-  'load' can't read little endian exif.
-
-
 License
 --------
   This software is released under the MIT License, see LICENSE.txt.

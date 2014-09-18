@@ -664,7 +664,7 @@ class ExifReader(object):
         if endian  == LITTLE_ENDIAN:
             self.endian_mark = "<"
             # Remove next line when 'load' can load little endian exif.
-            raise ValueError("Given file is not little endian.")
+##            raise ValueError("Given file is not little endian.")
         else:
             self.endian_mark = ">"
         exif_dict = {}
@@ -693,6 +693,7 @@ class ExifReader(object):
             value_type = struct.unpack(self.endian_mark + "H", self.exif_str[pointer + 2: pointer + 4])[0]
             value_num = struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0]
             value = self.exif_str[pointer+8: pointer+12]
+##            print(tag_code, [value_type, value_num, value])
             ifd_dict.update({tag_code:[value_type, value_num, value]})
         return ifd_dict
 
