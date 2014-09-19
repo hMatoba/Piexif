@@ -10,6 +10,7 @@ print("Pyxif version: {0}".format(pyxif.VERSION))
 
 INPUT_FILE1 = os.path.join("samples", "01.jpg")
 INPUT_FILE2 = os.path.join("samples", "02.jpg")
+INPUT_FILE_LE1 = os.path.join("samples", "L01.jpg")
 NOEXIF_FILE = os.path.join("samples", "noexif.jpg")
 
 with open(INPUT_FILE1, "rb") as f:
@@ -122,11 +123,20 @@ class ExifTests(unittest.TestCase):
             i.close()
 
     def test_load(self):
-        input_file = INPUT_FILE1
-        zeroth_dict, exif_dict, gps_dict = pyxif.load(input_file)
-        self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
-        self.assertEqual(zeroth_dict[296][1], 2)
-        self.assertEqual(zeroth_dict[282][1], (72, 1))
+        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE1)
+        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        i = Image.open(INPUT_FILE1)
+        e = i._getexif()
+        i.close()
+        for key in sorted(zeroth_dict):
+            if key in e:
+                self.assertEqual(zeroth_dict[key][1], e[key])
+        for key in sorted(exif_dict):
+            if key in e:
+                self.assertEqual(exif_dict[key][1], e[key])
+        for key in sorted(gps_dict):
+            if key in e:
+                self.assertEqual(gps_dict[key][1], e[key])
 
     def test_load2(self):
         """To use on server.
@@ -197,12 +207,20 @@ class ExifTests(unittest.TestCase):
     def test_load_le(self):
         """load test of little endian exif
         """
-        input_file = os.path.join("samples", "L01.jpg")
-        zeroth_dict, exif_dict, gps_dict = pyxif.load(input_file)
-        self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
-        self.assertEqual(zeroth_dict[296][1], 2)
-        self.assertEqual(zeroth_dict[282][1], (72, 1))
-        self.assertEqual(exif_dict[33434][1], (1, 250))
+        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_LE1)
+        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        i = Image.open(INPUT_FILE_LE1)
+        e = i._getexif()
+        i.close()
+        for key in sorted(zeroth_dict):
+            if key in e:
+                self.assertEqual(zeroth_dict[key][1], e[key])
+        for key in sorted(exif_dict):
+            if key in e:
+                self.assertEqual(exif_dict[key][1], e[key])
+        for key in sorted(gps_dict):
+            if key in e:
+                self.assertEqual(gps_dict[key][1], e[key])
 
 
 if __name__ == '__main__':

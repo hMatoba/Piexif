@@ -701,13 +701,21 @@ class ExifReader(object):
         data = None
 
         if val[0] == 1: # BYTE
-            data = int(val[2][0].encode("hex"), 16)
+            if not isinstance(val[2][0], int):
+                data = int(val[2][0].encode("hex"), 16)
+            else:
+                data = val[2][0]
         elif val[0] == 2: # ASCII
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-                data = self.exif_str[pointer: pointer+val[1]].split(b"\x00")[0]
+                data = self.exif_str[pointer: pointer+val[1]]
             else:
-                data = val[2][0: val[1]].split(b"\x00")[0]
+                data = val[2][0: val[1]]
+            if data:
+                while data[-1:] == b"\x00":
+                    data = data[0:-1]
+                    if len(data) == 0:
+                        break
             try:
                 data = data.decode()
             except:
@@ -718,8 +726,16 @@ class ExifReader(object):
             data = struct.unpack(self.endian_mark + "L", val[2])[0]
         elif val[0] == 5: # RATIONAL
             pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-            data = (struct.unpack(self.endian_mark + "L", self.exif_str[pointer: pointer + 4])[0],
-                    struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0])
+            length = val[1]
+            if length > 1:
+                data = tuple(
+                    (struct.unpack(self.endian_mark + "L", self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
+                     struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
+                    for x in range(val[1])
+                )
+            else:
+                data = (struct.unpack(self.endian_mark + "L", self.exif_str[pointer: pointer + 4])[0],
+                        struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0])
         elif val[0] == 7: # UNDEFINED BYTES
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
