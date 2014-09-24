@@ -43,6 +43,27 @@ How to Use
     pyxif.transplant("exif_src.jpg", "image.jpg")
 
 
+on GoogleAppEngine
+--------
+    jpg_data = self.request.get("jpeg")
+    output = io.BytesIO()
+
+    # insert
+    pyxif.insert(exif_bytes, jpg_data, output)
+
+    # load
+    zeroth_dict, exif_dict, gps_dict = pyxif.load(jpg_data)
+
+    # remove
+    pyxif.remove(jpg_data, output)
+
+    # thumbnail
+    pyxif.thumbnail(jpg_data, output, (80, 80))
+
+    # transplant
+    pyxif.transplant(jpg_data1, jpg_data2, output)
+
+
 Depends on
 --------
   Function "thumbnail" depends on PIL, or Pillow(Tested on Pillow 2.5.3).

@@ -194,7 +194,7 @@ class ExifTests(unittest.TestCase):
                       305: 'paint.net 4.0.3'}
         exif_bytes = pyxif.dump(zeroth_ifd)
         o = io.BytesIO()
-        pyxif.insert(exif_bytes, INPUT_FILE1, o)
+        pyxif.insert(exif_bytes, I1, o)
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
         try:
             i = Image.open(o)
