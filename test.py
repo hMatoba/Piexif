@@ -20,9 +20,7 @@ with open(INPUT_FILE2, "rb") as f:
 
 class ExifTests(unittest.TestCase):
     def test_transplant(self):
-        pyxif.transplant(INPUT_FILE1,
-                         INPUT_FILE2,
-                         "transplant.jpg")
+        pyxif.transplant(INPUT_FILE1, INPUT_FILE2, "transplant.jpg")
         exif_src = pyxif.load(INPUT_FILE1)
         img_src = pyxif.load(INPUT_FILE2)
         generated = pyxif.load("transplant.jpg")
@@ -38,9 +36,7 @@ class ExifTests(unittest.TestCase):
             i.close()
 
         with  self.assertRaises(ValueError):
-            pyxif.transplant(NOEXIF_FILE,
-                             INPUT_FILE2,
-                             "foo.jpg")
+            pyxif.transplant(NOEXIF_FILE, INPUT_FILE2, "foo.jpg")
 
 
     def test_transplant2(self):

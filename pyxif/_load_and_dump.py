@@ -706,14 +706,9 @@ class ExifReader(object):
         elif val[0] == 2: # ASCII
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-                data = self.exif_str[pointer: pointer+val[1]]
+                data = self.exif_str[pointer: pointer+val[1] - 1]
             else:
-                data = val[2][0: val[1]]
-            if data:
-                while data[-1:] == b"\x00":
-                    data = data[0:-1]
-                    if len(data) == 0:
-                        break
+                data = val[2][0: val[1] - 1]
             try:
                 data = data.decode()
             except:
@@ -866,7 +861,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             length = 4
             value_str = struct.pack('>i', raw_value)
         elif value_type == "Ascii":
-            raw_value = raw_value.encode()
+            raw_value = raw_value.encode() + b"\x00"
             length = len(raw_value)
             if length > 4:
                 if length % 4:
