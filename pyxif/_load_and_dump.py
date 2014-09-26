@@ -40,37 +40,6 @@ from ._common import *
 
 
 TAGS = {
- 'GPSInfo': {0: {'group': 'GPSVersionID', 'type': 'Byte'},
-             1: {'group': 'GPSLatitudeRef', 'type': 'Ascii'},
-             2: {'group': 'GPSLatitude', 'type': 'Rational'},
-             3: {'group': 'GPSLongitudeRef', 'type': 'Ascii'},
-             4: {'group': 'GPSLongitude', 'type': 'Rational'},
-             5: {'group': 'GPSAltitudeRef', 'type': 'Byte'},
-             6: {'group': 'GPSAltitude', 'type': 'Rational'},
-             7: {'group': 'GPSTimeStamp', 'type': 'Rational'},
-             8: {'group': 'GPSSatellites', 'type': 'Ascii'},
-             9: {'group': 'GPSStatus', 'type': 'Ascii'},
-             10: {'group': 'GPSMeasureMode', 'type': 'Ascii'},
-             11: {'group': 'GPSDOP', 'type': 'Rational'},
-             12: {'group': 'GPSSpeedRef', 'type': 'Ascii'},
-             13: {'group': 'GPSSpeed', 'type': 'Rational'},
-             14: {'group': 'GPSTrackRef', 'type': 'Ascii'},
-             15: {'group': 'GPSTrack', 'type': 'Rational'},
-             16: {'group': 'GPSImgDirectionRef', 'type': 'Ascii'},
-             17: {'group': 'GPSImgDirection', 'type': 'Rational'},
-             18: {'group': 'GPSMapDatum', 'type': 'Ascii'},
-             19: {'group': 'GPSDestLatitudeRef', 'type': 'Ascii'},
-             20: {'group': 'GPSDestLatitude', 'type': 'Rational'},
-             21: {'group': 'GPSDestLongitudeRef', 'type': 'Ascii'},
-             22: {'group': 'GPSDestLongitude', 'type': 'Rational'},
-             23: {'group': 'GPSDestBearingRef', 'type': 'Ascii'},
-             24: {'group': 'GPSDestBearing', 'type': 'Rational'},
-             25: {'group': 'GPSDestDistanceRef', 'type': 'Ascii'},
-             26: {'group': 'GPSDestDistance', 'type': 'Rational'},
-             27: {'group': 'GPSProcessingMethod', 'type': 'Undefined'},
-             28: {'group': 'GPSAreaInformation', 'type': 'Undefined'},
-             29: {'group': 'GPSDateStamp', 'type': 'Ascii'},
-             30: {'group': 'GPSDifferential', 'type': 'Short'}},
  'Image': {11: {'group': 'ProcessingSoftware', 'type': 'Ascii'},
            254: {'group': 'NewSubfileType', 'type': 'Long'},
            255: {'group': 'SubfileType', 'type': 'Short'},
@@ -324,7 +293,39 @@ TAGS = {
            42034: {'group': 'LensSpecification', 'type': 'Rational'},
            42035: {'group': 'LensMake', 'type': 'Ascii'},
            42036: {'group': 'LensModel', 'type': 'Ascii'},
-           42037: {'group': 'LensSerialNumber', 'type': 'Ascii'}}}
+           42037: {'group': 'LensSerialNumber', 'type': 'Ascii'}},
+ 'GPSInfo': {0: {'group': 'GPSVersionID', 'type': 'Byte'},
+             1: {'group': 'GPSLatitudeRef', 'type': 'Ascii'},
+             2: {'group': 'GPSLatitude', 'type': 'Rational'},
+             3: {'group': 'GPSLongitudeRef', 'type': 'Ascii'},
+             4: {'group': 'GPSLongitude', 'type': 'Rational'},
+             5: {'group': 'GPSAltitudeRef', 'type': 'Byte'},
+             6: {'group': 'GPSAltitude', 'type': 'Rational'},
+             7: {'group': 'GPSTimeStamp', 'type': 'Rational'},
+             8: {'group': 'GPSSatellites', 'type': 'Ascii'},
+             9: {'group': 'GPSStatus', 'type': 'Ascii'},
+             10: {'group': 'GPSMeasureMode', 'type': 'Ascii'},
+             11: {'group': 'GPSDOP', 'type': 'Rational'},
+             12: {'group': 'GPSSpeedRef', 'type': 'Ascii'},
+             13: {'group': 'GPSSpeed', 'type': 'Rational'},
+             14: {'group': 'GPSTrackRef', 'type': 'Ascii'},
+             15: {'group': 'GPSTrack', 'type': 'Rational'},
+             16: {'group': 'GPSImgDirectionRef', 'type': 'Ascii'},
+             17: {'group': 'GPSImgDirection', 'type': 'Rational'},
+             18: {'group': 'GPSMapDatum', 'type': 'Ascii'},
+             19: {'group': 'GPSDestLatitudeRef', 'type': 'Ascii'},
+             20: {'group': 'GPSDestLatitude', 'type': 'Rational'},
+             21: {'group': 'GPSDestLongitudeRef', 'type': 'Ascii'},
+             22: {'group': 'GPSDestLongitude', 'type': 'Rational'},
+             23: {'group': 'GPSDestBearingRef', 'type': 'Ascii'},
+             24: {'group': 'GPSDestBearing', 'type': 'Rational'},
+             25: {'group': 'GPSDestDistanceRef', 'type': 'Ascii'},
+             26: {'group': 'GPSDestDistance', 'type': 'Rational'},
+             27: {'group': 'GPSProcessingMethod', 'type': 'Undefined'},
+             28: {'group': 'GPSAreaInformation', 'type': 'Undefined'},
+             29: {'group': 'GPSDateStamp', 'type': 'Ascii'},
+             30: {'group': 'GPSDifferential', 'type': 'Short'}},
+}
 
 class ImageGroup:
     """Exif tag number reference - 0th IFD"""
@@ -861,20 +862,14 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             length = 4
             value_str = struct.pack('>i', raw_value)
         elif value_type == "Ascii":
-            raw_value = raw_value.encode() + b"\x00"
-            length = len(raw_value)
+            new_value = raw_value.encode() + b"\x00"
+            length = len(new_value)
             if length > 4:
-                if length % 4:
-                    new_value = raw_value + b"\x00" * (4 - length % 4)
-                    length = len(new_value)
-                else:
-                    new_value = raw_value
                 offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
                 value_str = struct.pack(">I", offset)
                 values += new_value
             else:
-                length = len(raw_value)
-                value_str = raw_value + b"\x00" * (4 - length)
+                value_str = new_value
         elif value_type == "Rational":
             length = 1
             num, den = raw_value
@@ -890,20 +885,14 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "Undefined":
-            raw_value = raw_value.encode()
+            new_value = raw_value.encode()
+            length = len(new_value)
             if len(raw_value) > 4:
-                length = len(raw_value)
-                if length % 4:
-                    new_value = raw_value + b"\x00" * (4 - length % 4)
-                    length = length + (4 - length % 4)
-                else:
-                    new_value = raw_value
                 offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
                 value_str = struct.pack(">I", offset)
                 values += new_value
             else:
-                length = len(raw_value)
-                value_str = raw_value + b"\x00" * (4 - length)
+                value_str = new_value
 
         length_str = struct.pack(">I", length)
         entries += key_str + type_str + length_str + value_str
