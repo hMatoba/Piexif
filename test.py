@@ -146,7 +146,8 @@ class ExifTests(unittest.TestCase):
     def test_dump(self):
         input_file = INPUT_FILE1
         output_file = "dump.jpg"
-        zeroth_ifd = {282: (96, 1),
+        zeroth_ifd = {271: "foo",
+                      282: (96, 1),
                       283: (96, 1),
                       296: 2,
                       305: 'paint.net 4.0.3'}

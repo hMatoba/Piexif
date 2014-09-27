@@ -851,7 +851,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
         type_str = struct.pack(">H", TYPES[value_type])
         if value_type == "Byte":
             length = 1
-            value_str = struct.pack('>I', raw_value)[3] + b"\x00" * 3
+            value_str = struct.pack('>I', raw_value)[3:4] + b"\x00" * 3
         elif value_type == "Short":
             length = 2
             value_str = struct.pack('>I', raw_value)[2:4] + b"\x00" * 2
