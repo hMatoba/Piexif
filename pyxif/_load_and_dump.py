@@ -851,16 +851,16 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
         type_str = struct.pack(">H", TYPES[value_type])
         if value_type == "Byte":
             length = 1
-            value_str = struct.pack('>I', raw_value)[3:4] + b"\x00" * 3
+            value_str = struct.pack('>B', raw_value)[0:1] + b"\x00" * 3
         elif value_type == "Short":
             length = 2
-            value_str = struct.pack('>I', raw_value)[2:4] + b"\x00" * 2
+            value_str = struct.pack('>H', raw_value)[0:2] + b"\x00" * 2
         elif value_type == "Long":
-            length = 4
-            value_str = struct.pack('>I', raw_value)
+            length = 1
+            value_str = struct.pack('>L', raw_value)
         elif value_type == "SLong":
-            length = 4
-            value_str = struct.pack('>i', raw_value)
+            length = 1
+            value_str = struct.pack('>l', raw_value)
         elif value_type == "Ascii":
             new_value = raw_value.encode() + b"\x00"
             length = len(new_value)
