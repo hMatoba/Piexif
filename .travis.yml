@@ -9,5 +9,8 @@ python:
 install:
  - pip install pillow
 
+script:
+ - python ./test.py
+
 matrix:
   fast_finish: true
