@@ -1,0 +1,13 @@
+language: python
+
+python:
+ - pypy
+ - pypy3
+ - 2.7
+ - 3.4
+
+install:
+ - pip install pillow
+
+matrix:
+  fast_finish: true

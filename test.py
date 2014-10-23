@@ -5,6 +5,9 @@ import unittest
 from PIL import Image
 import pyxif
 
+ImageGroup = pyxif.ImageGroup
+PhotoGroup = pyxif.PhotoGroup
+GPSGroup = pyxif.GPSInfoGroup
 
 print("Pyxif version: {0}".format(pyxif.VERSION))
 
@@ -17,6 +20,29 @@ with open(INPUT_FILE1, "rb") as f:
     I1 = f.read()
 with open(INPUT_FILE2, "rb") as f:
     I2 = f.read()
+
+ZEROTH_DICT = {ImageGroup.Software: "PIL", # ascii
+               ImageGroup.Make: "Make", # ascii
+               ImageGroup.Model: "XXX-XXX", # ascii
+               ImageGroup.ResolutionUnit: 65535, # short
+               ImageGroup.JPEGInterchangeFormatLength: 4294967295, # long
+               ImageGroup.XResolution: (4294967295, 1), # rational
+               }
+
+EXIF_DICT = {PhotoGroup.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
+             PhotoGroup.LensMake: "LensMake", # ascii
+             PhotoGroup.Sharpness: 65535, # short
+             PhotoGroup.ISOSpeed: 4294967295, # long
+             PhotoGroup.ExposureTime: (4294967295, 1), # rational
+             PhotoGroup.ExposureBiasValue: (2147483647, -2147483648), # srational
+             }
+
+GPS_DICT = {GPSGroup.GPSVersionID: 255, # byte
+            GPSGroup.GPSDateStamp: "1999:99:99 99:99:99", # ascii
+            GPSGroup.GPSDifferential: 65535, # short
+            GPSGroup.GPSLatitude: (4294967295, 1), # rational
+            }
+
 
 class ExifTests(unittest.TestCase):
     def test_transplant(self):
@@ -146,13 +172,7 @@ class ExifTests(unittest.TestCase):
     def test_dump(self):
         input_file = INPUT_FILE1
         output_file = "dump.jpg"
-        zeroth_ifd = {271: "foo",
-                      282: (96, 1),
-                      283: (96, 1),
-                      296: 2,
-                      305: 'paint.net 4.0.3'}
-
-        exif_bytes = pyxif.dump(zeroth_ifd)
+        exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
 
         im = Image.open(input_file)
         im.thumbnail((100, 100), Image.ANTIALIAS)
@@ -167,11 +187,7 @@ class ExifTests(unittest.TestCase):
             i.close()
 
     def test_insert(self):
-        zeroth_ifd = {282: (96, 1),
-                      283: (96, 1),
-                      296: 2,
-                      305: 'paint.net 4.0.3'}
-        exif_bytes = pyxif.dump(zeroth_ifd)
+        exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
         pyxif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
         try:
             i = Image.open("insert.jpg")
@@ -185,11 +201,7 @@ class ExifTests(unittest.TestCase):
         """To use on server.
         Passes binary data to input.
         """
-        zeroth_ifd = {282: (96, 1),
-                      283: (96, 1),
-                      296: 2,
-                      305: 'paint.net 4.0.3'}
-        exif_bytes = pyxif.dump(zeroth_ifd)
+        exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
         o = io.BytesIO()
         pyxif.insert(exif_bytes, I1, o)
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
