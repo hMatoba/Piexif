@@ -4,13 +4,25 @@ python:
  - pypy
  - pypy3
  - 2.7
+ - 3.3
  - 3.4
 
 install:
  - pip install pillow
+ - pip install coverage
 
 script:
- - python ./test.py
+ - coverage run --source=Pyxif ./test.py -v
+
+after_success:
+ - pip install coveralls
+ - coveralls
+
+after_script:
+ - coverage report
+ - pip install pep8 pyflakes
+ - pep8 --statistics --count *.py
+ - pyflakes *.py | tee >(wc -l)
 
 matrix:
   fast_finish: true
