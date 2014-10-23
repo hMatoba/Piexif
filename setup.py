@@ -1,6 +1,11 @@
 from setuptools import setup
+import sys
 
 import pyxif
+
+
+sys.path.append('./pyxif')
+sys.path.append('./tests')
 
 setup(
     name = "pyxif",
@@ -12,6 +17,7 @@ setup(
     keywords = ["exif", "jpeg"],
     url = "https://github.com/hMatoba/Pyxif",
     packages = ['pyxif'],
+    test_suite = 's_test.suite',
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 2.7",

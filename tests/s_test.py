@@ -6,7 +6,6 @@ import unittest
 from PIL import Image
 import pyxif
 
-sys.path.append(__file__)
 
 ImageGroup = pyxif.ImageGroup
 PhotoGroup = pyxif.PhotoGroup
@@ -14,10 +13,10 @@ GPSGroup = pyxif.GPSInfoGroup
 
 print("Pyxif version: {0}".format(pyxif.VERSION))
 
-INPUT_FILE1 = os.path.join("samples", "01.jpg")
-INPUT_FILE2 = os.path.join("samples", "02.jpg")
-INPUT_FILE_LE1 = os.path.join("samples", "L01.jpg")
-NOEXIF_FILE = os.path.join("samples", "noexif.jpg")
+INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
+INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
+INPUT_FILE_LE1 = os.path.join("tests", "images", "L01.jpg")
+NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
 
 with open(INPUT_FILE1, "rb") as f:
     I1 = f.read()
@@ -173,16 +172,15 @@ class ExifTests(unittest.TestCase):
         self.assertEqual(zeroth_dict[282][1], (72, 1))
 
     def test_dump(self):
-        input_file = INPUT_FILE1
-        output_file = "dump.jpg"
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
+        im = Image.new("RGBA", (8, 8))
 
-        im = Image.open(input_file)
-        im.thumbnail((100, 100), Image.ANTIALIAS)
-        im.save(output_file, exif=exif_bytes)
+        o = io.BytesIO()
+        im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
+        o.seek(0)
         try:
-            i = Image.open(output_file)
+            i = Image.open(o)
             i._getexif()
         except:
             self.fail("'dump' generated bad exif")
@@ -233,6 +231,12 @@ class ExifTests(unittest.TestCase):
         for key in sorted(gps_dict):
             if key in e:
                 self.assertEqual(gps_dict[key][1], e[key])
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(ExifTests))
+    return suite
 
 
 if __name__ == '__main__':
