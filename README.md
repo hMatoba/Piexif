@@ -1,5 +1,6 @@
 Pyxif
 =====================
+[![Build Status](https://travis-ci.org/hMatoba/Pyxif.svg?branch=master)](https://travis-ci.org/hMatoba/Pyxif)
 
 To simplify exif manipulations with python. Writing, reading, and more...
 Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on PIL or Pillow).
@@ -72,7 +73,7 @@ Depends on
 
 Environment
 --------
-  Checked on Python 2.7, 3.3 and 3.4.
+  Checked on Python 2.7, 3.3, 3.4, pypy, and pypy3.
 
 
 License
