@@ -9,10 +9,9 @@ python:
 
 install:
  - pip install pillow
- - python setup.py install
 
 script:
- - python test.py
+ - python setup.py test
 
 matrix:
   fast_finish: true
