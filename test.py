@@ -11,10 +11,10 @@ GPSGroup = pyxif.GPSInfoGroup
 
 print("Pyxif version: {0}".format(pyxif.VERSION))
 
-INPUT_FILE1 = os.path.join("samples", "01.jpg")
-INPUT_FILE2 = os.path.join("samples", "02.jpg")
-INPUT_FILE_LE1 = os.path.join("samples", "L01.jpg")
-NOEXIF_FILE = os.path.join("samples", "noexif.jpg")
+INPUT_FILE1 = os.path.join(".", "samples", "01.jpg")
+INPUT_FILE2 = os.path.join(".", "samples", "02.jpg")
+INPUT_FILE_LE1 = os.path.join(".", "samples", "L01.jpg")
+NOEXIF_FILE = os.path.join(".", "samples", "noexif.jpg")
 
 with open(INPUT_FILE1, "rb") as f:
     I1 = f.read()
