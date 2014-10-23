@@ -9,20 +9,10 @@ python:
 
 install:
  - pip install pillow
- - pip install coverage
+ - python setup.py install
 
 script:
- - coverage run --source=Pyxif ./test.py -v
-
-after_success:
- - pip install coveralls
- - coveralls
-
-after_script:
- - coverage report
- - pip install pep8 pyflakes
- - pep8 --statistics --count *.py
- - pyflakes *.py | tee >(wc -l)
+ - python test.py
 
 matrix:
   fast_finish: true
