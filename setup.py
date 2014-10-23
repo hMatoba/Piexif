@@ -3,7 +3,7 @@ from setuptools import setup
 import pyxif
 
 setup(
-    name = "Pyxif",
+    name = "pyxif",
     version = pyxif.VERSION,
     author = "hMatoba",
     author_email = "hiroaki.mtb@outlook.com",
@@ -12,7 +12,6 @@ setup(
     keywords = ["exif", "jpeg"],
     url = "https://github.com/hMatoba/Pyxif",
     packages = ['pyxif'],
-    data_files = [("", ["LICENSE.txt"])],
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 2.7",
