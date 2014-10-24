@@ -1,6 +1,7 @@
 Pyxif
 =====================
 [![Build Status](https://travis-ci.org/hMatoba/Pyxif.svg?branch=master)](https://travis-ci.org/hMatoba/Pyxif)
+[![Coverage Status](https://coveralls.io/repos/hMatoba/Pyxif/badge.png?branch=master)](https://coveralls.io/r/hMatoba/Pyxif?branch=master)
 
 To simplify exif manipulations with python. Writing, reading, and more...
 Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on PIL or Pillow).
