@@ -7,12 +7,15 @@ import pyxif
 sys.path.append('./pyxif')
 sys.path.append('./tests')
 
+with open("README.rst", "r") as f:
+    description = f.read()
+
 setup(
     name = "Pyxif",
     version = pyxif.VERSION,
     author = "hMatoba",
     author_email = "hiroaki.mtb@outlook.com",
-    description = ("Exif manipulation tool(writing, reading, and more...) in Python."),
+    description = description,
     license = "MIT",
     keywords = ["exif", "jpeg"],
     url = "https://github.com/hMatoba/Pyxif",
