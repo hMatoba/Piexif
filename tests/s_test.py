@@ -26,6 +26,7 @@ with open(INPUT_FILE2, "rb") as f:
 ZEROTH_DICT = {ImageGroup.Software: "PIL", # ascii
                ImageGroup.Make: "Make", # ascii
                ImageGroup.Model: "XXX-XXX", # ascii
+               ImageGroup.JPEGTables: b"\xaa\xaa",  # undefined
                ImageGroup.ResolutionUnit: 65535, # short
                ImageGroup.JPEGInterchangeFormatLength: 4294967295, # long
                ImageGroup.XResolution: (4294967295, 1), # rational
@@ -33,6 +34,7 @@ ZEROTH_DICT = {ImageGroup.Software: "PIL", # ascii
 
 EXIF_DICT = {PhotoGroup.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
              PhotoGroup.LensMake: "LensMake", # ascii
+             PhotoGroup.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa",  # undefined
              PhotoGroup.Sharpness: 65535, # short
              PhotoGroup.ISOSpeed: 4294967295, # long
              PhotoGroup.ExposureTime: (4294967295, 1), # rational
