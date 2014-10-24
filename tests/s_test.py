@@ -36,6 +36,7 @@ EXIF_DICT = {PhotoGroup.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
              PhotoGroup.Sharpness: 65535, # short
              PhotoGroup.ISOSpeed: 4294967295, # long
              PhotoGroup.ExposureTime: (4294967295, 1), # rational
+             PhotoGroup.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1), ),
              PhotoGroup.ExposureBiasValue: (2147483647, -2147483648), # srational
              }
 
@@ -208,7 +209,8 @@ class ExifTests(unittest.TestCase):
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
         try:
             i = Image.open(o)
-            i._getexif()
+            e = i._getexif()
+            print(e[PhotoGroup.LensSpecification])
         except:
             self.fail("'insert' generated wrong file")
         finally:
