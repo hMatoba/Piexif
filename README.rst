@@ -3,8 +3,8 @@ Pyxif
 
 |Build Status| |Coverage Status|
 
-To simplify exif manipulations with python. Writing, reading, and moreÅc
-Pyxif isnÅft a wrapper. To everywhere with Python(functionÅfthumbnailÅf
+To simplify exif manipulations with python. Writing, reading, and more...
+Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail'
 depends on PIL or Pillow).
 
 Functions
@@ -76,8 +76,8 @@ on GoogleAppEngine
 Depends on
 ----------
 
-Function ÅgthumbnailÅh depends on PIL, or Pillow(Tested on Pillow 2.5.3).
-Others donÅft depend on any 3rd module.
+Function 'thumbnail' depends on PIL, or Pillow(Tested on Pillow 2.5.3).
+Others don't depend on any 3rd module.
 
 Environment
 -----------
