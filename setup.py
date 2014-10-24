@@ -8,7 +8,7 @@ sys.path.append('./pyxif')
 sys.path.append('./tests')
 
 setup(
-    name = "Pyxif",
+    name = "pyxif",
     version = pyxif.VERSION,
     author = "hMatoba",
     author_email = "hiroaki.mtb@outlook.com",

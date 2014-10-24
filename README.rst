@@ -1,13 +1,17 @@
 Pyxif
-=====================
-[![Build Status](https://travis-ci.org/hMatoba/Pyxif.svg?branch=master)](https://travis-ci.org/hMatoba/Pyxif)
-[![Coverage Status](https://coveralls.io/repos/hMatoba/Pyxif/badge.png?branch=master)](https://coveralls.io/r/hMatoba/Pyxif?branch=master)
+=====
 
-To simplify exif manipulations with python. Writing, reading, and more...
-Pyxif isn't a wrapper. To everywhere with Python(function'thumbnail' depends on PIL or Pillow).
+|Build Status| |Coverage Status|
+
+To simplify exif manipulations with python. Writing, reading, and moreÅc
+Pyxif isnÅft a wrapper. To everywhere with Python(functionÅfthumbnailÅf
+depends on PIL or Pillow).
 
 Functions
---------
+---------
+
+::
+
     dump - converts dict to exif bytes
     insert - inserts exif bytes to JPEG
     load - get exif as dict from file
@@ -15,9 +19,11 @@ Functions
     thumbnail - resizes proportionally without loosing exif(depend on PIL or Pillow)
     transplant - transplants exif to another JPEG
 
-
 How to Use
---------
+----------
+
+::
+
     # dump and insert
     zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
                   pyxif.ImageGroup.XResolution: (96, 1),
@@ -44,9 +50,11 @@ How to Use
     # transplant
     pyxif.transplant("exif_src.jpg", "image.jpg")
 
-
 on GoogleAppEngine
---------
+------------------
+
+::
+
     jpg_data = self.request.get("jpeg")
     output = io.BytesIO()
 
@@ -65,18 +73,23 @@ on GoogleAppEngine
     # transplant
     pyxif.transplant(jpg_data1, jpg_data2, output)
 
-
 Depends on
---------
-  Function "thumbnail" depends on PIL, or Pillow(Tested on Pillow 2.5.3).
-  Others don't depend on any 3rd module.
+----------
 
+Function ÅgthumbnailÅh depends on PIL, or Pillow(Tested on Pillow 2.5.3).
+Others donÅft depend on any 3rd module.
 
 Environment
---------
-  Checked on Python 2.7, 3.3, 3.4, pypy, and pypy3.
+-----------
 
+Checked on Python 2.7, 3.3, 3.4, pypy, and pypy3.
 
 License
---------
-  This software is released under the MIT License, see LICENSE.txt.
+-------
+
+This software is released under the MIT License, see LICENSE.txt.
+
+.. |Build Status| image:: https://travis-ci.org/hMatoba/Pyxif.svg?branch=master
+   :target: https://travis-ci.org/hMatoba/Pyxif
+.. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Pyxif/badge.png?branch=master
+   :target: https://coveralls.io/r/hMatoba/Pyxif?branch=master
