@@ -157,8 +157,16 @@ class ExifReader(object):
             data = struct.unpack(self.endian_mark + "l", val[2])[0]
         elif val[0] == 10: # SRATIONAL
             pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-            data = (struct.unpack(self.endian_mark + "l", self.exif_str[pointer: pointer + 4])[0],
-                    struct.unpack(self.endian_mark + "l", self.exif_str[pointer + 4: pointer + 8])[0])
+            length = val[1]
+            if length > 1:
+                data = tuple(
+                    (struct.unpack(self.endian_mark + "l", self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
+                     struct.unpack(self.endian_mark + "l", self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
+                    for x in range(val[1])
+                )
+            else:
+                data = (struct.unpack(self.endian_mark + "l", self.exif_str[pointer: pointer + 4])[0],
+                        struct.unpack(self.endian_mark + "l", self.exif_str[pointer + 4: pointer + 8])[0])
 
         return data
 
