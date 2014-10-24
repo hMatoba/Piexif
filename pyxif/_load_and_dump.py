@@ -282,11 +282,12 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             new_value = raw_value.encode() + b"\x00"
             length = len(new_value)
             if length > 4:
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
                 value_str = struct.pack(">I", offset)
                 values += new_value
             else:
-                value_str = new_value
+                value_str = new_value + b"\x00" * (4 - length)
         elif value_type == "Rational":
             length = 1
             num, den = raw_value
@@ -302,14 +303,14 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "Undefined":
-            new_value = raw_value.encode()
-            length = len(new_value)
-            if len(raw_value) > 4:
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+            length = len(raw_value)
+            if length > 4:
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
                 value_str = struct.pack(">I", offset)
-                values += new_value
+                values += raw_value
             else:
-                value_str = new_value
+                value_str = raw_value + b"\x00" * (4 - length)
 
         length_str = struct.pack(">I", length)
         entries += key_str + type_str + length_str + value_str
