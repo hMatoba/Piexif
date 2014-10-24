@@ -35,10 +35,16 @@ Property and appropriate type
 
 import io
 import struct
+import sys
 
 from ._common import *
 from ._exif import *
 
+
+if sys.version_info[0] == 2:
+    NUMBER_TYPE = (int, long)
+else:
+    NUMBER_TYPE = int
 
 
 TYPES = {
@@ -297,7 +303,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             else:
                 value_str = new_value + b"\x00" * (4 - length)
         elif value_type == "Rational":
-            if isinstance(raw_value[0], (int, long)):
+            if isinstance(raw_value[0], NUMBER_TYPE):
                 length = 1
                 num, den = raw_value
                 new_value = struct.pack(">L", num) + struct.pack(">L", den)
@@ -311,7 +317,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "SRational":
-            if isinstance(raw_value[0], (int, long)):
+            if isinstance(raw_value[0], NUMBER_TYPE):
                 length = 1
                 num, den = raw_value
                 new_value = struct.pack(">l", num) + struct.pack(">l", den)
