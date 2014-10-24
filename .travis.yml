@@ -9,9 +9,13 @@ python:
 
 install:
  - pip install pillow
+ - pip install coveralls
 
 script:
- - python setup.py test
+ - coverage run --source=pyxif setup.py test
+
+after_success:
+  coveralls
 
 matrix:
   fast_finish: true
