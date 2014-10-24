@@ -96,5 +96,10 @@ $RECYCLE.BIN/
 
 samples2
 load_sample.py
+_exif23.py
 *.bat
 *.pdf
+insert.jpg
+remove.jpg
+thumbnail.jpg
+transplant.jpg

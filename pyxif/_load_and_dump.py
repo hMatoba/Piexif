@@ -37,8 +37,7 @@ import io
 import struct
 
 from ._common import *
-##from ._exif23 import *
-from ._exif00 import *
+from ._exif import *
 
 
 
