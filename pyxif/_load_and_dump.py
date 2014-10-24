@@ -293,35 +293,29 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 length = 1
                 num, den = raw_value
                 new_value = struct.pack(">L", num) + struct.pack(">L", den)
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
-                value_str = struct.pack(">I", offset)
-                values += new_value
             elif isinstance(raw_value[0], tuple):
                 length = len(raw_value)
                 new_value = b""
                 for n, val in enumerate(raw_value):
                     num, den = val
                     new_value += struct.pack(">L", num) + struct.pack(">L", den)
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
-                value_str = struct.pack(">I", offset)
-                values += new_value
+            offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+            value_str = struct.pack(">I", offset)
+            values += new_value
         elif value_type == "SRational":
             if isinstance(raw_value[0], (int, long)):
                 length = 1
                 num, den = raw_value
                 new_value = struct.pack(">l", num) + struct.pack(">l", den)
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
-                value_str = struct.pack(">I", offset)
-                values += new_value
             elif isinstance(raw_value[0], tuple):
                 length = len(raw_value)
                 new_value = b""
                 for n, val in enumerate(raw_value):
                     num, den = val
                     new_value += struct.pack(">l", num) + struct.pack(">l", den)
-                offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
-                value_str = struct.pack(">I", offset)
-                values += new_value
+            offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+            value_str = struct.pack(">I", offset)
+            values += new_value
         elif value_type == "Undefined":
             length = len(raw_value)
             if length > 4:

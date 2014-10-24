@@ -210,7 +210,6 @@ class ExifTests(unittest.TestCase):
         try:
             i = Image.open(o)
             e = i._getexif()
-            print(e[PhotoGroup.LensSpecification])
         except:
             self.fail("'insert' generated wrong file")
         finally:
