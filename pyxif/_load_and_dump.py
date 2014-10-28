@@ -96,24 +96,31 @@ class ExifReader(object):
         zeroth_dict = self.get_ifd_dict(pointer)
 
         if 34665 in zeroth_dict:
-            pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34665][2])[0]
+            pointer = struct.unpack(self.endian_mark + "L",
+                                    zeroth_dict[34665][2])[0]
             exif_dict = self.get_ifd_dict(pointer)
 
         if 34853 in zeroth_dict:
-            pointer = struct.unpack(self.endian_mark + "L", zeroth_dict[34853][2])[0]
+            pointer = struct.unpack(self.endian_mark + "L",
+                                    zeroth_dict[34853][2])[0]
             gps_dict = self.get_ifd_dict(pointer)
 
         return zeroth_dict, exif_dict, gps_dict
 
     def get_ifd_dict(self, pointer):
         ifd_dict = {}
-        tag_count = struct.unpack(self.endian_mark + "H", self.exif_str[pointer: pointer+2])[0]
+        tag_count = struct.unpack(self.endian_mark + "H",
+                                  self.exif_str[pointer: pointer+2])[0]
         offset = pointer + 2
         for x in range(tag_count):
             pointer = offset + 12 * x
-            tag_code = struct.unpack(self.endian_mark + "H", self.exif_str[pointer: pointer+2])[0]
-            value_type = struct.unpack(self.endian_mark + "H", self.exif_str[pointer + 2: pointer + 4])[0]
-            value_num = struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0]
+            tag_code = struct.unpack(self.endian_mark + "H",
+                       self.exif_str[pointer: pointer+2])[0]
+            value_type = struct.unpack(self.endian_mark + "H",
+                         self.exif_str[pointer + 2: pointer + 4])[0]
+            value_num = struct.unpack(self.endian_mark + "L",
+                                      self.exif_str[pointer + 4: pointer + 8]
+                                      )[0]
             value = self.exif_str[pointer+8: pointer+12]
 ##            print(tag_code, [value_type, value_num, value])
             ifd_dict.update({tag_code:[value_type, value_num, value]})
@@ -146,13 +153,20 @@ class ExifReader(object):
             length = val[1]
             if length > 1:
                 data = tuple(
-                    (struct.unpack(self.endian_mark + "L", self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
-                     struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
+                    (struct.unpack(self.endian_mark + "L",
+                                   self.exif_str[pointer + x * 8:
+                                       pointer + 4 + x * 8])[0],
+                     struct.unpack(self.endian_mark + "L",
+                                   self.exif_str[pointer + 4 + x * 8:
+                                       pointer + 8 + x * 8])[0])
                     for x in range(val[1])
                 )
             else:
-                data = (struct.unpack(self.endian_mark + "L", self.exif_str[pointer: pointer + 4])[0],
-                        struct.unpack(self.endian_mark + "L", self.exif_str[pointer + 4: pointer + 8])[0])
+                data = (struct.unpack(self.endian_mark + "L",
+                                      self.exif_str[pointer: pointer + 4])[0],
+                        struct.unpack(self.endian_mark + "L",
+                                      self.exif_str[pointer + 4: pointer + 8]
+                                      )[0])
         elif val[0] == 7: # UNDEFINED BYTES
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
@@ -166,13 +180,18 @@ class ExifReader(object):
             length = val[1]
             if length > 1:
                 data = tuple(
-                    (struct.unpack(self.endian_mark + "l", self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
-                     struct.unpack(self.endian_mark + "l", self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
-                    for x in range(val[1])
+                  (struct.unpack(self.endian_mark + "l",
+                    self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
+                   struct.unpack(self.endian_mark + "l",
+                    self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
+                  for x in range(val[1])
                 )
             else:
-                data = (struct.unpack(self.endian_mark + "l", self.exif_str[pointer: pointer + 4])[0],
-                        struct.unpack(self.endian_mark + "l", self.exif_str[pointer + 4: pointer + 8])[0])
+                data = (struct.unpack(self.endian_mark + "l",
+                                      self.exif_str[pointer: pointer + 4])[0],
+                        struct.unpack(self.endian_mark + "l",
+                                      self.exif_str[pointer + 4: pointer + 8]
+                                      )[0])
 
         return data
 
@@ -214,7 +233,8 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
         gps_is = True
 
     zeroth_set = dict_to_bytes(zeroth_ifd, "Image", 0)
-    zeroth_length = len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 + len(zeroth_set[1])
+    zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 +
+                     4 + len(zeroth_set[1]))
 
     if exif_is:
         exif_set = dict_to_bytes(exif_ifd, "Photo", zeroth_length)
@@ -251,7 +271,8 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
         gps_pointer = key_str + type_str + length_str + pointer_str
     else:
         gps_pointer = b""
-    zeroth_bytes = zeroth_set[0] + exif_pointer + gps_pointer + b"\x00\x00\x00\x00" + zeroth_set[1]
+    zeroth_bytes = (zeroth_set[0] + exif_pointer + gps_pointer +
+                    b"\x00\x00\x00\x00" + zeroth_set[1])
 
     return header + zeroth_bytes + exif_bytes + gps_bytes
 
@@ -313,7 +334,8 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 for n, val in enumerate(raw_value):
                     num, den = val
                     new_value += struct.pack(">L", num) + struct.pack(">L", den)
-            offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+            offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                      entries_length + len(values))
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "SRational":
@@ -327,7 +349,8 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 for n, val in enumerate(raw_value):
                     num, den = val
                     new_value += struct.pack(">l", num) + struct.pack(">l", den)
-            offset = TIFF_HEADER_LENGTH + ifd_offset + entries_length + len(values)
+            offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                      entries_length + len(values))
             value_str = struct.pack(">I", offset)
             values += new_value
         elif value_type == "Undefined":
