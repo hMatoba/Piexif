@@ -24,10 +24,10 @@ How to Use
 
 ::
 
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
+    zeroth_ifd = {ZerothIFD.Make: "Canon",
+                  ZerothIFD.XResolution: (96, 1),
+                  ZerothIFD.YResolution: (96, 1),
+                  ZerothIFD.Software: "paint.net 4.0.3",
                   }
 
     exif_ifd = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10",
