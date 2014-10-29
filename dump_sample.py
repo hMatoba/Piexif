@@ -9,16 +9,16 @@ exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are opt
 To use dict as IFD data, it needs...
   A tag number means which property? - 256: ImageWidth, 272: Model...
   Appropriate type for property. - long for ImageWidth, str for Model...
-    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
-                  pyxif.ImageGroup.XResolution: (96, 1),
-                  pyxif.ImageGroup.YResolution: (96, 1),
-                  pyxif.ImageGroup.Software: "Photoshop x.x.x",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
+                  pyxif.ZerothIFD.XResolution: (96, 1),
+                  pyxif.ZerothIFD.YResolution: (96, 1),
+                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",
                   }
 
 Property name and tag number
-  For 0th IFD - under "pyxif.ImageGroup"
-  For Exif IFD - under "pyxif.PhotoGroup"
-  For GPS IFD - under "pyxif.GPSInfoGroup"
+  For 0th IFD - under "pyxif.ZerothIFD"
+  For Exif IFD - under "pyxif.ExifIFD"
+  For GPS IFD - under "pyxif.GPSIFD"
 
 Property and appropriate type
   See variable"TAGS" in this script.
@@ -40,19 +40,19 @@ from PIL import Image
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ImageGroup.Make: "fooooooooooooo",
-                  pyxif.ImageGroup.XResolution: (96, 1),
-                  pyxif.ImageGroup.YResolution: (96, 1),
-                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: "fooooooooooooo",
+                  pyxif.ZerothIFD.XResolution: (96, 1),
+                  pyxif.ZerothIFD.YResolution: (96, 1),
+                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
                   }
 
-    exif_ifd = {pyxif.PhotoGroup.ExifVersion: "0111",
-                pyxif.PhotoGroup.DateTimeOriginal: "1999:09:99 99:99:99",
-                pyxif.PhotoGroup.CameraOwnerName: "Mr. John Doe",
+    exif_ifd = {pyxif.ExifIFD.ExifVersion: "0111",
+                pyxif.ExifIFD.DateTimeOriginal: "1999:09:99 99:99:99",
+                pyxif.ExifIFD.CameraOwnerName: "Mr. John Doe",
                 }
 
-    gps_ifd = {pyxif.GPSInfoGroup.GPSDateStamp: "1999:99:99",
-               pyxif.GPSInfoGroup.GPSDifferential: 90,
+    gps_ifd = {pyxif.GPSIFD.GPSDateStamp: "1999:99:99",
+               pyxif.GPSIFD.GPSDifferential: 90,
                }
     exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd, exif_ifd=exif_ifd, gps_ifd=gps_ifd)
 

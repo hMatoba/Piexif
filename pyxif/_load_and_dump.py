@@ -9,16 +9,16 @@ exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are opt
 To use dict as IFD data, it needs...
   A tag number means which property? - 256: ImageWidth, 272: Model...
   Appropriate type for property. - long for ImageWidth, str for Model...
-    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
-                  pyxif.ImageGroup.XResolution: (96, 1),
-                  pyxif.ImageGroup.YResolution: (96, 1),
-                  pyxif.ImageGroup.Software: "Photoshop x.x.x",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
+                  pyxif.ZerothIFD.XResolution: (96, 1),
+                  pyxif.ZerothIFD.YResolution: (96, 1),
+                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",
                   }
 
 Property name and tag number
-  For 0th IFD - under "pyxif.ImageGroup"
-  For Exif IFD - under "pyxif.PhotoGroup"
-  For GPS IFD - under "pyxif.GPSInfoGroup"
+  For 0th IFD - under "pyxif.ZerothIFD"
+  For Exif IFD - under "pyxif.ExifIFD"
+  For GPS IFD - under "pyxif.GPSIFD"
 
 Property and appropriate type
   See variable"TAGS" in this script.
@@ -205,10 +205,10 @@ def load(input_data):
     if exifReader.exif_str is None:
         return {}, {}, {}
     zeroth_ifd, exif_ifd, gps_ifd = exifReader.get_exif_ifd()
-    zeroth_dict = {key: (TAGS["Image"][key]["name"], exifReader.get_info(zeroth_ifd[key]))
-                   for key in zeroth_ifd if key in TAGS["Image"]}
-    exif_dict = {key: (TAGS["Photo"][key]["name"], exifReader.get_info(exif_ifd[key]))
-                 for key in exif_ifd if key in TAGS["Photo"]}
+    zeroth_dict = {key: (TAGS["Zeroth"][key]["name"], exifReader.get_info(zeroth_ifd[key]))
+                   for key in zeroth_ifd if key in TAGS["Zeroth"]}
+    exif_dict = {key: (TAGS["Exif"][key]["name"], exifReader.get_info(exif_ifd[key]))
+                 for key in exif_ifd if key in TAGS["Exif"]}
     gps_dict = {key: (TAGS["GPSInfo"][key]["name"], exifReader.get_info(gps_ifd[key]))
                 for key in gps_ifd if key in TAGS["GPSInfo"]}
 
@@ -232,12 +232,12 @@ def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
         zeroth_ifd.update({34853: 1})
         gps_is = True
 
-    zeroth_set = dict_to_bytes(zeroth_ifd, "Image", 0)
+    zeroth_set = dict_to_bytes(zeroth_ifd, "Zeroth", 0)
     zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 +
                      4 + len(zeroth_set[1]))
 
     if exif_is:
-        exif_set = dict_to_bytes(exif_ifd, "Photo", zeroth_length)
+        exif_set = dict_to_bytes(exif_ifd, "Exif", zeroth_length)
         exif_bytes = b"".join(exif_set)
         exif_length = len(exif_bytes)
     else:
@@ -282,7 +282,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
     gps_ifd_is = False
     tag_count = len(ifd_dict)
     entry_header = struct.pack(">H", tag_count)
-    if group == "Image":
+    if group == "Zeroth":
         entries_length = 2 + tag_count * 12 + 4
     else:
         entries_length = 2 + tag_count * 12
