@@ -28,10 +28,10 @@ def load_sample(input_file):
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ImageGroup.Make: "foo",
-                  pyxif.ImageGroup.XResolution: (96, 1),
-                  pyxif.ImageGroup.YResolution: (96, 1),
-                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: "foo",
+                  pyxif.ZerothIFD.XResolution: (96, 1),
+                  pyxif.ZerothIFD.YResolution: (96, 1),
+                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
                   }
 
     exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
