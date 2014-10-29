@@ -15,7 +15,10 @@ setup(
     version = pyxif.VERSION,
     author = "hMatoba",
     author_email = "hiroaki.mtb@outlook.com",
-    description = description,
+    description = "To simplify exif manipulations with python. " +
+                  "Writing, reading, and more...Pyxif isn't a wrapper. " +
+                  "To everywhere with Python(function'thumbnail'depends on PIL or Pillow).",
+    long_description = description,
     license = "MIT",
     keywords = ["exif", "jpeg"],
     url = "https://github.com/hMatoba/Pyxif",
