@@ -24,24 +24,13 @@ How to Use
 
 ::
 
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
-                  }
-
-    exif_ifd = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10",
-                ExifIFD.LensMake: "LensMake",
-                ExifIFD.Sharpness: 65535,
-                ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1), ),
-                }
-
-    gps_ifd = {GPSIFD.GPSVersionID: 1,
-               GPSIFD.GPSDateStamp: "1999:99:99 99:99:99",
-               }
-
     # dump and insert
-    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    zeroth_ifd = {pyxif.ImageGroup.Make: "Canon",
+                  pyxif.ImageGroup.XResolution: (96, 1),
+                  pyxif.ImageGroup.YResolution: (96, 1),
+                  pyxif.ImageGroup.Software: "paint.net 4.0.3",
+                  }
+    exif_bytes = pyxif.dump(zeroth_ifd)
     pyxif.insert(exif_bytes, "in.jpg")
     # or
     from PIL import Image
