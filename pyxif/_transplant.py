@@ -32,12 +32,7 @@ def transplant(exif_src, image, new_file=""):
         output_file = True
     segments = split_into_segments(image_data)
     image_exif = get_exif(segments)
-
-    if image_exif:
-        new_data = image_data.replace(image_exif, exif)
-    else:
-        p = image_data.find(b"\xff\xdb")
-        new_data = image_data[0:p] + exif + image_data[p:]
+    new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):
         new_file.write(new_data)

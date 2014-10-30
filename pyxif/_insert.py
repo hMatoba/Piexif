@@ -7,14 +7,14 @@ import struct
 from ._common import *
 
 
-def insert(exif_bytes, image, new_file=""):
+def insert(exif, image, new_file=""):
     """Inserts exif bytes to JPEG file
-    insert(exif_bytes, image, new_file[optional])
+    insert(exif, image, new_file[optional])
     When "new_file" is not given, "image" file is overwritten.
     """
-    if exif_bytes[0:6] != b"\x45\x78\x69\x66\x00\x00":
+    if exif[0:6] != b"\x45\x78\x69\x66\x00\x00":
         raise ValueError("Given data is not exif data")
-    exif_bytes = b"\xff\xe1" + struct.pack(">H", len(exif_bytes) + 2) + exif_bytes
+    exif = b"\xff\xe1" + struct.pack(">H", len(exif) + 2) + exif
 
     output_file = False
     if image[0:2] == b"\xff\xd8":
@@ -27,12 +27,7 @@ def insert(exif_bytes, image, new_file=""):
         output_file = True
     segments = split_into_segments(image_data)
     image_exif = get_exif(segments)
-
-    if image_exif:
-        new_data = image_data.replace(image_exif, exif_bytes)
-    else:
-        p = image_data.find(b"\xff\xdb")
-        new_data = image_data[0:p] + exif_bytes + image_data[p:]
+    new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):
         new_file.write(new_data)
