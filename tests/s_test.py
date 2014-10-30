@@ -13,15 +13,18 @@ GPSIFD = pyxif.GPSIFD
 
 print("Pyxif version: {0}".format(pyxif.VERSION))
 
+
 INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
 INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
 INPUT_FILE_LE1 = os.path.join("tests", "images", "L01.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
 
+
 with open(INPUT_FILE1, "rb") as f:
     I1 = f.read()
 with open(INPUT_FILE2, "rb") as f:
     I2 = f.read()
+
 
 ZEROTH_DICT = {ZerothIFD.Software: "PIL", # ascii
                ZerothIFD.Make: "Make", # ascii
@@ -33,6 +36,7 @@ ZEROTH_DICT = {ZerothIFD.Software: "PIL", # ascii
                ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1), ),  # srational
                }
 
+
 EXIF_DICT = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
              ExifIFD.LensMake: "LensMake", # ascii
              ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa",  # undefined
@@ -43,11 +47,19 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
              ExifIFD.ExposureBiasValue: (2147483647, -2147483648), # srational
              }
 
+
 GPS_DICT = {GPSIFD.GPSVersionID: 255, # byte
             GPSIFD.GPSDateStamp: "1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
             GPSIFD.GPSLatitude: (4294967295, 1), # rational
             }
+
+
+def load_exif_by_PIL(f):
+    i = Image.open(f)
+    e = i._getexif()
+    i.close()
+    return e
 
 
 class ExifTests(unittest.TestCase):
@@ -58,51 +70,47 @@ class ExifTests(unittest.TestCase):
         self.assertDictEqual(g, {})
 
     def test_no_exif_dump(self):
-        s = pyxif.dump({}, {}, {})
+        o = io.BytesIO()
+        exif_bytes = pyxif.dump({}, {}, {})
+        i = Image.new("RGBA", (8, 8))
+        i.save(o, format="jpeg", exif=exif_bytes)
+        o.seek(0)
+        exif = load_exif_by_PIL(o)
+        self.assertDictEqual({},  exif)
 
     def test_transplant(self):
         pyxif.transplant(INPUT_FILE1, INPUT_FILE2, "transplant.jpg")
+        i = Image.open("transplant.jpg")
+        i.close()
         exif_src = pyxif.load(INPUT_FILE1)
         img_src = pyxif.load(INPUT_FILE2)
         generated = pyxif.load("transplant.jpg")
-
         self.assertEqual(exif_src, generated)
         self.assertNotEqual(img_src, generated)
-        i = Image.open("transplant.jpg")
-        i._getexif()
-        i.close()
 
         pyxif.transplant(INPUT_FILE1, "transplant.jpg")
+        self.assertEqual(pyxif.load(INPUT_FILE1), pyxif.load("transplant.jpg"))
 
         with  self.assertRaises(ValueError):
             pyxif.transplant(NOEXIF_FILE, INPUT_FILE2, "foo.jpg")
 
-
     def test_transplant2(self):
-        """To use on server.
-        Passes binary data to input,
-        and passes io.BytesIO instance to output
+        """'transplant' on GAE.
         """
         o = io.BytesIO()
         pyxif.transplant(I1, I2, o)
         self.assertEqual(pyxif.load(I1), pyxif.load(o.getvalue()))
-        i = Image.open(o)
-        i._getexif()
-        i.close()
+        i = Image.open(o).close()
 
     def test_remove(self):
         pyxif.remove(INPUT_FILE1, "remove.jpg")
         exif = pyxif.load("remove.jpg")[0]
         self.assertEqual(exif, {})
-        i = Image.open("remove.jpg")
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL("remove.jpg")
         pyxif.remove("remove.jpg")
 
     def test_remove2(self):
-        """To use on server.
-        Passes binary data to input,
-        and passes io.BytesIO instance to output
+        """'remove' on GAE.
         """
         o = io.BytesIO()
         with  self.assertRaises(ValueError):
@@ -110,23 +118,17 @@ class ExifTests(unittest.TestCase):
         pyxif.remove(I1, o)
         exif = pyxif.load(o.getvalue())
         self.assertEqual(exif, ({}, {}, {}))
-        i = Image.open(o)
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL(o)
 
     def test_thumbnail(self):
         e1 = pyxif.load(INPUT_FILE1)
         pyxif.thumbnail(INPUT_FILE1, "thumbnail.jpg", (50, 50))
         e2 = pyxif.load("thumbnail.jpg")
         self.assertEqual(e1, e2)
-        i = Image.open("thumbnail.jpg")
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL("thumbnail.jpg")
 
     def test_thumbnail2(self):
-        """To use on server.
-        Passes binary data to input,
-        and passes io.BytesIO instance to output
+        """'thumbnail' on GAE.
         """
         o = io.BytesIO()
         pyxif.thumbnail(I1, o, (50, 50))
@@ -134,16 +136,12 @@ class ExifTests(unittest.TestCase):
         e2 = pyxif.load(o.getvalue())[0]
         self.assertEqual(e1, e2)
         o.seek(0)
-        i = Image.open(o)
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL(o)
 
     def test_load(self):
         zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE1)
         exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
-        i = Image.open(INPUT_FILE1)
-        e = i._getexif()
-        i.close()
+        e = load_exif_by_PIL(INPUT_FILE1)
         for key in sorted(zeroth_dict):
             if key in e:
                 self.assertEqual(zeroth_dict[key][1], e[key])
@@ -155,8 +153,7 @@ class ExifTests(unittest.TestCase):
                 self.assertEqual(gps_dict[key][1], e[key])
 
     def test_load2(self):
-        """To use on server.
-        Passes binary data to input.
+        """'load' on GAE.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
         self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
@@ -171,16 +168,12 @@ class ExifTests(unittest.TestCase):
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        i = Image.open(o)
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL(o)
 
     def test_insert(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
         pyxif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
-        i = Image.open("insert.jpg")
-        i._getexif()
-        i.close()
+        exif = load_exif_by_PIL("insert.jpg")
 
         pyxif.insert(exif_bytes, NOEXIF_FILE, "insert.jpg")
 
@@ -190,25 +183,20 @@ class ExifTests(unittest.TestCase):
         pyxif.insert(exif_bytes, "insert.jpg")
 
     def test_insert2(self):
-        """To use on server.
-        Passes binary data to input.
+        """'insert' on GAE.
         """
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
         o = io.BytesIO()
         pyxif.insert(exif_bytes, I1, o)
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
-        i = Image.open(o)
-        e = i._getexif()
-        i.close()
+        exif = load_exif_by_PIL(o)
 
     def test_load_le(self):
         """load test of little endian exif
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_LE1)
         exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
-        i = Image.open(INPUT_FILE_LE1)
-        e = i._getexif()
-        i.close()
+        e = load_exif_by_PIL(INPUT_FILE_LE1)
         for key in sorted(zeroth_dict):
             if key in e:
                 self.assertEqual(zeroth_dict[key][1], e[key])
