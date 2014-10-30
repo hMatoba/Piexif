@@ -47,6 +47,8 @@ def merge_segments(segments, exif=b""):
         elif seg[0:2] == b"\xff\xe1":
             if exif:
                 o.write(exif)
+            elif exif is None:
+                pass
             else:
                 o.write(seg)
         else:
