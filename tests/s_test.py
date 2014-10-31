@@ -5,7 +5,7 @@ import unittest
 
 from PIL import Image
 import pyxif
-
+from pyxif import _common
 
 ZerothIFD = pyxif.ZerothIFD
 ExifIFD = pyxif.ExifIFD
@@ -18,6 +18,8 @@ INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
 INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
 INPUT_FILE_LE1 = os.path.join("tests", "images", "L01.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
+# JPEG without APP0 and APP1 segments
+NOAPP01_FILE = os.path.join("tests", "images", "noapp01.jpg")
 
 
 with open(INPUT_FILE1, "rb") as f:
@@ -63,6 +65,69 @@ def load_exif_by_PIL(f):
 
 
 class ExifTests(unittest.TestCase):
+    def test_merge_segments(self):
+        # Remove APP0, when both APP0 and APP1 exists.
+        with open(INPUT_FILE1, "rb") as f:
+            original = f.read()
+        segments = _common.split_into_segments(original)
+        new_data = _common.merge_segments(segments)
+        segments = _common.split_into_segments(new_data)
+        self.assertFalse([1][0:2] == b"\xff\xe0"
+                        and segments[2][0:2] == b"\xff\xe1")
+        self.assertEqual(segments[1][0:2], b"\xff\xe1")
+        o = io.BytesIO(new_data)
+        without_app0 = o.getvalue()
+        Image.open(o).close()
+
+        exif = _common.get_exif(segments)
+
+        # Remove APP1, when second 'merged_segments' arguments is None
+        # and no APP0.
+        segments = _common.split_into_segments(without_app0)
+        new_data = _common.merge_segments(segments, None)
+        segments = _common.split_into_segments(new_data)
+        self.assertNotEqual(segments[1][0:2], b"\xff\xe0")
+        self.assertNotEqual(segments[1][0:2], b"\xff\xe1")
+        self.assertNotEqual(segments[2][0:2], b"\xff\xe1")
+        o = io.BytesIO(new_data)
+        Image.open(o).close()
+
+        # Insert exif, when jpeg data are merged.
+        o = io.BytesIO()
+        i = Image.new("RGBA", (8, 8))
+        i.save(o, format="jpeg", exif=exif)
+        o.seek(0)
+        segments = _common.split_into_segments(o.getvalue())
+        new_data = _common.merge_segments(segments, exif)
+        segments = _common.split_into_segments(new_data)
+        self.assertFalse(segments[1][0:2] == b"\xff\xe0"
+                         and segments[2][0:2] == b"\xff\xe1")
+        self.assertEqual(segments[1], exif)
+        o = io.BytesIO(new_data)
+        Image.open(o).close()
+
+        # Insert exif to jpeg without APP0 and APP1.
+        with open(NOAPP01_FILE, "rb") as f:
+            original = f.read()
+        segments = _common.split_into_segments(original)
+        new_data = _common.merge_segments(segments, exif)
+        segments = _common.split_into_segments(new_data)
+        self.assertEqual(segments[1][0:2], b"\xff\xe1")
+        o = io.BytesIO(new_data)
+        Image.open(o).close()
+
+        # Remove APP1, when second 'merged_segments' arguments is None
+        # and APP1 exists.
+        with open(INPUT_FILE1, "rb") as f:
+            original = f.read()
+        segments = _common.split_into_segments(original)
+        new_data = _common.merge_segments(segments, None)
+        segments = _common.split_into_segments(new_data)
+        self.assertNotEqual(segments[1][0:2], b"\xff\xe1")
+        self.assertNotEqual(segments[2][0:2], b"\xff\xe1")
+        o = io.BytesIO(new_data)
+        Image.open(o).close()
+
     def test_no_exif_load(self):
         z, e, g = pyxif.load(NOEXIF_FILE)
         self.assertDictEqual(z, {})

@@ -37,21 +37,25 @@ def get_exif(segments):
 
 
 def merge_segments(segments, exif=b""):
-    o = io.BytesIO()
-    for seg in segments:
-        if seg[0:2] == b"\xff\xe0":
-            if exif:
-                pass
-            else:
-                o.write(seg)
-        elif seg[0:2] == b"\xff\xe1":
-            if exif:
-                o.write(exif)
-            elif exif is None:
-                pass
-            else:
-                o.write(seg)
+    """Merges Exif with APP0 and APP1 manipulations.
+    """
+    if segments[1][0:2] == b"\xff\xe0" and segments[2][0:2] == b"\xff\xe1":
+        if exif:
+            segments[2] = exif
+            segments.pop(1)
+        elif exif is None:
+            segments.pop(2)
         else:
-            o.write(seg)
-    o.seek(0)
-    return o.getvalue()
+            segments.pop(1)
+    elif segments[1][0:2] == b"\xff\xe0":
+        if exif:
+            segments[1] = exif
+    elif segments[1][0:2] == b"\xff\xe1":
+        if exif:
+            segments[1] = exif
+        elif exif is None:
+            segments.pop(1)
+    else:
+        if exif:
+            segments.insert(1, exif)
+    return b"".join(segments)
