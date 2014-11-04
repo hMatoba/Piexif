@@ -92,7 +92,7 @@ class ExifTests(unittest.TestCase):
         o = io.BytesIO(new_data)
         Image.open(o).close()
 
-        # Insert exif, when jpeg data are merged.
+        # Insert exif to jpeg that has APP0 and APP1.
         o = io.BytesIO()
         i = Image.new("RGBA", (8, 8))
         i.save(o, format="jpeg", exif=exif)
@@ -106,7 +106,7 @@ class ExifTests(unittest.TestCase):
         o = io.BytesIO(new_data)
         Image.open(o).close()
 
-        # Insert exif to jpeg without APP0 and APP1.
+        # Insert exif to jpeg that doesn't have APP0 and APP1.
         with open(NOAPP01_FILE, "rb") as f:
             original = f.read()
         segments = _common.split_into_segments(original)
