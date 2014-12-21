@@ -1,3 +1,4 @@
+import copy
 import io
 import os
 import sys
@@ -28,9 +29,9 @@ with open(INPUT_FILE2, "rb") as f:
     I2 = f.read()
 
 
-ZEROTH_DICT = {ZerothIFD.Software: "PIL", # ascii
-               ZerothIFD.Make: "Make", # ascii
-               ZerothIFD.Model: "XXX-XXX", # ascii
+ZEROTH_DICT = {ZerothIFD.Software: u"PIL", # ascii
+               ZerothIFD.Make: u"Make", # ascii
+               ZerothIFD.Model: u"XXX-XXX", # ascii
                ZerothIFD.JPEGTables: b"\xaa\xaa",  # undefined
                ZerothIFD.ResolutionUnit: 65535, # short
                ZerothIFD.JPEGInterchangeFormatLength: 4294967295, # long
@@ -39,8 +40,8 @@ ZEROTH_DICT = {ZerothIFD.Software: "PIL", # ascii
                }
 
 
-EXIF_DICT = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
-             ExifIFD.LensMake: "LensMake", # ascii
+EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
+             ExifIFD.LensMake: u"LensMake", # ascii
              ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa",  # undefined
              ExifIFD.Sharpness: 65535, # short
              ExifIFD.ISOSpeed: 4294967295, # long
@@ -51,7 +52,7 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10", # ascii
 
 
 GPS_DICT = {GPSIFD.GPSVersionID: 255, # byte
-            GPSIFD.GPSDateStamp: "1999:99:99 99:99:99", # ascii
+            GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
             GPSIFD.GPSLatitude: (4294967295, 1), # rational
             }
@@ -209,21 +210,21 @@ class ExifTests(unittest.TestCase):
         e = load_exif_by_PIL(INPUT_FILE1)
         for key in sorted(zeroth_dict):
             if key in e:
-                self.assertEqual(zeroth_dict[key][1], e[key])
+                self.assertEqual(zeroth_dict[key], e[key])
         for key in sorted(exif_dict):
             if key in e:
-                self.assertEqual(exif_dict[key][1], e[key])
+                self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in e:
-                self.assertEqual(gps_dict[key][1], e[key])
+                self.assertEqual(gps_dict[key], e[key])
 
     def test_load2(self):
         """'load' on GAE.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
-        self.assertEqual(zeroth_dict[272][1], "QV-R51 ")
-        self.assertEqual(zeroth_dict[296][1], 2)
-        self.assertEqual(zeroth_dict[282][1], (72, 1))
+        self.assertEqual(zeroth_dict[272], "QV-R51 ")
+        self.assertEqual(zeroth_dict[296], 2)
+        self.assertEqual(zeroth_dict[282], (72, 1))
 
     def test_dump(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
@@ -264,13 +265,13 @@ class ExifTests(unittest.TestCase):
         e = load_exif_by_PIL(INPUT_FILE_LE1)
         for key in sorted(zeroth_dict):
             if key in e:
-                self.assertEqual(zeroth_dict[key][1], e[key])
+                self.assertEqual(zeroth_dict[key], e[key])
         for key in sorted(exif_dict):
             if key in e:
-                self.assertEqual(exif_dict[key][1], e[key])
+                self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in e:
-                self.assertEqual(gps_dict[key][1], e[key])
+                self.assertEqual(gps_dict[key], e[key])
 
     def test_dump_and_load(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
@@ -280,7 +281,12 @@ class ExifTests(unittest.TestCase):
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        pyxif.load(o.getvalue())
+        zeroth_ifd, exif_ifd, gps_ifd = pyxif.load(o.getvalue())
+        zeroth_ifd.pop(ZerothIFD.ExifTag) # pointer to exif IFD
+        zeroth_ifd.pop(ZerothIFD.GPSTag) # pointer to GPS IFD
+        self.assertDictEqual(ZEROTH_DICT, zeroth_ifd)
+        self.assertDictEqual(EXIF_DICT, exif_ifd)
+        self.assertDictEqual(GPS_DICT, gps_ifd)
 
 
 def suite():

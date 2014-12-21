@@ -33,6 +33,7 @@ Property and appropriate type
 "SRational": (long, long)
 """
 
+import copy
 import io
 import struct
 import sys
@@ -205,23 +206,24 @@ def load(input_data):
     if exifReader.exif_str is None:
         return {}, {}, {}
     zeroth_ifd, exif_ifd, gps_ifd = exifReader.get_exif_ifd()
-    zeroth_dict = {key: (TAGS["Zeroth"][key]["name"], exifReader.get_info(zeroth_ifd[key]))
+    zeroth_dict = {key: exifReader.get_info(zeroth_ifd[key])
                    for key in zeroth_ifd if key in TAGS["Zeroth"]}
-    exif_dict = {key: (TAGS["Exif"][key]["name"], exifReader.get_info(exif_ifd[key]))
+    exif_dict = {key: exifReader.get_info(exif_ifd[key])
                  for key in exif_ifd if key in TAGS["Exif"]}
-    gps_dict = {key: (TAGS["GPSInfo"][key]["name"], exifReader.get_info(gps_ifd[key]))
+    gps_dict = {key: exifReader.get_info(gps_ifd[key])
                 for key in gps_ifd if key in TAGS["GPSInfo"]}
 
     return zeroth_dict, exif_dict, gps_dict
 
 
-def dump(zeroth_ifd, exif_ifd={}, gps_ifd={}):
+def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
     """converts dict to exif bytes
     exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd[optional], gps_ifd[optional])
     zeroth_ifd - dict of 0th IFD
     exif_ifd - dict of Exif IFD
     gps_ifd - dict of GPS IFD
     """
+    zeroth_ifd = copy.deepcopy(zeroth_ifd_original)
     header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
     exif_is = False
     gps_is = False
