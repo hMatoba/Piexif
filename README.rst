@@ -3,8 +3,8 @@ Pyxif
 
 |Build Status| |Coverage Status|
 
-To simplify exif manipulations with python. Writing, reading, and more...
-|Pyxif isn't a wrapper. To everywhere with Python.
+| To simplify exif manipulations with python. Writing, reading, and more...
+| Pyxif isn't a wrapper. To everywhere with Python.
 
 Functions
 ---------
@@ -78,12 +78,12 @@ on GoogleAppEngine
     pyxif.transplant(jpg_data1, jpg_data2, output)
 
 Tag Name and Value Type
----------
+-----------------------
 
-Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or...
-See the document of Exif.
-|http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
-|Some examples are shown below.
+| Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or...
+| See the document of Exif.
+| http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
+| Some examples are shown below.
 
 ::
 
