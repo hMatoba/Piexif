@@ -161,7 +161,7 @@ class ExifTests(unittest.TestCase):
             pyxif.transplant(NOEXIF_FILE, INPUT_FILE2, "foo.jpg")
 
     def test_transplant2(self):
-        """'transplant' on GAE.
+        """'transplant' on memory.
         """
         o = io.BytesIO()
         pyxif.transplant(I1, I2, o)
@@ -176,7 +176,7 @@ class ExifTests(unittest.TestCase):
         pyxif.remove("remove.jpg")
 
     def test_remove2(self):
-        """'remove' on GAE.
+        """'remove' on memory.
         """
         o = io.BytesIO()
         with  self.assertRaises(ValueError):
@@ -184,24 +184,6 @@ class ExifTests(unittest.TestCase):
         pyxif.remove(I1, o)
         exif = pyxif.load(o.getvalue())
         self.assertEqual(exif, ({}, {}, {}))
-        exif = load_exif_by_PIL(o)
-
-    def test_thumbnail(self):
-        e1 = pyxif.load(INPUT_FILE1)
-        pyxif.thumbnail(INPUT_FILE1, "thumbnail.jpg", (50, 50))
-        e2 = pyxif.load("thumbnail.jpg")
-        self.assertEqual(e1, e2)
-        exif = load_exif_by_PIL("thumbnail.jpg")
-
-    def test_thumbnail2(self):
-        """'thumbnail' on GAE.
-        """
-        o = io.BytesIO()
-        pyxif.thumbnail(I1, o, (50, 50))
-        e1 = pyxif.load(I1)[0]
-        e2 = pyxif.load(o.getvalue())[0]
-        self.assertEqual(e1, e2)
-        o.seek(0)
         exif = load_exif_by_PIL(o)
 
     def test_load(self):
@@ -219,7 +201,7 @@ class ExifTests(unittest.TestCase):
                 self.assertEqual(gps_dict[key], e[key])
 
     def test_load2(self):
-        """'load' on GAE.
+        """'load' on memory.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
         self.assertEqual(zeroth_dict[272], "QV-R51 ")
@@ -249,7 +231,7 @@ class ExifTests(unittest.TestCase):
         pyxif.insert(exif_bytes, "insert.jpg")
 
     def test_insert2(self):
-        """'insert' on GAE.
+        """'insert' on memory.
         """
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
         o = io.BytesIO()
