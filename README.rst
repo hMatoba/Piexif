@@ -77,6 +77,24 @@ on GoogleAppEngine
     # transplant
     pyxif.transplant(jpg_data1, jpg_data2, output)
 
+Tag Name and Value Type
+---------
+
+Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or...
+See the document of Exif.
+http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
+Some examples are shown below.
+
+::
+
+    BYTE: {GPSIFD.GPSVersionID: 255}
+    ASCII: {ZerothIFD.Make: u"Make"}
+    SHORT: {ZerothIFD.ResolutionUnit: 65535}
+    LONG: {ZerothIFD.JPEGInterchangeFormatLength: 4294967295}
+    RATIONAL: {ZerothIFD.XResolution: (4294967295, 1)}
+    UNDEFINED: {ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa"}
+    SRATIONAL: {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1), )}
+
 Depends on
 ----------
 
