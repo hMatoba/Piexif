@@ -45,12 +45,6 @@ def remove_sample():
                  "remove_sample.jpg")
 
 
-def thumbnail_sample():
-    pyxif.thumbnail(os.path.join("tests", "images", "01.jpg"),
-                    "thumbnail_sample.jpg",
-                    (80, 80))
-
-
 def transplant_sample():
     pyxif.transplant(os.path.join("tests", "images", "01.jpg"),
                      os.path.join("tests", "images", "02.jpg"),
@@ -72,6 +66,5 @@ if __name__ == "__main__":
     load_sample(os.path.join("tests", "images", "01.jpg"))
     dump_sample(os.path.join("tests", "images", "01.jpg"), "dump_sample.jpg")
     remove_sample()
-    thumbnail_sample()
     transplant_sample()
     insert_sample()
