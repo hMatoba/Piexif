@@ -19,7 +19,7 @@ def transplant(exif_src, image, new_file=""):
         with open(exif_src, 'rb') as f:
             src_data = f.read()
     segments = split_into_segments(src_data)
-    exif = get_exif(segments)
+    exif = get_app1(segments)
     if exif is None:
         raise ValueError("not found exif in input")
 
@@ -31,7 +31,7 @@ def transplant(exif_src, image, new_file=""):
             image_data = f.read()
         output_file = True
     segments = split_into_segments(image_data)
-    image_exif = get_exif(segments)
+    image_exif = get_app1(segments)
     new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):

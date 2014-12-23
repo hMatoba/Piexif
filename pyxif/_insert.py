@@ -26,7 +26,7 @@ def insert(exif, image, new_file=""):
             raise ValueError
         output_file = True
     segments = split_into_segments(image_data)
-    image_exif = get_exif(segments)
+    image_exif = get_app1(segments)
     new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):

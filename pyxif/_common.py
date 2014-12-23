@@ -27,7 +27,7 @@ def split_into_segments(data):
     return segments
 
 
-def get_exif(segments):
+def get_app1(segments):
     """Returns Exif from JPEG meta data list
     """
     for seg in segments:

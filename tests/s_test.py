@@ -21,6 +21,7 @@ INPUT_FILE_LE1 = os.path.join("tests", "images", "L01.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
 # JPEG without APP0 and APP1 segments
 NOAPP01_FILE = os.path.join("tests", "images", "noapp01.jpg")
+INPUT_FILE_TIF = os.path.join("tests", "images", "01.tif")
 
 
 with open(INPUT_FILE1, "rb") as f:
@@ -80,7 +81,7 @@ class ExifTests(unittest.TestCase):
         without_app0 = o.getvalue()
         Image.open(o).close()
 
-        exif = _common.get_exif(segments)
+        exif = _common.get_app1(segments)
 
         # Remove APP1, when second 'merged_segments' arguments is None
         # and no APP0.
@@ -269,6 +270,15 @@ class ExifTests(unittest.TestCase):
         self.assertDictEqual(ZEROTH_DICT, zeroth_ifd)
         self.assertDictEqual(EXIF_DICT, exif_ifd)
         self.assertDictEqual(GPS_DICT, gps_ifd)
+
+    def test_load_tif(self):
+        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_TIF)
+        for key in sorted(zeroth_dict):
+            print(zeroth_dict[key])
+        for key in sorted(exif_dict):
+            print(exif_dict[key])
+        for key in sorted(gps_dict):
+            print(gps_dict[key])
 
 
 def suite():

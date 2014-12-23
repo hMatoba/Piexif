@@ -22,7 +22,7 @@ def remove(src, new_file=""):
             src_data = f.read()
         output_is_file = True
     segments = split_into_segments(src_data)
-    exif = get_exif(segments)
+    exif = get_app1(segments)
 
     if exif:
         new_data = src_data.replace(exif, b"")

@@ -70,24 +70,33 @@ TIFF_HEADER_LENGTH = 8
 
 class ExifReader(object):
     def __init__(self, data):
-        if data[0:2] == b"\xff\xd8":
+        if data[0:2] in (b"\xff\xd8", b"\x49\x49", b"\x4d4d"):
             pass
         else:
             with open(data, 'rb') as f:
                 data = f.read()
 
-        segments = split_into_segments(data)
-        exif = get_exif(segments)
+        endian = None
+        if data[0:2] == b"\xff\xd8":
+            segments = split_into_segments(data)
+            app1 = get_app1(segments)
 
-        if exif:
-            self.exif_str = exif[10:]
-            endian = self.exif_str[0:2]
-            if endian  == LITTLE_ENDIAN:
+            if app1:
+                self.exif_str = app1[10:]
+                endian = app1[10:12]
+            else:
+                self.exif_str = None
+        elif data[0:2] in (b"\x49\x49", b"\x4d4d"):
+            self.exif_str = data
+            endian = data[0:2]
+        else:
+            raise ValueError("Couldn't detect exif.")
+
+        if endian:
+            if endian == LITTLE_ENDIAN:
                 self.endian_mark = "<"
             else:
                 self.endian_mark = ">"
-        else:
-            self.exif_str = None
 
     def get_exif_ifd(self):
         exif_dict = {}
