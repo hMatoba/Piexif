@@ -72,9 +72,11 @@ class ExifReader(object):
     def __init__(self, data):
         if data[0:2] in (b"\xff\xd8", b"\x49\x49", b"\x4d4d"):
             pass
-        else:
+        elif data[-4:].lower().encode() in (b".jpg", b"jpeg", b".jpe", b".tif", b"tiff"):
             with open(data, 'rb') as f:
                 data = f.read()
+        else:
+            raise ValueError("Given file is neither JPEG nor TIFF.")
 
         if data[0:2] == b"\xff\xd8":
             segments = split_into_segments(data)
