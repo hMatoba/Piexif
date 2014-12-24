@@ -76,32 +76,29 @@ class ExifReader(object):
             with open(data, 'rb') as f:
                 data = f.read()
 
-        endian = None
         if data[0:2] == b"\xff\xd8":
             segments = split_into_segments(data)
             app1 = get_app1(segments)
 
             if app1:
                 self.exif_str = app1[10:]
-                endian = app1[10:12]
             else:
                 self.exif_str = None
         elif data[0:2] in (b"\x49\x49", b"\x4d4d"):
             self.exif_str = data
-            endian = data[0:2]
         else:
-            raise ValueError("Couldn't detect exif.")
-
-        if endian:
-            if endian == LITTLE_ENDIAN:
-                self.endian_mark = "<"
-            else:
-                self.endian_mark = ">"
+            raise ValueError("Given file is neither JPEG nor TIFF.")
 
     def get_exif_ifd(self):
+        if self.exif_str is None:
+            raise ValueError("exif_str is empty.")
         exif_dict = {}
         gps_dict = {}
 
+        if self.exif_str[0:2] == LITTLE_ENDIAN:
+            self.endian_mark = "<"
+        else:
+            self.endian_mark = ">"
         pointer = struct.unpack(self.endian_mark + "L", self.exif_str[4:8])[0]
         zeroth_dict = self.get_ifd_dict(pointer)
 
