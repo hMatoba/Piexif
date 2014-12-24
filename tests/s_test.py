@@ -272,13 +272,18 @@ class ExifTests(unittest.TestCase):
         self.assertDictEqual(GPS_DICT, gps_ifd)
 
     def test_load_tif(self):
-        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_TIF)
-        for key in sorted(zeroth_dict):
-            print(zeroth_dict[key])
-        for key in sorted(exif_dict):
-            print(exif_dict[key])
-        for key in sorted(gps_dict):
-            print(gps_dict[key])
+        zeroth_ifd, exif_ifd, gps_ifd = pyxif.load(INPUT_FILE_TIF)
+        exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+
+        im = Image.new("RGBA", (8, 8))
+        o = io.BytesIO()
+        im.save(o, format="jpeg", exif=exif_bytes)
+        im.close()
+        o.seek(0)
+        zeroth_ifd2, exif_ifd2, gps_ifd2 = pyxif.load(o.getvalue())
+        self.assertDictEqual(zeroth_ifd, zeroth_ifd2)
+        self.assertDictEqual(exif_ifd, exif_ifd2)
+        self.assertDictEqual(gps_ifd, gps_ifd2)
 
 
 def suite():
