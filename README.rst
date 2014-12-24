@@ -11,9 +11,9 @@ Functions
 
 ::
 
+    load - get exif as dict from file(JPEG and TIFF)
     dump - converts dict to exif bytes
     insert - inserts exif bytes to JPEG
-    load - get exif as dict from file
     remove - removes exif from JPEG
     transplant - transplants exif to another JPEG
 
