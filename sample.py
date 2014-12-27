@@ -14,15 +14,15 @@ def load_sample(input_file):
 
     print("\nEXIF IFD: {0}".format(len(exif_dict)))
     for key in sorted(exif_dict):
-        if isinstance(exif_dict[key][1], (str, bytes)) and len(exif_dict[key][1]) > 30:
-            print(key, exif_dict[key][0], exif_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
+        if isinstance(exif_dict[key], (str, bytes)) and len(exif_dict[key]) > 30:
+            print(key, exif_dict[key][:10] + b"...", len(exif_dict[key]))
         else:
             print(key, exif_dict[key])
 
     print("\nGPS IFD: {0}".format(len(gps_dict)))
     for key in sorted(gps_dict):
-        if isinstance(gps_dict[key][1], (str, bytes)) and len(gps_dict[key][1]) > 30:
-            print(key, gps_dict[key][0][:10], gps_dict[key][1][:10] + b"...", len(exif_dict[key][1]))
+        if isinstance(gps_dict[key], (str, bytes)) and len(gps_dict[key]) > 30:
+            print(key, gps_dict[key][:10] + b"...", len(exif_dict[key]))
         else:
             print(key, gps_dict[key])
 
@@ -34,7 +34,7 @@ def dump_sample(input_file, output_file):
                   pyxif.ZerothIFD.Software: "paint.net 4.0.3",
                   }
 
-    exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd)
+    exif_bytes = pyxif.dump(zeroth_ifd)
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save(output_file, exif=exif_bytes)

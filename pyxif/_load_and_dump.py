@@ -201,6 +201,9 @@ class ExifReader(object):
                         struct.unpack(self.endian_mark + "l",
                                       self.exif_str[pointer + 4: pointer + 8]
                                       )[0])
+        else:
+            raise ValueError("Exif might be wrong. Got incorrect value " +
+                             "type to decode.")
 
         return data
 
