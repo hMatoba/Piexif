@@ -142,10 +142,7 @@ class ExifReader(object):
     def get_info(self, val):
         data = None
         if val[0] == 1: # BYTE
-            if not isinstance(val[2][0], int):
-                data = int(val[2][0].encode("hex"), 16)
-            else:
-                data = val[2][0]
+            data = int(val[2][0:1].encode("hex"), 16)
         elif val[0] == 2: # ASCII
             if val[1] > 4:
                 pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
