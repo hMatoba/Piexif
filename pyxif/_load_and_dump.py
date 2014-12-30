@@ -133,11 +133,14 @@ class ExifReader(object):
             value = self.exif_str[pointer+8: pointer+12]
 ##            print(tag_code, [value_type, value_num, value])
             ifd_dict.update({tag_code:[value_type, value_num, value]})
+
+            # debug
+##            if (value_type in (1, 3, 4, 9)) and (value_num > 1):
+##                print(tag_code, value_type, value_num)
         return ifd_dict
 
     def get_info(self, val):
         data = None
-
         if val[0] == 1: # BYTE
             if not isinstance(val[2][0], int):
                 data = int(val[2][0].encode("hex"), 16)
