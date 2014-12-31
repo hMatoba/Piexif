@@ -87,7 +87,7 @@ Tag Name and Value Type
 
 ::
 
-    BYTE: {GPSIFD.GPSVersionID: 255}
+    BYTE: {GPSIFD.GPSVersionID: b"\xff"}
     ASCII: {ZerothIFD.Make: u"Make"}
     SHORT: {ZerothIFD.ResolutionUnit: 65535}
     LONG: {ZerothIFD.JPEGInterchangeFormatLength: 4294967295}
