@@ -33,11 +33,11 @@ with open(INPUT_FILE2, "rb") as f:
 ZEROTH_DICT = {ZerothIFD.Software: u"PIL", # ascii
                ZerothIFD.Make: u"Make", # ascii
                ZerothIFD.Model: u"XXX-XXX", # ascii
-               ZerothIFD.JPEGTables: b"\xaa\xaa",  # undefined
                ZerothIFD.ResolutionUnit: 65535, # short
+               ZerothIFD.BitsPerSample: (24, 24, 24), # short * 3
                ZerothIFD.JPEGInterchangeFormatLength: 4294967295, # long
                ZerothIFD.XResolution: (4294967295, 1), # rational
-               ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1), ),  # srational
+               ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1),),  # srational
                }
 
 
@@ -47,12 +47,12 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
              ExifIFD.Sharpness: 65535, # short
              ExifIFD.ISOSpeed: 4294967295, # long
              ExifIFD.ExposureTime: (4294967295, 1), # rational
-             ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1), ),
+             ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1),),
              ExifIFD.ExposureBiasValue: (2147483647, -2147483648), # srational
              }
 
 
-GPS_DICT = {GPSIFD.GPSVersionID: 255, # byte
+GPS_DICT = {GPSIFD.GPSVersionID: b"\xff\x00\xff\x00", # byte
             GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
             GPSIFD.GPSLatitude: (4294967295, 1), # rational
@@ -205,9 +205,17 @@ class ExifTests(unittest.TestCase):
         """'load' on memory.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
-        self.assertEqual(zeroth_dict[272], "QV-R51 ")
-        self.assertEqual(zeroth_dict[296], 2)
-        self.assertEqual(zeroth_dict[282], (72, 1))
+        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        e = load_exif_by_PIL(INPUT_FILE1)
+        for key in sorted(zeroth_dict):
+            if key in e:
+                self.assertEqual(zeroth_dict[key], e[key])
+        for key in sorted(exif_dict):
+            if key in e:
+                self.assertEqual(exif_dict[key], e[key])
+        for key in sorted(gps_dict):
+            if key in e:
+                self.assertEqual(gps_dict[key], e[key])
 
     def test_dump(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)

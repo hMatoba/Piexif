@@ -61,18 +61,22 @@ TYPES = {
 
 POINTERS = (34665, 34853)
 
-
 LITTLE_ENDIAN = b"\x49\x49"
-
 
 TIFF_HEADER_LENGTH = 8
 
+BYTE_LENGTH = 1
+SHORT_LENGTH = 2
+LONG_LENGTH = 4
+
 
 class ExifReader(object):
+    EXT = (b".jpg", b"jpeg", b".jpe", b".tif", b"tiff")
+
     def __init__(self, data):
         if data[0:2] in (b"\xff\xd8", b"\x49\x49", b"\x4d4d"):
             pass
-        elif data[-4:].lower().encode() in (b".jpg", b"jpeg", b".jpe", b".tif", b"tiff"):
+        elif data[-4:].lower().encode() in self.EXT:
             with open(data, 'rb') as f:
                 data = f.read()
         else:
@@ -131,35 +135,54 @@ class ExifReader(object):
                                       self.exif_str[pointer + 4: pointer + 8]
                                       )[0]
             value = self.exif_str[pointer+8: pointer+12]
-##            print(tag_code, [value_type, value_num, value])
+#            print(tag_code, [value_type, value_num, value])
             ifd_dict.update({tag_code:[value_type, value_num, value]})
 
             # debug
-##            if (value_type in (1, 3, 4, 9)) and (value_num > 1):
-##                print(tag_code, value_type, value_num)
+#            if (value_type in (1, 3, 4, 9)) and (value_num > 1):
+#                print(tag_code, value_type, value_num)
         return ifd_dict
 
     def get_info(self, val):
         data = None
-        if val[0] == 1: # BYTE
-            data = struct.unpack("B", val[2][0:1])[0]
-        elif val[0] == 2: # ASCII
-            if val[1] > 4:
-                pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-                data = self.exif_str[pointer: pointer+val[1] - 1]
+        t = val[0]
+        length = val[1]
+        value = val[2]
+
+        if t == 1: # BYTE
+            if length > 4:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = self.exif_str[pointer: pointer+length]
             else:
-                data = val[2][0: val[1] - 1]
+                data = value
+        elif t == 2: # ASCII
+            if length > 4:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = self.exif_str[pointer: pointer+length - 1]
+            else:
+                data = value[0: length - 1]
             try:
                 data = data.decode()
             except:
                 pass
-        elif val[0] == 3: # SHORT
-            data = struct.unpack(self.endian_mark + "H", val[2][0:2])[0]
-        elif val[0] == 4: # LONG
-            data = struct.unpack(self.endian_mark + "L", val[2])[0]
-        elif val[0] == 5: # RATIONAL
-            pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-            length = val[1]
+        elif t == 3: # SHORT
+            if length > 2:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "H" * length,
+                                     self.exif_str[pointer: pointer+length*2])
+            else:
+                data = struct.unpack(self.endian_mark + "H" * length,
+                                     value[0:length * 2])
+        elif t == 4: # LONG
+            if length > 1:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "L" * length,
+                                     self.exif_str[pointer: pointer+length*4])
+            else:
+                data = struct.unpack(self.endian_mark + "L" * length,
+                                     value)
+        elif t == 5: # RATIONAL
+            pointer = struct.unpack(self.endian_mark + "L", value)[0]
             if length > 1:
                 data = tuple(
                     (struct.unpack(self.endian_mark + "L",
@@ -168,7 +191,7 @@ class ExifReader(object):
                      struct.unpack(self.endian_mark + "L",
                                    self.exif_str[pointer + 4 + x * 8:
                                        pointer + 8 + x * 8])[0])
-                    for x in range(val[1])
+                    for x in range(length)
                 )
             else:
                 data = (struct.unpack(self.endian_mark + "L",
@@ -176,24 +199,29 @@ class ExifReader(object):
                         struct.unpack(self.endian_mark + "L",
                                       self.exif_str[pointer + 4: pointer + 8]
                                       )[0])
-        elif val[0] == 7: # UNDEFINED BYTES
-            if val[1] > 4:
-                pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-                data = self.exif_str[pointer: pointer+val[1]]
+        elif t == 7: # UNDEFINED BYTES
+            if length > 4:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = self.exif_str[pointer: pointer+length]
             else:
-                data = val[2][0: val[1]]
-        elif val[0] == 9: # SLONG
-            data = struct.unpack(self.endian_mark + "l", val[2])[0]
-        elif val[0] == 10: # SRATIONAL
-            pointer = struct.unpack(self.endian_mark + "L", val[2])[0]
-            length = val[1]
+                data = value[0:length]
+        elif t == 9: # SLONG
+            if length > 1:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "l" * length,
+                                     self.exif_str[pointer: pointer+length*4])
+            else:
+                data = struct.unpack(self.endian_mark + "l" * length,
+                                     value)
+        elif t == 10: # SRATIONAL
+            pointer = struct.unpack(self.endian_mark + "L", value)[0]
             if length > 1:
                 data = tuple(
                   (struct.unpack(self.endian_mark + "l",
                     self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
                    struct.unpack(self.endian_mark + "l",
                     self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
-                  for x in range(val[1])
+                  for x in range(length)
                 )
             else:
                 data = (struct.unpack(self.endian_mark + "l",
@@ -205,7 +233,10 @@ class ExifReader(object):
             raise ValueError("Exif might be wrong. Got incorrect value " +
                              "type to decode.")
 
-        return data
+        if isinstance(data, tuple) and (len(data) == 1):
+            return data[0]
+        else:
+            return data
 
 
 def load(input_data):
@@ -290,6 +321,18 @@ def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
     return header + zeroth_bytes + exif_bytes + gps_bytes
 
 
+def pack_short(*args):
+    return struct.pack(">" + "H" * len(args), *args)
+
+
+def pack_long(*args):
+    return struct.pack(">" + "L" * len(args), *args)
+
+
+def pack_slong(*args):
+    return struct.pack(">" + "l" * len(args), *args)
+
+
 def dict_to_bytes(ifd_dict, group, ifd_offset):
     exif_ifd_is = False
     gps_ifd_is = False
@@ -314,18 +357,48 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
         key_str = struct.pack(">H", key)
         value_type = TAGS[group][key]["type"]
         type_str = struct.pack(">H", TYPES[value_type])
+        four_bytes_over = b""
+
+        if isinstance(raw_value, NUMBER_TYPE):
+            raw_value = (raw_value,)
+
         if value_type == "Byte":
-            length = 1
-            value_str = struct.pack('>B', raw_value)[0:1] + b"\x00" * 3
+            length = len(raw_value)
+            if length > 4:
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
+                value_str = struct.pack(">I", offset)
+                four_bytes_over = raw_value
+            else:
+                value_str = raw_value + b"\x00" * (4 - length)
         elif value_type == "Short":
-            length = 2
-            value_str = struct.pack('>H', raw_value)[0:2] + b"\x00" * 2
+            length = len(raw_value)
+            if length <= 2:
+                value_str = (pack_short(*raw_value) +
+                             b"\x00\x00" * (2 - length))
+            else:
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
+                value_str = struct.pack(">I", offset)
+                four_bytes_over = pack_short(*raw_value)
         elif value_type == "Long":
-            length = 1
-            value_str = struct.pack('>L', raw_value)
+            length = len(raw_value)
+            if length <= 1:
+                value_str = pack_long(*raw_value)
+            else:
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
+                value_str = struct.pack(">I", offset)
+                four_bytes_over = pack_long(*raw_value)
         elif value_type == "SLong":
-            length = 1
-            value_str = struct.pack('>l', raw_value)
+            length = len(raw_value)
+            if length <= 1:
+                value_str = pack_long(*raw_value)
+            else:
+                offset = (TIFF_HEADER_LENGTH + ifd_offset +
+                          entries_length + len(values))
+                value_str = struct.pack(">I", offset)
+                four_bytes_over = pack_slong(*raw_value)
         elif value_type == "Ascii":
             new_value = raw_value.encode() + b"\x00"
             length = len(new_value)
@@ -333,7 +406,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 offset = (TIFF_HEADER_LENGTH + ifd_offset +
                           entries_length + len(values))
                 value_str = struct.pack(">I", offset)
-                values += new_value
+                four_bytes_over = new_value
             else:
                 value_str = new_value + b"\x00" * (4 - length)
         elif value_type == "Rational":
@@ -350,7 +423,7 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             offset = (TIFF_HEADER_LENGTH + ifd_offset +
                       entries_length + len(values))
             value_str = struct.pack(">I", offset)
-            values += new_value
+            four_bytes_over = new_value
         elif value_type == "SRational":
             if isinstance(raw_value[0], NUMBER_TYPE):
                 length = 1
@@ -365,17 +438,18 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
             offset = (TIFF_HEADER_LENGTH + ifd_offset +
                       entries_length + len(values))
             value_str = struct.pack(">I", offset)
-            values += new_value
+            four_bytes_over = new_value
         elif value_type == "Undefined":
             length = len(raw_value)
             if length > 4:
                 offset = (TIFF_HEADER_LENGTH + ifd_offset +
                           entries_length + len(values))
                 value_str = struct.pack(">I", offset)
-                values += raw_value
+                four_bytes_over = raw_value
             else:
                 value_str = raw_value + b"\x00" * (4 - length)
 
         length_str = struct.pack(">I", length)
         entries += key_str + type_str + length_str + value_str
+        values += four_bytes_over
     return (entry_header + entries, values)
