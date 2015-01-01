@@ -90,10 +90,11 @@ Tag Name and Value Type
     BYTE: {GPSIFD.GPSVersionID: b"\xff"}
     ASCII: {ZerothIFD.Make: u"Make"}
     SHORT: {ZerothIFD.ResolutionUnit: 65535}
+    SHORT(length:3): {ZerothIFD.BitsPerSample: (24, 24, 24)}
     LONG: {ZerothIFD.JPEGInterchangeFormatLength: 4294967295}
     RATIONAL: {ZerothIFD.XResolution: (4294967295, 1)}
     UNDEFINED: {ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa"}
-    SRATIONAL: {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1), )}
+    SRATIONAL(length:3): {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1))}
 
 Depends on
 ----------
