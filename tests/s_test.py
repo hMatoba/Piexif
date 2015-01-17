@@ -37,7 +37,7 @@ ZEROTH_DICT = {ZerothIFD.Software: u"PIL", # ascii
                ZerothIFD.BitsPerSample: (24, 24, 24), # short * 3
                ZerothIFD.JPEGInterchangeFormatLength: 4294967295, # long
                ZerothIFD.XResolution: (4294967295, 1), # rational
-               ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1),),  # srational
+               ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1)),  # srational
                }
 
 
@@ -47,7 +47,7 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
              ExifIFD.Sharpness: 65535, # short
              ExifIFD.ISOSpeed: 4294967295, # long
              ExifIFD.ExposureTime: (4294967295, 1), # rational
-             ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1),),
+             ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),
              ExifIFD.ExposureBiasValue: (2147483647, -2147483648), # srational
              }
 
