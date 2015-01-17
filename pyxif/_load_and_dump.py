@@ -152,9 +152,10 @@ class ExifReader(object):
         if t == 1: # BYTE
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
-                data = self.exif_str[pointer: pointer+length]
+                data = struct.unpack("B" * length,
+                                     self.exif_str[pointer: pointer + length])
             else:
-                data = value
+                data = struct.unpack("B" * length, value[0:length])
         elif t == 2: # ASCII
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
@@ -321,6 +322,10 @@ def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
     return header + zeroth_bytes + exif_bytes + gps_bytes
 
 
+def pack_byte(*args):
+    return struct.pack("B" * len(args), *args)
+
+
 def pack_short(*args):
     return struct.pack(">" + "H" * len(args), *args)
 
@@ -364,13 +369,14 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
 
         if value_type == "Byte":
             length = len(raw_value)
-            if length > 4:
+            if length <= 4:
+                value_str = (pack_byte(*raw_value) +
+                             b"\x00" * (4 - length))
+            else:
                 offset = (TIFF_HEADER_LENGTH + ifd_offset +
                           entries_length + len(values))
                 value_str = struct.pack(">I", offset)
-                four_bytes_over = raw_value
-            else:
-                value_str = raw_value + b"\x00" * (4 - length)
+                four_bytes_over = pack_byte(*raw_value)
         elif value_type == "Short":
             length = len(raw_value)
             if length <= 2:

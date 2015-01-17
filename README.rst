@@ -22,20 +22,21 @@ How to Use
 
 ::
 
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: u"Canon",
                   pyxif.ZerothIFD.XResolution: (96, 1),
                   pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
+                  pyxif.ZerothIFD.Software: u"paint.net 4.0.3",
                   }
 
-    exif_ifd = {pyxif.ExifIFD.DateTimeOriginal: "2099:09:29 10:10:10",
-                pyxif.ExifIFD.LensMake: "LensMake",
+    exif_ifd = {pyxif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",
+                pyxif.ExifIFD.LensMake: u"LensMake",
                 pyxif.ExifIFD.Sharpness: 65535,
-                pyxif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1), ),
+                pyxif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),
                 }
 
-    gps_ifd = {pyxif.GPSIFD.GPSVersionID: 1,
-               pyxif.GPSIFD.GPSDateStamp: "1999:99:99 99:99:99",
+    gps_ifd = {pyxif.GPSIFD.GPSVersionID: (2, 0, 0, 0),
+               pyxif.GPSIFD.GPSAltitudeRef: 1,
+               pyxif.GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99",
                }
 
     # dump and insert
@@ -87,7 +88,7 @@ Tag Name and Value Type
 
 ::
 
-    BYTE: {GPSIFD.GPSVersionID: b"\xff"}
+    BYTE: {GPSIFD.GPSAltitudeRef: 1}
     ASCII: {ZerothIFD.Make: u"Make"}
     SHORT: {ZerothIFD.ResolutionUnit: 65535}
     SHORT(length:3): {ZerothIFD.BitsPerSample: (24, 24, 24)}

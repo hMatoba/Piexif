@@ -52,7 +52,8 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
              }
 
 
-GPS_DICT = {GPSIFD.GPSVersionID: b"\xff\x00\xff\x00", # byte
+GPS_DICT = {GPSIFD.GPSVersionID: (0, 0, 0, 1), # byte
+            GPSIFD.GPSAltitudeRef: 1, # byte
             GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
             GPSIFD.GPSLatitude: (4294967295, 1), # rational
@@ -198,8 +199,8 @@ class ExifTests(unittest.TestCase):
             if key in e:
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
-            if key in e:
-                self.assertEqual(gps_dict[key], e[key])
+            if key in e[34853]:
+                self.assertEqual(gps_dict[key], e[34853][key])
 
     def test_load2(self):
         """'load' on memory.
@@ -214,8 +215,8 @@ class ExifTests(unittest.TestCase):
             if key in e:
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
-            if key in e:
-                self.assertEqual(gps_dict[key], e[key])
+            if key in e[34853]:
+                self.assertEqual(gps_dict[key], e[34853][key])
 
     def test_dump(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
@@ -261,8 +262,8 @@ class ExifTests(unittest.TestCase):
             if key in e:
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
-            if key in e:
-                self.assertEqual(gps_dict[key], e[key])
+            if key in e[34853]:
+                self.assertEqual(gps_dict[key], e[34853][key])
 
     def test_dump_and_load(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)

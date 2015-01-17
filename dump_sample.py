@@ -26,7 +26,7 @@ Property and appropriate type
 "Byte": int
 "Ascii": str
 "Short": int
-"Long": Long
+"Long": long
 "Rational": (long, long)
 "Undefined": str
 "SLong": long
@@ -40,21 +40,24 @@ from PIL import Image
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "fooooooooooooo",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: u"fooooooooooooo",
                   pyxif.ZerothIFD.XResolution: (96, 1),
                   pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "paint.net 4.0.3",
+                  pyxif.ZerothIFD.Software: u"paint.net 4.0.3",
                   }
 
-    exif_ifd = {pyxif.ExifIFD.ExifVersion: "0111",
-                pyxif.ExifIFD.DateTimeOriginal: "1999:09:99 99:99:99",
-                pyxif.ExifIFD.CameraOwnerName: "Mr. John Doe",
+    exif_ifd = {pyxif.ExifIFD.ExifVersion: b"0111",
+                pyxif.ExifIFD.Flash: (1,),
+                pyxif.ExifIFD.DateTimeOriginal: u"1999:09:99 99:99:99",
+                pyxif.ExifIFD.CameraOwnerName: u"Mr. John Doe",
                 }
 
-    gps_ifd = {pyxif.GPSIFD.GPSDateStamp: "1999:99:99",
+    gps_ifd = {pyxif.GPSIFD.GPSAltitudeRef: 1,
+               pyxif.GPSIFD.GPSDateStamp: u"1999:99:99",
                pyxif.GPSIFD.GPSDifferential: 90,
                }
-    exif_bytes = pyxif.dump(zeroth_ifd=zeroth_ifd, exif_ifd=exif_ifd, gps_ifd=gps_ifd)
+
+    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd, gps_ifd)
 
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
@@ -65,7 +68,7 @@ def dump_sample(input_file, output_file):
 
 
 TAGS = {
- 'Image': {11: {'group': 'ProcessingSoftware', 'type': 'Ascii'},
+ 'zeroth':{11: {'group': 'ProcessingSoftware', 'type': 'Ascii'},
            254: {'group': 'NewSubfileType', 'type': 'Long'},
            255: {'group': 'SubfileType', 'type': 'Short'},
            256: {'group': 'ImageWidth', 'type': 'Long'},
@@ -250,7 +253,7 @@ TAGS = {
            51009: {'group': 'OpcodeList2', 'type': 'Undefined'},
            51022: {'group': 'OpcodeList3', 'type': 'Undefined'},
            51041: {'group': 'NoiseProfile', 'type': 'Double'}},
- 'Photo': {33434: {'group': 'ExposureTime', 'type': 'Rational'},
+ 'Exif':  {33434: {'group': 'ExposureTime', 'type': 'Rational'},
            33437: {'group': 'FNumber', 'type': 'Rational'},
            34850: {'group': 'ExposureProgram', 'type': 'Short'},
            34852: {'group': 'SpectralSensitivity', 'type': 'Ascii'},
@@ -354,5 +357,5 @@ TAGS = {
 
 
 if __name__ == "__main__":
-    dump_sample(os.path.join("samples", "01.jpg"),
+    dump_sample(os.path.join("tests", "images", "01.jpg"),
                 "dump_sample.jpg")
