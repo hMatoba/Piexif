@@ -251,7 +251,8 @@ TAGS = {
              42034: {'name': 'LensSpecification', 'type': 'Rational'},
              42035: {'name': 'LensMake', 'type': 'Ascii'},
              42036: {'name': 'LensModel', 'type': 'Ascii'},
-             42037: {'name': 'LensSerialNumber', 'type': 'Ascii'}},
+             42037: {'name': 'LensSerialNumber', 'type': 'Ascii'},
+             42240: {'name': 'Gamma', 'type': 'Rational'}},
     'GPSInfo': {0: {'name': 'GPSVersionID', 'type': 'Byte'},
                 1: {'name': 'GPSLatitudeRef', 'type': 'Ascii'},
                 2: {'name': 'GPSLatitude', 'type': 'Rational'},
@@ -282,7 +283,8 @@ TAGS = {
                 27: {'name': 'GPSProcessingMethod', 'type': 'Undefined'},
                 28: {'name': 'GPSAreaInformation', 'type': 'Undefined'},
                 29: {'name': 'GPSDateStamp', 'type': 'Ascii'},
-                30: {'name': 'GPSDifferential', 'type': 'Short'}},
+                30: {'name': 'GPSDifferential', 'type': 'Short'},
+                31: {'name': 'GPSHPositioningError', 'type': 'Rational'}}
 }
 
 
@@ -546,6 +548,7 @@ class ExifIFD:
     LensMake = 42035
     LensModel = 42036
     LensSerialNumber = 42037
+    Gamma = 42240
 
 
 class GPSIFD:
@@ -581,3 +584,4 @@ class GPSIFD:
     GPSAreaInformation = 28
     GPSDateStamp = 29
     GPSDifferential = 30
+    GPSHPositioningError = 31
