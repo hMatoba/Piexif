@@ -9,10 +9,10 @@ exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are opt
 To use dict as IFD data, it needs...
   A tag number means which property? - 256: ImageWidth, 272: Model...
   Appropriate type for property. - long for ImageWidth, str for Model...
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",
+    zeroth_ifd = {pyxif.ZerothIFD.Make: u"Canon",  # ascii, count any
+                  pyxif.ZerothIFD.XResolution: (96, 1),  # rational, count 1
+                  pyxif.ZerothIFD.YResolution: (96, 1),  # rational, count 1
+                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",  # ascii, count any
                   }
 
 Property name and tag number
@@ -31,6 +31,11 @@ Property and appropriate type
 "Undefined": str
 "SLong": long
 "SRational": (long, long)
+
+If value type is "Byte", "Short", "Long", "Rational", or "SRational",
+and value count is two or more number... Use tuple.
+  {pyxif.ZerothIFD.BitsPerSample:(8, 8, 8)}  # Short, count 3
+  {pyxif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1))}  # Rational, count 4
 """
 
 import os

@@ -84,18 +84,19 @@ Tag Name and Value Type
 | Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or...
 | See the document of Exif.
 | http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
-| Some examples are shown below.
+| Some examples are shown below. If value type is number and count is two or more,
+| use tuple.
 
 ::
 
     BYTE: {GPSIFD.GPSAltitudeRef: 1}
     ASCII: {ZerothIFD.Make: u"Make"}
     SHORT: {ZerothIFD.ResolutionUnit: 65535}
-    SHORT(length:3): {ZerothIFD.BitsPerSample: (24, 24, 24)}
+    SHORT(count:3): {ZerothIFD.BitsPerSample: (24, 24, 24)}
     LONG: {ZerothIFD.JPEGInterchangeFormatLength: 4294967295}
     RATIONAL: {ZerothIFD.XResolution: (4294967295, 1)}
     UNDEFINED: {ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa"}
-    SRATIONAL(length:3): {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1))}
+    SRATIONAL(count:3): {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1))}
 
 Depends on
 ----------
