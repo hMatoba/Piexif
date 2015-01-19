@@ -1,6 +1,7 @@
 import copy
 import io
 import os
+import struct
 import sys
 import unittest
 
@@ -65,6 +66,10 @@ def load_exif_by_PIL(f):
     e = i._getexif()
     i.close()
     return e
+
+
+def pack_byte(*args):
+    return struct.pack("B" * len(args), *args)
 
 
 class ExifTests(unittest.TestCase):
@@ -190,8 +195,11 @@ class ExifTests(unittest.TestCase):
 
     def test_load(self):
         zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE1)
-        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
         e = load_exif_by_PIL(INPUT_FILE1)
+        if 34853 in zeroth_dict:
+            zeroth_dict.pop(34853)
+        if 34853 in e:
+            gps = e.pop(34853)
         for key in sorted(zeroth_dict):
             if key in e:
                 self.assertEqual(zeroth_dict[key], e[key])
@@ -199,15 +207,25 @@ class ExifTests(unittest.TestCase):
             if key in e:
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
-            if key in e[34853]:
-                self.assertEqual(gps_dict[key], e[34853][key])
+            if key in gps:
+                if type(gps_dict[key]) == type(gps[key]):
+                    self.assertEqual(gps_dict[key], gps[key])
+                elif type(gps_dict[key]) == tuple:
+                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
+                elif type(gps_dict[key]) == int:
+                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                else:
+                    self.assertEqual(gps_dict[key], gps[key])
 
     def test_load2(self):
         """'load' on memory.
         """
         zeroth_dict, exif_dict, gps_dict = pyxif.load(I1)
-        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
         e = load_exif_by_PIL(INPUT_FILE1)
+        if 34853 in zeroth_dict:
+            zeroth_dict.pop(34853)
+        if 34853 in e:
+            gps = e.pop(34853)
         for key in sorted(zeroth_dict):
             if key in e:
                 self.assertEqual(zeroth_dict[key], e[key])
@@ -215,8 +233,42 @@ class ExifTests(unittest.TestCase):
             if key in e:
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
-            if key in e[34853]:
-                self.assertEqual(gps_dict[key], e[34853][key])
+            if key in gps:
+                if type(gps_dict[key]) == type(gps[key]):
+                    self.assertEqual(gps_dict[key], gps[key])
+                elif type(gps_dict[key]) == tuple:
+                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
+                elif type(gps_dict[key]) == int:
+                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                else:
+                    self.assertEqual(gps_dict[key], gps[key])
+
+    def test_load_le(self):
+        """load test of little endian exif
+        """
+        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_LE1)
+        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        e = load_exif_by_PIL(INPUT_FILE_LE1)
+        if 34853 in zeroth_dict:
+            zeroth_dict.pop(34853)
+        if 34853 in e:
+            gps = e.pop(34853)
+        for key in sorted(zeroth_dict):
+            if key in e:
+                self.assertEqual(zeroth_dict[key], e[key])
+        for key in sorted(exif_dict):
+            if key in e:
+                self.assertEqual(exif_dict[key], e[key])
+        for key in sorted(gps_dict):
+            if key in gps:
+                if type(gps_dict[key]) == type(gps[key]):
+                    self.assertEqual(gps_dict[key], gps[key])
+                elif type(gps_dict[key]) == tuple:
+                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
+                elif type(gps_dict[key]) == int:
+                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                else:
+                    self.assertEqual(gps_dict[key], gps[key])
 
     def test_dump(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
@@ -248,22 +300,6 @@ class ExifTests(unittest.TestCase):
         pyxif.insert(exif_bytes, I1, o)
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
         exif = load_exif_by_PIL(o)
-
-    def test_load_le(self):
-        """load test of little endian exif
-        """
-        zeroth_dict, exif_dict, gps_dict = pyxif.load(INPUT_FILE_LE1)
-        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
-        e = load_exif_by_PIL(INPUT_FILE_LE1)
-        for key in sorted(zeroth_dict):
-            if key in e:
-                self.assertEqual(zeroth_dict[key], e[key])
-        for key in sorted(exif_dict):
-            if key in e:
-                self.assertEqual(exif_dict[key], e[key])
-        for key in sorted(gps_dict):
-            if key in e[34853]:
-                self.assertEqual(gps_dict[key], e[34853][key])
 
     def test_dump_and_load(self):
         exif_bytes = pyxif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
