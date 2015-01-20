@@ -106,7 +106,8 @@ Pyxif doesn't depend on any 3rd module.
 Environment
 -----------
 
-Checked on Python 2.7, 3.3, 3.4, pypy, and pypy3.
+| Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3.
+| Pyxif would run even on IronPython.
 
 License
 -------
