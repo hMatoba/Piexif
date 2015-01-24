@@ -208,11 +208,11 @@ class ExifTests(unittest.TestCase):
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in gps:
-                if type(gps_dict[key]) == type(gps[key]):
-                    self.assertEqual(gps_dict[key], gps[key])
-                elif type(gps_dict[key]) == tuple:
+                if ((type(gps_dict[key]) == tuple) and
+                    (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif type(gps_dict[key]) == int:
+                elif ((type(gps_dict[key]) == int) and
+                      (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
@@ -234,11 +234,11 @@ class ExifTests(unittest.TestCase):
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in gps:
-                if type(gps_dict[key]) == type(gps[key]):
-                    self.assertEqual(gps_dict[key], gps[key])
-                elif type(gps_dict[key]) == tuple:
+                if ((type(gps_dict[key]) == tuple) and
+                    (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif type(gps_dict[key]) == int:
+                elif ((type(gps_dict[key]) == int) and
+                      (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
@@ -261,11 +261,11 @@ class ExifTests(unittest.TestCase):
                 self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in gps:
-                if type(gps_dict[key]) == type(gps[key]):
-                    self.assertEqual(gps_dict[key], gps[key])
-                elif type(gps_dict[key]) == tuple:
+                if ((type(gps_dict[key]) == tuple) and
+                    (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif type(gps_dict[key]) == int:
+                elif ((type(gps_dict[key]) == int) and
+                      (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
