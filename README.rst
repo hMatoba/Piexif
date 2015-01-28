@@ -10,11 +10,16 @@ Piexif
 Install
 -------
 
-'easy_install'::
+'easy_install'
+::
     $ easy_install piexif
-or 'pip'::
+    
+or 'pip'
+::
     $ pip install --pre piexif
-or download .zip, extract it and run::
+    
+or download .zip, extract it and run
+::
     $ python setup.py install
 
 Functions
