@@ -132,5 +132,5 @@ This software is released under the MIT License, see LICENSE.txt.
 
 .. |Build Status| image:: https://travis-ci.org/hMatoba/Piexif.svg?branch=master
    :target: https://travis-ci.org/hMatoba/Piexif
-.. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.png?branch=master
+.. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
