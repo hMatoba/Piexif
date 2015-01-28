@@ -4,21 +4,21 @@ Exif IFD can include "ExposureTime", "ISOSpeed" and more...
 GPS IFD can include GPS information.
 
 Pass dict(s), that shows several IFD, to "dump" function.
-exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are optional.
+exifbytes = piexif.dump(0th_dict, exif_dict, gps_dict) # second and third are optional.
 
 To use dict as IFD data, it needs...
   A tag number means which property? - 256: ImageWidth, 272: Model...
   Appropriate type for property. - long for ImageWidth, str for Model...
-    zeroth_ifd = {pyxif.ZerothIFD.Make: u"Canon",  # ascii, count any
-                  pyxif.ZerothIFD.XResolution: (96, 1),  # rational, count 1
-                  pyxif.ZerothIFD.YResolution: (96, 1),  # rational, count 1
-                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",  # ascii, count any
+    zeroth_ifd = {piexif.ZerothIFD.Make: u"Canon",  # ascii, count any
+                  piexif.ZerothIFD.XResolution: (96, 1),  # rational, count 1
+                  piexif.ZerothIFD.YResolution: (96, 1),  # rational, count 1
+                  piexif.ZerothIFD.Software: "Photoshop x.x.x",  # ascii, count any
                   }
 
 Property name and tag number
-  For 0th IFD - under "pyxif.ZerothIFD"
-  For Exif IFD - under "pyxif.ExifIFD"
-  For GPS IFD - under "pyxif.GPSIFD"
+  For 0th IFD - under "piexif.ZerothIFD"
+  For Exif IFD - under "piexif.ExifIFD"
+  For GPS IFD - under "piexif.GPSIFD"
 
 Property and appropriate type
   See variable"TAGS" in this script.
@@ -34,41 +34,41 @@ Property and appropriate type
 
 If value type is "Byte", "Short", "Long", "Rational", or "SRational",
 and value count is two or more number... Use tuple.
-  {pyxif.ZerothIFD.BitsPerSample:(8, 8, 8)}  # Short, count 3
-  {pyxif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1))}  # Rational, count 4
+  {piexif.ZerothIFD.BitsPerSample:(8, 8, 8)}  # Short, count 3
+  {piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1))}  # Rational, count 4
 """
 
 import os
 
-import pyxif
+import piexif
 from PIL import Image
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ZerothIFD.Make: u"fooooooooooooo",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: u"paint.net 4.0.3",
+    zeroth_ifd = {piexif.ZerothIFD.Make: u"fooooooooooooo",
+                  piexif.ZerothIFD.XResolution: (96, 1),
+                  piexif.ZerothIFD.YResolution: (96, 1),
+                  piexif.ZerothIFD.Software: u"paint.net 4.0.3",
                   }
 
-    exif_ifd = {pyxif.ExifIFD.ExifVersion: b"0111",
-                pyxif.ExifIFD.Flash: (1,),
-                pyxif.ExifIFD.DateTimeOriginal: u"1999:09:99 99:99:99",
-                pyxif.ExifIFD.CameraOwnerName: u"Mr. John Doe",
+    exif_ifd = {piexif.ExifIFD.ExifVersion: b"0111",
+                piexif.ExifIFD.Flash: (1,),
+                piexif.ExifIFD.DateTimeOriginal: u"1999:09:99 99:99:99",
+                piexif.ExifIFD.CameraOwnerName: u"Mr. John Doe",
                 }
 
-    gps_ifd = {pyxif.GPSIFD.GPSAltitudeRef: 1,
-               pyxif.GPSIFD.GPSDateStamp: u"1999:99:99",
-               pyxif.GPSIFD.GPSDifferential: 90,
+    gps_ifd = {piexif.GPSIFD.GPSAltitudeRef: 1,
+               piexif.GPSIFD.GPSDateStamp: u"1999:99:99",
+               piexif.GPSIFD.GPSDifferential: 90,
                }
 
-    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
 
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save(output_file, exif=exif_bytes)
 
-    z, e, g = pyxif.load(output_file)
+    z, e, g = piexif.load(output_file)
     print(z, e, g)
 
 

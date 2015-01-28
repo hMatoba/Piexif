@@ -1,10 +1,21 @@
-Pyxif
-=====
+Piexif
+======
 
 |Build Status| |Coverage Status|
 
+| This is a renamed project from Pyxif.
 | To simplify exif manipulations with python. Writing, reading, and more...
-| Pyxif isn't a wrapper. To everywhere with Python.
+| Piexif isn't a wrapper. To everywhere with Python.
+
+Install
+-------
+
+'easy_install'::
+    $ easy_install piexif
+or 'pip'::
+    $ pip install --pre piexif
+or download .zip, extract it and run::
+    $ python setup.py install
 
 Functions
 ---------
@@ -22,26 +33,26 @@ How to Use
 
 ::
 
-    zeroth_ifd = {pyxif.ZerothIFD.Make: u"Canon",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: u"paint.net 4.0.3",
+    zeroth_ifd = {piexif.ZerothIFD.Make: u"Canon",
+                  piexif.ZerothIFD.XResolution: (96, 1),
+                  piexif.ZerothIFD.YResolution: (96, 1),
+                  piexif.ZerothIFD.Software: u"paint.net 4.0.3",
                   }
 
-    exif_ifd = {pyxif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",
-                pyxif.ExifIFD.LensMake: u"LensMake",
-                pyxif.ExifIFD.Sharpness: 65535,
-                pyxif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),
+    exif_ifd = {piexif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",
+                piexif.ExifIFD.LensMake: u"LensMake",
+                piexif.ExifIFD.Sharpness: 65535,
+                piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),
                 }
 
-    gps_ifd = {pyxif.GPSIFD.GPSVersionID: (2, 0, 0, 0),
-               pyxif.GPSIFD.GPSAltitudeRef: 1,
-               pyxif.GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99",
+    gps_ifd = {piexif.GPSIFD.GPSVersionID: (2, 0, 0, 0),
+               piexif.GPSIFD.GPSAltitudeRef: 1,
+               piexif.GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99",
                }
 
     # dump and insert
-    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd, gps_ifd)
-    pyxif.insert(exif_bytes, "in.jpg")
+    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    piexif.insert(exif_bytes, "in.jpg")
 
     # with Pillow
     from PIL import Image
@@ -50,13 +61,13 @@ How to Use
     im.save(output_file, exif=exif_bytes)
 
     # load
-    zeroth_dict, exif_dict, gps_dict = pyxif.load("in.jpg")
+    zeroth_dict, exif_dict, gps_dict = piexif.load("in.jpg")
 
     # remove
-    pyxif.remove("in.jpg")
+    piexif.remove("in.jpg")
 
     # transplant
-    pyxif.transplant("exif_src.jpg", "image.jpg")
+    piexif.transplant("exif_src.jpg", "image.jpg")
 
 on GoogleAppEngine
 ------------------
@@ -67,16 +78,16 @@ on GoogleAppEngine
     output = io.BytesIO()
 
     # insert
-    pyxif.insert(exif_bytes, jpg_data, output)
+    piexif.insert(exif_bytes, jpg_data, output)
 
     # load
-    zeroth_dict, exif_dict, gps_dict = pyxif.load(jpg_data)
+    zeroth_dict, exif_dict, gps_dict = piexif.load(jpg_data)
 
     # remove
-    pyxif.remove(jpg_data, output)
+    piexif.remove(jpg_data, output)
 
     # transplant
-    pyxif.transplant(jpg_data1, jpg_data2, output)
+    piexif.transplant(jpg_data1, jpg_data2, output)
 
 Tag Name and Value Type
 -----------------------
@@ -101,20 +112,20 @@ Tag Name and Value Type
 Depends on
 ----------
 
-Pyxif doesn't depend on any 3rd module.
+Piexif doesn't depend on any 3rd module.
 
 Environment
 -----------
 
 | Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3.
-| Pyxif would run even on IronPython.
+| Piexif would run even on IronPython.
 
 License
 -------
 
 This software is released under the MIT License, see LICENSE.txt.
 
-.. |Build Status| image:: https://travis-ci.org/hMatoba/Pyxif.svg?branch=master
-   :target: https://travis-ci.org/hMatoba/Pyxif
-.. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Pyxif/badge.png?branch=master
-   :target: https://coveralls.io/r/hMatoba/Pyxif?branch=master
+.. |Build Status| image:: https://travis-ci.org/hMatoba/Piexif.svg?branch=master
+   :target: https://travis-ci.org/hMatoba/Piexif
+.. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.png?branch=master
+   :target: https://coveralls.io/r/hMatoba/Piexif?branch=master

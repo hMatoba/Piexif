@@ -4,4 +4,4 @@ from ._transplant import transplant
 from ._insert import insert
 
 
-VERSION = '0.7.0'
+VERSION = '0.7.0c'

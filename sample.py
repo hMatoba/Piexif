@@ -1,11 +1,11 @@
 import os
 
-import pyxif
+import piexif
 from PIL import Image
 
 
 def load_sample(input_file):
-    zeroth_dict, exif_dict, gps_dict = pyxif.load(input_file)
+    zeroth_dict, exif_dict, gps_dict = piexif.load(input_file)
 
     print("******************************")
     print("0th IFD: {0}".format(len(zeroth_dict)))
@@ -28,25 +28,25 @@ def load_sample(input_file):
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {pyxif.ZerothIFD.Make: u"foo",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: u"paint.net 4.0.3",
+    zeroth_ifd = {piexif.ZerothIFD.Make: u"foo",
+                  piexif.ZerothIFD.XResolution: (96, 1),
+                  piexif.ZerothIFD.YResolution: (96, 1),
+                  piexif.ZerothIFD.Software: u"paint.net 4.0.3",
                   }
 
-    exif_bytes = pyxif.dump(zeroth_ifd)
+    exif_bytes = piexif.dump(zeroth_ifd)
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save(output_file, exif=exif_bytes)
 
 
 def remove_sample():
-    pyxif.remove(os.path.join("tests", "images", "01.jpg"),
+    piexif.remove(os.path.join("tests", "images", "01.jpg"),
                  "remove_sample.jpg")
 
 
 def transplant_sample():
-    pyxif.transplant(os.path.join("tests", "images", "01.jpg"),
+    piexif.transplant(os.path.join("tests", "images", "01.jpg"),
                      os.path.join("tests", "images", "02.jpg"),
                      "transplant_sample.jpg")
 
@@ -56,8 +56,8 @@ def insert_sample():
                   283: (96, 1),
                   296: 2,
                   305: 'paint.net 4.0.3'}
-    exif_bytes = pyxif.dump(zeroth_ifd)
-    pyxif.insert(exif_bytes,
+    exif_bytes = piexif.dump(zeroth_ifd)
+    piexif.insert(exif_bytes,
                  "remove_sample.jpg",
                  "insert_sample.jpg")
 
