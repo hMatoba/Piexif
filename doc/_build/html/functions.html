@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Functions &mdash; Piexif 0.7.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
+        <link rel="next" title="Appendices" href="appendices.html"/>
+        <link rel="prev" title="Installation" href="Installation.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Piexif</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="About.html">About Piexif</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="About.html#what-for">What for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="About.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="About.html#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="About.html#exif">Exif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="About.html#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#load">load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dump">dump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#insert">insert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remove">remove</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transplant">transplant</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#to-use-piexif-dump">To Use &#8216;piexif.dump&#8217;</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Piexif</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Functions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/Functions.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This document is written for using Piexif on Python 3.x.</p>
+</div>
+<div class="section" id="load">
+<h2>load<a class="headerlink" href="#load" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="piexif.load">
+<tt class="descclassname">piexif.</tt><tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#piexif.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; JPEG or TIFF</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0th IFD, Exif IFD, and GPS IFD</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict, dict, dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;paint.net 4.0.3&quot;</span>
+              <span class="p">}</span>
+<span class="n">exif_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">DateTimeOriginal</span><span class="p">:</span> <span class="s">u&quot;2099:09:29 10:10:10&quot;</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensMake</span><span class="p">:</span> <span class="s">u&quot;LensMake&quot;</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Sharpness</span><span class="p">:</span> <span class="mi">65535</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensSpecification</span><span class="p">:</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="p">}</span>
+<span class="n">gps_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSVersionID</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSAltitudeRef</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSDateStamp</span><span class="p">:</span> <span class="s">u&quot;1999:99:99 99:99:99&quot;</span><span class="p">,</span>
+           <span class="p">}</span>
+<span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">zeroth_dict</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">zeroth_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">gps_dict</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gps_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt>
+<tt class="descclassname">piexif.</tt><tt class="descname">load</tt><big>(</big><em>data</em><big>)</big></dt>
+<dd><p>Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; JPEG or TIFF</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0th IFD, Exif IFD, and GPS IFD</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict, dict, dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="dump">
+<h2>dump<a class="headerlink" href="#dump" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="piexif.dump">
+<tt class="descclassname">piexif.</tt><tt class="descname">dump</tt><big>(</big><em>zeroth_ifd</em>, <em>exif_ifd</em>, <em>gps_ifd</em><big>)</big><a class="headerlink" href="#piexif.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return exif as bytes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>zeroth_ifd</strong> (<em>dict</em>) &#8211; 0th IFD as dict</li>
+<li><strong>exif_ifd</strong> (<em>dict</em>) &#8211; Exif IFD as dict</li>
+<li><strong>gps_ifd</strong> (<em>dict</em>) &#8211; GPS IFD as dict</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">exif as bytes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bytes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;out.jpg&quot;</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="insert">
+<h2>insert<a class="headerlink" href="#insert" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="piexif.insert">
+<tt class="descclassname">piexif.</tt><tt class="descname">insert</tt><big>(</big><em>exif_bytes</em>, <em>filename</em><big>)</big><a class="headerlink" href="#piexif.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert exif into JPEG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>exif_bytes</strong> (<em>bytes</em>) &#8211; Exif as bytes</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; filename</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
+<span class="n">piexif</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">exif_bytes</span><span class="p">,</span> <span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt>
+<tt class="descclassname">piexif.</tt><tt class="descname">insert</tt><big>(</big><em>exif_bytes</em>, <em>data</em>, <em>output</em><big>)</big></dt>
+<dd><p>Insert exif into JPEG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>exif_bytes</strong> (<em>bytes</em>) &#8211; Exif as bytes</li>
+<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="remove">
+<h2>remove<a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="piexif.remove">
+<tt class="descclassname">piexif.</tt><tt class="descname">remove</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#piexif.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove exif from JPEG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; filename</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="highlight-python"><div class="highlight"><pre><span class="n">piexif</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt>
+<tt class="descclassname">piexif.</tt><tt class="descname">remove</tt><big>(</big><em>data</em>, <em>output</em><big>)</big></dt>
+<dd><p>Remove exif from JPEG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="transplant">
+<h2>transplant<a class="headerlink" href="#transplant" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="piexif.transplant">
+<tt class="descclassname">piexif.</tt><tt class="descname">transplant</tt><big>(</big><em>filename1</em>, <em>filename2</em><big>)</big><a class="headerlink" href="#piexif.transplant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transplant exif from filename1 to filename2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename1</strong> (<em>str</em>) &#8211; filename</li>
+<li><strong>filename2</strong> (<em>str</em>) &#8211; filename</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="highlight-python"><div class="highlight"><pre><span class="n">piexif</span><span class="o">.</span><span class="n">transplant</span><span class="p">(</span><span class="s">&quot;exif_src.jpg&quot;</span><span class="p">,</span> <span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt>
+<tt class="descclassname">piexif.</tt><tt class="descname">transplant</tt><big>(</big><em>exif_src</em>, <em>image_src</em>, <em>output</em><big>)</big></dt>
+<dd><p>Transplant exif from exif_src to image_src.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>exif_src</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
+<li><strong>image_src</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="appendices.html" class="btn btn-neutral float-right" title="Appendices">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Installation.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, hMatoba.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.7.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
