@@ -34,6 +34,9 @@ If value type is number(BYTE, SHORT, LONG, RATIONAL, or SRATIONAL) and value cou
 | RATIONAL, SRATIONAL | ((int, int), (int, int), ...) |
 +---------------------+-------------------------------+
 
+.. note:: If value type is number and value count is one, tuple that is length one value(e.g. (int,)) also be accepted. 
+
+
 Exif in piexif example is below.
 
 ::
@@ -44,7 +47,6 @@ Exif in piexif example is below.
                   piexif.ZerothIFD.Software: u"piexif"  # ASCII, count any
                   }
     exif_ifd = {piexif.ExifIFD.ExifVersion: b"\x02\x00\x00\x00"  # UNDEFINED, count 4
-                piexif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",  # ASCII, count 20
                 piexif.ExifIFD.LensMake: u"LensMake",  # ASCII, count any
                 piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1
                 piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),  # Rational, count 4

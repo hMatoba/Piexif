@@ -31,6 +31,7 @@
         <link rel="author" title="About these documents"
               href="about.html"/>
     <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
+        <link rel="next" title="Samples" href="sample.html"/>
         <link rel="prev" title="Functions" href="functions.html"/> 
 
   
@@ -82,6 +83,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="">Appendices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#exif-data-in-piexif">Exif Data in Piexif</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#on-googleappengine">On GoogleAppEngine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
 </ul>
 </li>
 </ul>
@@ -172,6 +177,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If value type is number and value count is one, tuple that is length one value(e.g. (int,)) also be accepted.</p>
+</div>
 <p>Exif in piexif example is below.</p>
 <div class="highlight-python"><div class="highlight"><pre>zeroth_ifd = {piexif.ZerothIFD.Make: u&quot;Canon&quot;,  # ASCII, count any
               piexif.ZerothIFD.XResolution: (96, 1),  # RATIONAL, count 1
@@ -179,7 +188,6 @@
               piexif.ZerothIFD.Software: u&quot;piexif&quot;  # ASCII, count any
               }
 exif_ifd = {piexif.ExifIFD.ExifVersion: b&quot;\x02\x00\x00\x00&quot;  # UNDEFINED, count 4
-            piexif.ExifIFD.DateTimeOriginal: u&quot;2099:09:29 10:10:10&quot;,  # ASCII, count 20
             piexif.ExifIFD.LensMake: u&quot;LensMake&quot;,  # ASCII, count any
             piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1
             piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),  # Rational, count 4
@@ -222,6 +230,8 @@ z, e, g = piexif.load(&quot;foo.jpg&quot;)
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sample.html" class="btn btn-neutral float-right" title="Samples">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="functions.html" class="btn btn-neutral" title="Functions"><span class="fa fa-arrow-circle-left"></span> Previous</a>

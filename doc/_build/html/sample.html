@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Samples &mdash; Piexif 0.7.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+        <link rel="author" title="About these documents"
+              href="about.html"/>
+    <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
+        <link rel="prev" title="Appendices" href="appendices.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Piexif</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#load">load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#dump">dump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#insert">insert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#remove">remove</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#transplant">transplant</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#exif-data-in-piexif">Exif Data in Piexif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#on-googleappengine">On GoogleAppEngine</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Piexif</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Samples</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/sample.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="samples">
+<h1>Samples<a class="headerlink" href="#samples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rotate-image-by-exif-orientation">
+<h2>Rotate Image by Exif Orientation<a class="headerlink" href="#rotate-image-by-exif-orientation" title="Permalink to this headline">¶</a></h2>
+<p>Rotate image by exif orientation tag and remove orientation tag.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">piexif</span>
+
+
+<span class="k">def</span> <span class="nf">rotate_jpeg</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">zeroth_ifd</span><span class="p">:</span>
+        <span class="n">orientation</span> <span class="o">=</span> <span class="n">zeroth_ifd</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">)</span>
+        <span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
+
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+        <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="appendices.html" class="btn btn-neutral" title="Appendices"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, hMatoba.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.7.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
