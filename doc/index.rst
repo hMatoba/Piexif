@@ -22,3 +22,10 @@ To simplify exif manipulations with python. Writing, reading, and more... Piexif
    installation
    functions
    appendices
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
