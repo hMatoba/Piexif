@@ -28,9 +28,11 @@
   
 
   
+        <link rel="author" title="About these documents"
+              href="about.html"/>
     <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
         <link rel="next" title="Appendices" href="appendices.html"/>
-        <link rel="prev" title="Installation" href="Installation.html"/> 
+        <link rel="prev" title="Installation" href="installation.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -62,15 +64,15 @@
           
           
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="About.html">About Piexif</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="About.html#what-for">What for?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="About.html#depends-on">Depends on</a></li>
-<li class="toctree-l2"><a class="reference internal" href="About.html#environment">Environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="About.html#exif">Exif</a></li>
-<li class="toctree-l2"><a class="reference internal" href="About.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#exif">Exif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#load">load</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dump">dump</a></li>
@@ -80,7 +82,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="appendices.html#to-use-piexif-dump">To Use &#8216;piexif.dump&#8217;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#on-googleappengine">On GoogleAppEngine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#exif-data-in-piexif">Exif Data in Piexif</a></li>
 </ul>
 </li>
 </ul>
@@ -110,7 +113,7 @@
     <li>Functions</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/Functions.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/functions.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -120,6 +123,10 @@
             
   <div class="section" id="functions">
 <h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It could set any value in exif without actual value. For example, actual XResolution is 300, whereas XResolution value in exif is 0. Confliction might happen.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This document is written for using Piexif on Python 3.x.</p>
@@ -144,27 +151,13 @@
 </table>
 </dd></dl>
 
-<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;paint.net 4.0.3&quot;</span>
-              <span class="p">}</span>
-<span class="n">exif_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">DateTimeOriginal</span><span class="p">:</span> <span class="s">u&quot;2099:09:29 10:10:10&quot;</span><span class="p">,</span>
-            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensMake</span><span class="p">:</span> <span class="s">u&quot;LensMake&quot;</span><span class="p">,</span>
-            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Sharpness</span><span class="p">:</span> <span class="mi">65535</span><span class="p">,</span>
-            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensSpecification</span><span class="p">:</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
-            <span class="p">}</span>
-<span class="n">gps_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSVersionID</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSAltitudeRef</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSDateStamp</span><span class="p">:</span> <span class="s">u&quot;1999:99:99 99:99:99&quot;</span><span class="p">,</span>
-           <span class="p">}</span>
-<span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">zeroth_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">zeroth_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">zeroth_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">gps_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gps_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 </pre></div>
 </div>
 <dl class="function">
@@ -203,7 +196,7 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">exif as bytes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Exif</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bytes</p>
@@ -213,7 +206,21 @@
 </table>
 </dd></dl>
 
-<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;piexif&quot;</span>
+              <span class="p">}</span>
+<span class="n">exif_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">DateTimeOriginal</span><span class="p">:</span> <span class="s">u&quot;2099:09:29 10:10:10&quot;</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensMake</span><span class="p">:</span> <span class="s">u&quot;LensMake&quot;</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Sharpness</span><span class="p">:</span> <span class="mi">65535</span><span class="p">,</span>
+            <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensSpecification</span><span class="p">:</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="p">}</span>
+<span class="n">gps_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSVersionID</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSAltitudeRef</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+           <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSDateStamp</span><span class="p">:</span> <span class="s">u&quot;1999:99:99 99:99:99&quot;</span><span class="p">,</span>
+           <span class="p">}</span>
+<span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
 <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
@@ -233,7 +240,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>exif_bytes</strong> (<em>bytes</em>) &#8211; Exif as bytes</li>
-<li><strong>filename</strong> (<em>str</em>) &#8211; filename</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; JPEG</li>
 </ul>
 </td>
 </tr>
@@ -255,8 +262,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>exif_bytes</strong> (<em>bytes</em>) &#8211; Exif as bytes</li>
-<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
-<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; ouput data</li>
 </ul>
 </td>
 </tr>
@@ -275,7 +282,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; filename</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; JPEG</td>
 </tr>
 </tbody>
 </table>
@@ -293,8 +300,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
-<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+<li><strong>data</strong> (<em>bytes</em>) &#8211; JPEG data</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; output data</li>
 </ul>
 </td>
 </tr>
@@ -314,8 +321,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename1</strong> (<em>str</em>) &#8211; filename</li>
-<li><strong>filename2</strong> (<em>str</em>) &#8211; filename</li>
+<li><strong>filename1</strong> (<em>str</em>) &#8211; JPEG</li>
+<li><strong>filename2</strong> (<em>str</em>) &#8211; JPEG</li>
 </ul>
 </td>
 </tr>
@@ -335,9 +342,9 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>exif_src</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
-<li><strong>image_src</strong> (<em>bytes</em>) &#8211; JPEG data as bytes</li>
-<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; instance of io.BytesIO</li>
+<li><strong>exif_src</strong> (<em>bytes</em>) &#8211; JPEG data</li>
+<li><strong>image_src</strong> (<em>bytes</em>) &#8211; JPEG data</li>
+<li><strong>output</strong> (<em>io.BytesIO</em>) &#8211; output data</li>
 </ul>
 </td>
 </tr>
@@ -357,7 +364,7 @@
         <a href="appendices.html" class="btn btn-neutral float-right" title="Appendices">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Installation.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

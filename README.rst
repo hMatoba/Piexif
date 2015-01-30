@@ -1,7 +1,7 @@
 Piexif
 ======
 
-|Build Status| |Coverage Status|
+|Build Status| |Coverage Status| |docs|
 
 | This is a renamed project from Pyxif.
 | To simplify exif manipulations with python. Writing, reading, and more...
@@ -135,3 +135,5 @@ This software is released under the MIT License, see LICENSE.txt.
    :target: https://travis-ci.org/hMatoba/Piexif
 .. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
+.. |docs| image:: https://readthedocs.org/projects/piexif/badge/?version=latest
+   :target: https://readthedocs.org/projects/piexif/

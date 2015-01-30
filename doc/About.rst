@@ -17,11 +17,6 @@ Environment
 
 Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython.
 
-Exif
-----
-http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
-
-
 License
 -------
 

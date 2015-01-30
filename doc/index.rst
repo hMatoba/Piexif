@@ -12,18 +12,13 @@ To simplify exif manipulations with python. Writing, reading, and more... Piexif
    :target: https://travis-ci.org/hMatoba/Piexif
 .. image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
+.. image:: https://readthedocs.org/projects/piexif/badge/?version=latest
+   :target: https://readthedocs.org/projects/piexif/
 
 .. toctree::
    :maxdepth: 2
 
-   About
-   Installation
-   Functions
+   about
+   installation
+   functions
    appendices
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
