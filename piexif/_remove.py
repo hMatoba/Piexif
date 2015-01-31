@@ -1,18 +1,15 @@
-"""PIL's image resize manipulation(includes thumbnail function) loses JPEG's.
-Helps to transplant Exif data into another JPEG.
-Tested on Python 2.7 and 3.4
-"""
-
 import io
 
 from ._common import *
 
 
 def remove(src, new_file=""):
-    """Removes exif.
-    remove(src, new_file[optional])
-    src - filename or JPEG data(2.7 - str, 3.4 - bytes)
-    When "new_file" is not given, "src" is overwritten.
+    """
+    py:function:: piexif.remove(filename)
+
+    Remove exif from JPEG.
+
+    :param str filename: JPEG
     """
     output_is_file = False
     if src[0:2] == b"\xff\xd8":

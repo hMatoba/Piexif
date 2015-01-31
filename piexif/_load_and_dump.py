@@ -1,38 +1,3 @@
-"""EXIF is a set of several IFDs.
-Oth IFD can include "Make", "Model" and more...
-Exif IFD can include "ExposureTime", "ISOSpeed" and more...
-GPS IFD can include GPS information.
-
-Pass dict(s), that shows several IFD, to "dump" function.
-exifbytes = pyxif.dump(0th_dict, exif_dict, gps_dict) # second and third are optional.
-
-To use dict as IFD data, it needs...
-  A tag number means which property? - 256: ImageWidth, 272: Model...
-  Appropriate type for property. - long for ImageWidth, str for Model...
-    zeroth_ifd = {pyxif.ZerothIFD.Make: "Canon",
-                  pyxif.ZerothIFD.XResolution: (96, 1),
-                  pyxif.ZerothIFD.YResolution: (96, 1),
-                  pyxif.ZerothIFD.Software: "Photoshop x.x.x",
-                  }
-
-Property name and tag number
-  For 0th IFD - under "pyxif.ZerothIFD"
-  For Exif IFD - under "pyxif.ExifIFD"
-  For GPS IFD - under "pyxif.GPSIFD"
-
-Property and appropriate type
-  See variable"TAGS" in this script.
-
-"Byte": int
-"Ascii": str
-"Short": int
-"Long": Long
-"Rational": (long, long)
-"Undefined": str
-"SLong": long
-"SRational": (long, long)
-"""
-
 import copy
 import io
 import struct
@@ -240,9 +205,14 @@ class ExifReader(object):
 
 
 def load(input_data):
-    r"""converts exif bytes to dicts
-    zeroth_dict, exif_dict, gps_dict = pyxif.load(input_data)
-    input_data - filename or JPEG data(b"\xff\xd8......")
+    r"""
+    py:function:: piexif.load(filename)
+
+    Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+
+    :param str filename: JPEG or TIFF
+    :return: 0th IFD, Exif IFD, and GPS IFD
+    :rtype: dict, dict, dict
     """
     exifReader = ExifReader(input_data)
     if exifReader.exif_str is None:
@@ -259,11 +229,14 @@ def load(input_data):
 
 
 def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
-    """converts dict to exif bytes
-    exif_bytes = pyxif.dump(zeroth_ifd, exif_ifd[optional], gps_ifd[optional])
-    zeroth_ifd - dict of 0th IFD
-    exif_ifd - dict of Exif IFD
-    gps_ifd - dict of GPS IFD
+    """
+    py:function:: piexif.load(data)
+
+    Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+
+    :param bytes data: JPEG or TIFF
+    :return: 0th IFD, Exif IFD, and GPS IFD
+    :rtype: dict, dict, dict
     """
     zeroth_ifd = copy.deepcopy(zeroth_ifd_original)
     header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"

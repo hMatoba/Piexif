@@ -1,6 +1,3 @@
-"""
-"""
-
 import io
 import struct
 
@@ -8,9 +5,13 @@ from ._common import *
 
 
 def insert(exif, image, new_file=""):
-    """Inserts exif bytes to JPEG file
-    insert(exif, image, new_file[optional])
-    When "new_file" is not given, "image" file is overwritten.
+    """
+    py:function:: piexif.insert(exif_bytes, filename)
+
+    Insert exif into JPEG.
+
+    :param bytes exif_bytes: Exif as bytes
+    :param str filename: JPEG
     """
     if exif[0:6] != b"\x45\x78\x69\x66\x00\x00":
         raise ValueError("Given data is not exif data")
