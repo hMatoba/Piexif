@@ -11,19 +11,7 @@ Piexif
 Install
 -------
 
-'easy_install'
-
-::
-
-    $ easy_install piexif
-
-or 'pip'
-
-::
-
-    $ pip install --pre piexif
-
-or download .zip, extract it and run
+Download .zip, extract it and run
 
 ::
 
