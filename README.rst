@@ -6,7 +6,7 @@ Piexif
 | This is a renamed project from Pyxif.
 | To simplify exif manipulations with python. Writing, reading, and more...
 | Piexif isn't a wrapper. To everywhere with Python.
-| http://piexif.readthedocs.org/en/latest/
+| http://piexif.readthedocs.org/en/master/
 
 Install
 -------
