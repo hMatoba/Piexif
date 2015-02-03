@@ -54,12 +54,12 @@ Exif in piexif example is below.
     gps_ifd = {piexif.GPSIFD.GPSVersionID: (2, 0, 0, 0),  # BYTE, count 4
                piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1 ... also be accepted '(1,)'
                }
-    exif = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd}
-    exif_bytes = piexif.dump(exif)
+    exif_dict = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd}
+    exif_bytes = piexif.dump(exif_dict)
     
     # round trip
     piexif.insert(exif_bytes, "foo.jpg")
-    e = piexif.load("foo.jpg")
+    exif_dict_tripped = piexif.load("foo.jpg")
 
 On GoogleAppEngine
 ------------------

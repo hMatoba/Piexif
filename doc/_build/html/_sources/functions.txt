@@ -19,18 +19,18 @@ load
 
 ::
 
-    exif = piexif.load("foo.jpg")
-    thumbnail = exif.pop("thumbnail")
+    exif_dict = piexif.load("foo.jpg")
+    thumbnail = exif_dict.pop("thumbnail")
     if thumbnail is not None:
         with open("thumbnail.jpg", "wb+") as f:
             f.write(thumbnail)    
-    for ifd_name in exif:
+    for ifd_name in exif_dict:
         print("\n{0} IFD:".format(ifd_name))
-        for key in exif[ifd_name]:
+        for key in exif_dict[ifd_name]:
             try:
-                print(key, exif[ifd_name][key][:10])
+                print(key, exif_dict[ifd_name][key][:10])
             except:
-                print(key, exif[ifd_name][key])
+                print(key, exif_dict[ifd_name][key])
 
 .. py:function:: piexif.load(data)
 
@@ -43,11 +43,11 @@ load
 dump
 ----
 
-.. py:function:: piexif.dump(exif)
+.. py:function:: piexif.dump(exif_dict)
 
    Return exif as bytes.
 
-   :param dict exif: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
+   :param dict exif_dict: Exif data({"0th":0thIFD - dict, "Exif":ExifIFD - dict, "GPS":GPSIFD - dict, "Interop":InteroperabilityIFD - dict, "1st":1stIFD - dict, "thumbnail":JPEG data - bytes})
    :return: Exif
    :rtype: bytes
 
@@ -60,7 +60,7 @@ dump
     o = io.BytesIO()
     thumb_im = Image.open("foo.jpg")
     thumb_im.thumbnail((50, 50), Image.ANTIALIAS)
-    thumb.save(o, "jpeg")
+    thumb_im.save(o, "jpeg")
     thumbnail = o.getvalue()
 
     zeroth_ifd = {piexif.ImageIFD.Make: u"Canon",
@@ -83,13 +83,13 @@ dump
                  piexif.ImageIFD.Software: u"piexif"
                  }
     
-    exif = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd, "1st":first_ifd, "thumbnail":thumbnail}
-    exif_bytes = piexif.dump(exif)
+    exif_dict = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd, "1st":first_ifd, "thumbnail":thumbnail}
+    exif_bytes = piexif.dump(exif_dict)
     im = Image.open("foo.jpg")
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save("out.jpg", exif=exif_bytes)
 
-Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.Interoperability is for InteroperabilityIFD dict.
+Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.InteropIFD is for InteroperabilityIFD dict.
 
 .. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
 .. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
@@ -106,7 +106,7 @@ insert
 
 ::
 
-    exif_bytes = piexif.dump(exif)
+    exif_bytes = piexif.dump(exif_dict)
     piexif.insert(exif_bytes, "foo.jpg")
 
 .. py:function:: piexif.insert(exif_bytes, data, output)

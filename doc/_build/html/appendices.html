@@ -201,12 +201,12 @@ exif_ifd = {piexif.ExifIFD.ExifVersion: b&quot;\x02\x00\x00\x00&quot;  # UNDEFIN
 gps_ifd = {piexif.GPSIFD.GPSVersionID: (2, 0, 0, 0),  # BYTE, count 4
            piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1 ... also be accepted &#39;(1,)&#39;
            }
-exif = {&quot;0th&quot;:zeroth_ifd, &quot;Exif&quot;:exif_ifd, &quot;GPS&quot;:gps_ifd}
-exif_bytes = piexif.dump(exif)
+exif_dict = {&quot;0th&quot;:zeroth_ifd, &quot;Exif&quot;:exif_ifd, &quot;GPS&quot;:gps_ifd}
+exif_bytes = piexif.dump(exif_dict)
 
 # round trip
 piexif.insert(exif_bytes, &quot;foo.jpg&quot;)
-e = piexif.load(&quot;foo.jpg&quot;)
+exif_dict_tripped = piexif.load(&quot;foo.jpg&quot;)
 </pre></div>
 </div>
 </div>

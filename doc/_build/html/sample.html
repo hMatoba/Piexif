@@ -138,11 +138,11 @@
 <span class="kn">import</span> <span class="nn">piexif</span>
 
 
-<span class="n">exif</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Orientation is &quot;</span><span class="p">,</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">])</span>
-<span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Gamma</span> <span class="ow">in</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;Exif&quot;</span><span class="p">]:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Gamma is &quot;</span><span class="p">,</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;Exif&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Gamma</span><span class="p">])</span>
+<span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Orientation is &quot;</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Gamma</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;Exif&quot;</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Gamma is &quot;</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;Exif&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">Gamma</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -154,11 +154,11 @@
 
 
 <span class="k">def</span> <span class="nf">rotate_jpeg</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">exif</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
-        <span class="n">orientation</span> <span class="o">=</span> <span class="n">exif</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">)</span>
-        <span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
+        <span class="n">orientation</span> <span class="o">=</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">)</span>
+        <span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
 
         <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>

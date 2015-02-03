@@ -11,11 +11,11 @@ Check Containing Tag
     import piexif
 
 
-    exif = piexif.load(filename)
-    if piexif.ImageIFD.Orientation in exif["0th"]:
-        print("Orientation is ", exif["0th"][piexif.ImageIFD.Orientation])
-    if piexif.ExifIFD.Gamma in exif["Exif"]:
-        print("Gamma is ", exif["Exif"][piexif.ExifIFD.Gamma])
+    exif_dict = piexif.load(filename)
+    if piexif.ImageIFD.Orientation in exif_dict["0th"]:
+        print("Orientation is ", exif_dict["0th"][piexif.ImageIFD.Orientation])
+    if piexif.ExifIFD.Gamma in exif_dict["Exif"]:
+        print("Gamma is ", exif_dict["Exif"][piexif.ExifIFD.Gamma])
 
 Rotate Image by Exif Orientation
 --------------------------------
@@ -29,11 +29,11 @@ Rotate image by exif orientation tag and remove orientation tag.
 
 
     def rotate_jpeg(filename):
-        exif = piexif.load(filename)
+        exif_dict = piexif.load(filename)
 
-        if piexif.ImageIFD.Orientation in exif["0th"]:
-            orientation = exif["0th"].pop(piexif.ImageIFD.Orientation)
-            exif_bytes = piexif.dump(exif)
+        if piexif.ImageIFD.Orientation in exif_dict["0th"]:
+            orientation = exif_dict["0th"].pop(piexif.ImageIFD.Orientation)
+            exif_bytes = piexif.dump(exif_dict)
 
             img = Image.open(filename)
             if orientation == 2:
