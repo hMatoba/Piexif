@@ -10,8 +10,6 @@ Welcome to Piexif's documentation!
    :target: https://travis-ci.org/hMatoba/Piexif
 .. image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
-.. image:: https://readthedocs.org/projects/piexif/badge/?version=latest
-   :target: https://readthedocs.org/projects/piexif/
 
 To simplify exif manipulations with python. Writing, reading, and more... Piexif isn't a wrapper. To everywhere with Python.
 

@@ -419,9 +419,7 @@ class ExifTests(unittest.TestCase):
         thumb.thumbnail((40, 40))
         thumb.save(thumbnail_io, "JPEG")
         thumb.close()
-        thumb.seek(0)
         thumb_data = thumbnail_io.getvalue()
-        print(len(thumb_data))
         exif_dict = {"0th":ZEROTH_DICT,
                      "Exif":EXIF_DICT,
                      "GPS":GPS_DICT,
@@ -446,7 +444,6 @@ class ExifTests(unittest.TestCase):
         exif["1st"].pop(513) # pointer to exif IFD
         exif["1st"].pop(514) # pointer to GPS IFD
         self.assertDictEqual(FIRST_DICT, exif["1st"])
-        print(len(exif["thumbnail"]))
         Image.open(io.BytesIO(exif["thumbnail"])).close()
 
     def test_roundtrip_files(self):
