@@ -1,6 +1,5 @@
 import copy
 import io
-import re
 import struct
 import sys
 
@@ -366,7 +365,7 @@ def dump(exif_dict_original):
 
 def get_thumbnail(jpeg):
     segments = split_into_segments(jpeg)
-    while re.match(b"\xff[\xe0-\xe9]", segments[1][0:2]):
+    while (b"\xff\xe0" <= segments[1][0:2] <= b"\xff\xef"):
         segments.pop(1)
     thumbnail = b"".join(segments)
     return thumbnail
