@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Piexif 1.0.0 documentation</title>
+  <title>Changelog &mdash; Piexif 1.0.0 documentation</title>
   
 
   
@@ -30,7 +30,8 @@
   
         <link rel="author" title="About these documents"
               href="about.html"/>
-    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/> 
+    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/>
+        <link rel="prev" title="Samples" href="sample.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -49,7 +50,7 @@
         
         
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -61,7 +62,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#dependency">Dependency</a></li>
@@ -88,9 +89,9 @@
 <li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#b">1.0.0b</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#c">0.7.0c</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#b">1.0.0b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c">0.7.0c</a></li>
 </ul>
 </li>
 </ul>
@@ -117,8 +118,10 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li></li>
+    <li>Changelog</li>
       <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/changes.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -126,22 +129,34 @@
 </div>
           <div role="main" class="document">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="b">
+<h2>1.0.0b<a class="headerlink" href="#b" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Add handling InteroperabilityIFD, 1stIFD, and thumbnail image.</li>
+<li>&#8216;load&#8217; returns a dict that contains &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221; keys.</li>
+<li>&#8216;dump&#8217; argument is changed from three dicts to a dict.</li>
+</ul>
+</div>
+<div class="section" id="c">
+<h2>0.7.0c<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Rename project.</li>
+</ul>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sample.html" class="btn btn-neutral" title="Samples"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -178,7 +193,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
 
@@ -194,14 +208,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

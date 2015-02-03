@@ -23,6 +23,7 @@ To simplify exif manipulations with python. Writing, reading, and more... Piexif
    functions
    appendices
    sample
+   changes
 
 Indices and tables
 ==================

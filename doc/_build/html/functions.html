@@ -66,7 +66,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#dependency">Dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
 </ul>
@@ -86,7 +86,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sample.html">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#check-containing-tag">Check Containing Tag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#b">1.0.0b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#c">0.7.0c</a></li>
 </ul>
 </li>
 </ul>
@@ -193,18 +199,6 @@
 </div>
 <div class="section" id="dump">
 <h2>dump<a class="headerlink" href="#dump" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If &#8216;thumbnail&#8217; contained, &#8216;1st&#8217; must be contained &#8211; and vice versa.</p>
-</div>
 <dl class="function">
 <dt id="piexif.dump">
 <tt class="descclassname">piexif.</tt><tt class="descname">dump</tt><big>(</big><em>exif</em><big>)</big><a class="headerlink" href="#piexif.dump" title="Permalink to this definition">¶</a></dt>
@@ -261,6 +255,18 @@
 </pre></div>
 </div>
 <p>Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.Interoperability is for InteroperabilityIFD dict.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If &#8216;thumbnail&#8217; is contained, &#8216;1st&#8217; must be contained &#8211; and vice versa.</p>
+</div>
 </div>
 <div class="section" id="insert">
 <h2>insert<a class="headerlink" href="#insert" title="Permalink to this headline">¶</a></h2>

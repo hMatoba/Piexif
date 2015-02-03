@@ -43,10 +43,6 @@ load
 dump
 ----
 
-.. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
-.. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
-.. note:: If 'thumbnail' contained, '1st' must be contained -- and vice versa. 
-
 .. py:function:: piexif.dump(exif)
 
    Return exif as bytes.
@@ -94,6 +90,10 @@ dump
     im.save("out.jpg", exif=exif_bytes)
 
 Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.Interoperability is for InteroperabilityIFD dict.
+
+.. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
+.. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
+.. note:: If 'thumbnail' is contained, '1st' must be contained -- and vice versa. 
 
 insert
 ------
