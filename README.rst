@@ -4,6 +4,7 @@ Piexif
 |Build Status| |Coverage Status| |docs|
 
 This is a renamed project from Pyxif. To simplify exif manipulations with python. Writing, reading, and more... Piexif isn't a wrapper. To everywhere with Python.
+
 Document: http://piexif.readthedocs.org/en/1.0.x/
 
 Install
