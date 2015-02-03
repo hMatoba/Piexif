@@ -3,6 +3,7 @@ Functions
 =========
 
 .. warning:: It could set any value in exif without actual value. For example, actual XResolution is 300, whereas XResolution value in exif is 0. Confliction might happen.
+.. warning:: To edit exif tags and values appropriately, read official document from P167-. http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 .. note:: This document is written for using Piexif on Python 3.x.
 
 
@@ -10,48 +11,66 @@ load
 ----
 .. py:function:: piexif.load(filename)
 
-   Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+   Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
 
    :param str filename: JPEG or TIFF
-   :return: 0th IFD, Exif IFD, and GPS IFD
-   :rtype: dict, dict, dict
+   :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
+   :rtype: dict
 
 ::
 
-    zeroth_ifd, exif_ifd, gps_ifd = piexif.load("foo.jpg")
-    for key in zeroth_dict:
-        print(key, zeroth_ifd[key])
-    for key in exif_dict:
-        print(key, exif_ifd[key])
-    for key in gps_dict:
-        print(key, gps_ifd[key])
+    exif = piexif.load("foo.jpg")
+    thumbnail = exif.pop("thumbnail")
+    if thumbnail is not None:
+        with open("thumbnail.jpg", "wb+") as f:
+            f.write(thumbnail)    
+    for ifd_name in exif:
+        print("\n{0} IFD:".format(ifd_name))
+        for key in exif[ifd_name]:
+            try:
+                print(key, exif[ifd_name][key][:10])
+            except:
+                print(key, exif[ifd_name][key])
 
 .. py:function:: piexif.load(data)
 
-   Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+   Return exif data as dict. The keys(IFD name), will be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". If there is no data to return, the key won't be contained. Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
 
    :param bytes data: JPEG or TIFF
-   :return: 0th IFD, Exif IFD, and GPS IFD
-   :rtype: dict, dict, dict
+   :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
+   :rtype: dict
 
 dump
 ----
-.. py:function:: piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+
+.. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
+.. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
+.. note:: If 'thumbnail' contained, '1st' must be contained -- and vice versa. 
+
+.. py:function:: piexif.dump(exif)
 
    Return exif as bytes.
 
-   :param dict zeroth_ifd: 0th IFD as dict
-   :param dict exif_ifd: Exif IFD as dict
-   :param dict gps_ifd: GPS IFD as dict
+   :param dict exif: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
    :return: Exif
    :rtype: bytes
 
 ::
 
-    zeroth_ifd = {piexif.ZerothIFD.Make: u"Canon",
-                  piexif.ZerothIFD.XResolution: (96, 1),
-                  piexif.ZerothIFD.YResolution: (96, 1),
-                  piexif.ZerothIFD.Software: u"piexif"
+    import io
+    from PIL import Image
+    import piexif
+
+    o = io.BytesIO()
+    thumb_im = Image.open("foo.jpg")
+    thumb_im.thumbnail((50, 50), Image.ANTIALIAS)
+    thumb.save(o, "jpeg")
+    thumbnail = o.getvalue()
+
+    zeroth_ifd = {piexif.ImageIFD.Make: u"Canon",
+                  piexif.ImageIFD.XResolution: (96, 1),
+                  piexif.ImageIFD.YResolution: (96, 1),
+                  piexif.ImageIFD.Software: u"piexif"
                   }
     exif_ifd = {piexif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",
                 piexif.ExifIFD.LensMake: u"LensMake",
@@ -62,12 +81,19 @@ dump
                piexif.GPSIFD.GPSAltitudeRef: 1,
                piexif.GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99",
                }
-    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
-    from PIL import Image
+    first_ifd = {piexif.ImageIFD.Make: u"Canon",
+                 piexif.ImageIFD.XResolution: (40, 1),
+                 piexif.ImageIFD.YResolution: (40, 1),
+                 piexif.ImageIFD.Software: u"piexif"
+                 }
+    
+    exif = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd, "1st":first_ifd, "thumbnail":thumbnail}
+    exif_bytes = piexif.dump(exif)
     im = Image.open("foo.jpg")
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save("out.jpg", exif=exif_bytes)
 
+Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.Interoperability is for InteroperabilityIFD dict.
 
 insert
 ------
@@ -80,7 +106,7 @@ insert
 
 ::
 
-    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    exif_bytes = piexif.dump(exif)
     piexif.insert(exif_bytes, "foo.jpg")
 
 .. py:function:: piexif.insert(exif_bytes, data, output)

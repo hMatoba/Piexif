@@ -45,10 +45,10 @@ How to Use
 
 ::
 
-    zeroth_ifd = {piexif.ZerothIFD.Make: u"Canon",
-                  piexif.ZerothIFD.XResolution: (96, 1),
-                  piexif.ZerothIFD.YResolution: (96, 1),
-                  piexif.ZerothIFD.Software: u"paint.net 4.0.3",
+    zeroth_ifd = {piexif.ImageIFD.Make: u"Canon",
+                  piexif.ImageIFD.XResolution: (96, 1),
+                  piexif.ImageIFD.YResolution: (96, 1),
+                  piexif.ImageIFD.Software: u"paint.net 4.0.3",
                   }
 
     exif_ifd = {piexif.ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10",
@@ -63,7 +63,8 @@ How to Use
                }
 
     # dump and insert
-    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    exif = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd}
+    exif_bytes = piexif.dump(exif)
     piexif.insert(exif_bytes, "in.jpg")
 
     # with Pillow
@@ -73,7 +74,7 @@ How to Use
     im.save(output_file, exif=exif_bytes)
 
     # load
-    zeroth_dict, exif_dict, gps_dict = piexif.load("in.jpg")
+    exif_dict = piexif.load("in.jpg")
 
     # remove
     piexif.remove("in.jpg")
@@ -93,7 +94,7 @@ on GoogleAppEngine
     piexif.insert(exif_bytes, jpg_data, output)
 
     # load
-    zeroth_dict, exif_dict, gps_dict = piexif.load(jpg_data)
+    exif_dict = piexif.load(jpg_data)
 
     # remove
     piexif.remove(jpg_data, output)
@@ -113,13 +114,13 @@ Tag Name and Value Type
 ::
 
     BYTE: {GPSIFD.GPSAltitudeRef: 1}
-    ASCII: {ZerothIFD.Make: u"Make"}
-    SHORT: {ZerothIFD.ResolutionUnit: 65535}
-    SHORT(count:3): {ZerothIFD.BitsPerSample: (24, 24, 24)}
-    LONG: {ZerothIFD.JPEGInterchangeFormatLength: 4294967295}
-    RATIONAL: {ZerothIFD.XResolution: (4294967295, 1)}
+    ASCII: {ImageIFD.Make: u"Make"}
+    SHORT: {ImageIFD.ResolutionUnit: 65535}
+    SHORT(count:3): {ImageIFD.BitsPerSample: (24, 24, 24)}
+    LONG: {ImageIFD.JPEGInterchangeFormatLength: 4294967295}
+    RATIONAL: {ImageIFD.XResolution: (4294967295, 1)}
     UNDEFINED: {ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa"}
-    SRATIONAL(count:3): {ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1))}
+    SRATIONAL(count:3): {ImageIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1))}
 
 Depends on
 ----------

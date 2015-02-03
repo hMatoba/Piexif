@@ -1,4 +1,5 @@
 import copy
+import glob
 import io
 import os
 import struct
@@ -8,8 +9,9 @@ import unittest
 from PIL import Image
 import piexif
 from piexif import _common
+from piexif._exif import TAGS
 
-ZerothIFD = piexif.ZerothIFD
+ImageIFD = piexif.ImageIFD
 ExifIFD = piexif.ExifIFD
 GPSIFD = piexif.GPSIFD
 
@@ -31,19 +33,18 @@ with open(INPUT_FILE2, "rb") as f:
     I2 = f.read()
 
 
-ZEROTH_DICT = {ZerothIFD.Software: u"PIL", # ascii
-               ZerothIFD.Make: u"Make", # ascii
-               ZerothIFD.Model: u"XXX-XXX", # ascii
-               ZerothIFD.ResolutionUnit: 65535, # short
-               ZerothIFD.BitsPerSample: (24, 24, 24), # short * 3
-               ZerothIFD.JPEGInterchangeFormatLength: 4294967295, # long
-               ZerothIFD.XResolution: (4294967295, 1), # rational
-               ZerothIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1)),  # srational
+ZEROTH_DICT = {ImageIFD.Software: b"PIL", # ascii
+               ImageIFD.Make: b"Make", # ascii
+               ImageIFD.Model: b"XXX-XXX", # ascii
+               ImageIFD.ResolutionUnit: 65535, # short
+               ImageIFD.BitsPerSample: (24, 24, 24), # short * 3
+               ImageIFD.XResolution: (4294967295, 1), # rational
+               ImageIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1)),  # srational
                }
 
 
-EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
-             ExifIFD.LensMake: u"LensMake", # ascii
+EXIF_DICT = {ExifIFD.DateTimeOriginal: b"2099:09:29 10:10:10", # ascii
+             ExifIFD.LensMake: b"LensMake", # ascii
              ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa",  # undefined
              ExifIFD.Sharpness: 65535, # short
              ExifIFD.ISOSpeed: 4294967295, # long
@@ -55,10 +56,21 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: u"2099:09:29 10:10:10", # ascii
 
 GPS_DICT = {GPSIFD.GPSVersionID: (0, 0, 0, 1), # byte
             GPSIFD.GPSAltitudeRef: 1, # byte
-            GPSIFD.GPSDateStamp: u"1999:99:99 99:99:99", # ascii
+            GPSIFD.GPSDateStamp: b"1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
             GPSIFD.GPSLatitude: (4294967295, 1), # rational
             }
+
+
+FIRST_DICT = {ImageIFD.Software: b"PIL", # ascii
+              ImageIFD.Make: b"Make", # ascii
+              ImageIFD.Model: b"XXX-XXX", # ascii
+              ImageIFD.BitsPerSample: (24, 24, 24), # short * 3
+              ImageIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1)),  # srational
+              }
+
+
+INTEROP_DICT = {piexif.InteropIFD.InteroperabilityIndex: b"R98"}
 
 
 def load_exif_by_PIL(f):
@@ -137,19 +149,23 @@ class ExifTests(unittest.TestCase):
         Image.open(o).close()
 
     def test_no_exif_load(self):
-        z, e, g = piexif.load(NOEXIF_FILE)
-        self.assertDictEqual(z, {})
-        self.assertDictEqual(e, {})
-        self.assertDictEqual(g, {})
+        exif_dict = piexif.load(NOEXIF_FILE)
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
 
     def test_no_exif_dump(self):
         o = io.BytesIO()
-        exif_bytes = piexif.dump({}, {}, {})
+        exif_bytes = piexif.dump({})
         i = Image.new("RGBA", (8, 8))
         i.save(o, format="jpeg", exif=exif_bytes)
         o.seek(0)
-        exif = load_exif_by_PIL(o)
-        self.assertDictEqual({},  exif)
+        exif_dict2 = load_exif_by_PIL(o)
+        self.assertDictEqual({},  exif_dict2)
 
     def test_transplant(self):
         piexif.transplant(INPUT_FILE1, INPUT_FILE2, "transplant.jpg")
@@ -162,39 +178,53 @@ class ExifTests(unittest.TestCase):
         self.assertNotEqual(img_src, generated)
 
         piexif.transplant(INPUT_FILE1, "transplant.jpg")
-        self.assertEqual(piexif.load(INPUT_FILE1), piexif.load("transplant.jpg"))
+        self.assertEqual(piexif.load(INPUT_FILE1),
+                         piexif.load("transplant.jpg"))
 
         with  self.assertRaises(ValueError):
             piexif.transplant(NOEXIF_FILE, INPUT_FILE2, "foo.jpg")
 
-    def test_transplant2(self):
+    def test_transplant_m(self):
         """'transplant' on memory.
         """
         o = io.BytesIO()
         piexif.transplant(I1, I2, o)
         self.assertEqual(piexif.load(I1), piexif.load(o.getvalue()))
-        i = Image.open(o).close()
+        Image.open(o).close()
 
     def test_remove(self):
         piexif.remove(INPUT_FILE1, "remove.jpg")
-        exif = piexif.load("remove.jpg")[0]
-        self.assertEqual(exif, {})
-        exif = load_exif_by_PIL("remove.jpg")
-        piexif.remove("remove.jpg")
+        exif_dict = piexif.load("remove.jpg")
+        none_dict = {"0th":{},
+                "Exif":{},
+                "GPS":{},
+                "Interop":{},
+                "1st":{},
+                "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
 
-    def test_remove2(self):
+    def test_remove_m(self):
         """'remove' on memory.
         """
         o = io.BytesIO()
         with  self.assertRaises(ValueError):
             piexif.remove(I1)
         piexif.remove(I1, o)
-        exif = piexif.load(o.getvalue())
-        self.assertEqual(exif, ({}, {}, {}))
-        exif = load_exif_by_PIL(o)
+        exif_dict = piexif.load(o.getvalue())
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
+        Image.open(o).close()
 
     def test_load(self):
-        zeroth_dict, exif_dict, gps_dict = piexif.load(INPUT_FILE1)
+        exif = piexif.load(INPUT_FILE1)
+        zeroth_dict = exif["0th"]
+        exif_dict = exif["Exif"]
+        gps_dict = exif["GPS"]
         e = load_exif_by_PIL(INPUT_FILE1)
         if 34853 in zeroth_dict:
             zeroth_dict.pop(34853)
@@ -202,25 +232,48 @@ class ExifTests(unittest.TestCase):
             gps = e.pop(34853)
         for key in sorted(zeroth_dict):
             if key in e:
-                self.assertEqual(zeroth_dict[key], e[key])
+                if (isinstance(zeroth_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(zeroth_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(zeroth_dict[key], e[key])
+                else:
+                    self.assertEqual(zeroth_dict[key], e[key])
         for key in sorted(exif_dict):
             if key in e:
-                self.assertEqual(exif_dict[key], e[key])
+                if (isinstance(exif_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(exif_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(exif_dict[key], e[key])
+                else:
+                    self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in gps:
-                if ((type(gps_dict[key]) == tuple) and
+                if (isinstance(gps_dict[key], tuple) and
                     (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif ((type(gps_dict[key]) == int) and
+                elif (isinstance(gps_dict[key], int) and
                       (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                elif ((isinstance(gps_dict[key], bytes)) and
+                      (isinstance(gps[key], str))):
+                    try:
+                        self.assertEqual(gps_dict[key].decode(), gps[key])
+                    except:
+                        self.assertEqual(gps_dict[key], gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
 
-    def test_load2(self):
+    def test_load_m(self):
         """'load' on memory.
         """
-        zeroth_dict, exif_dict, gps_dict = piexif.load(I1)
+        exif = piexif.load(I1)
+        zeroth_dict = exif["0th"]
+        exif_dict = exif["Exif"]
+        gps_dict = exif["GPS"]
         e = load_exif_by_PIL(INPUT_FILE1)
         if 34853 in zeroth_dict:
             zeroth_dict.pop(34853)
@@ -228,25 +281,46 @@ class ExifTests(unittest.TestCase):
             gps = e.pop(34853)
         for key in sorted(zeroth_dict):
             if key in e:
-                self.assertEqual(zeroth_dict[key], e[key])
+                if (isinstance(zeroth_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(zeroth_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(zeroth_dict[key], e[key])
+                else:
+                    self.assertEqual(zeroth_dict[key], e[key])
         for key in sorted(exif_dict):
             if key in e:
-                self.assertEqual(exif_dict[key], e[key])
+                if (isinstance(exif_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(exif_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(exif_dict[key], e[key])
+                else:
+                    self.assertEqual(exif_dict[key], e[key])
         for key in sorted(gps_dict):
             if key in gps:
-                if ((type(gps_dict[key]) == tuple) and
+                if (isinstance(gps_dict[key], tuple) and
                     (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif ((type(gps_dict[key]) == int) and
+                elif (isinstance(gps_dict[key], int) and
                       (type(gps_dict[key]) != type(gps[key]))):
                     self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                elif ((isinstance(gps_dict[key], bytes)) and
+                      (isinstance(gps[key], str))):
+                    try:
+                        self.assertEqual(gps_dict[key].decode(), gps[key])
+                    except:
+                        self.assertEqual(gps_dict[key], gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
 
     def test_load_le(self):
         """load test of little endian exif
         """
-        zeroth_dict, exif_dict, gps_dict = piexif.load(INPUT_FILE_LE1)
+        exif = piexif.load(INPUT_FILE_LE1)
+        zeroth_dict, exif_dict = exif["0th"], exif["Exif"]
         exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
         e = load_exif_by_PIL(INPUT_FILE_LE1)
         if 34853 in zeroth_dict:
@@ -255,23 +329,28 @@ class ExifTests(unittest.TestCase):
             gps = e.pop(34853)
         for key in sorted(zeroth_dict):
             if key in e:
-                self.assertEqual(zeroth_dict[key], e[key])
+                if (isinstance(zeroth_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(zeroth_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(zeroth_dict[key], e[key])
+                else:
+                    self.assertEqual(zeroth_dict[key], e[key])
         for key in sorted(exif_dict):
             if key in e:
-                self.assertEqual(exif_dict[key], e[key])
-        for key in sorted(gps_dict):
-            if key in gps:
-                if ((type(gps_dict[key]) == tuple) and
-                    (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif ((type(gps_dict[key]) == int) and
-                      (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                if (isinstance(exif_dict[key], bytes) and
+                    isinstance(e[key], str)):
+                    try:
+                        self.assertEqual(exif_dict[key].decode(), e[key])
+                    except:
+                        self.assertEqual(exif_dict[key], e[key])
                 else:
-                    self.assertEqual(gps_dict[key], gps[key])
+                    self.assertEqual(exif_dict[key], e[key])
 
     def test_dump(self):
-        exif_bytes = piexif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
         im = Image.new("RGBA", (8, 8))
 
         o = io.BytesIO()
@@ -281,7 +360,8 @@ class ExifTests(unittest.TestCase):
         exif = load_exif_by_PIL(o)
 
     def test_insert(self):
-        exif_bytes = piexif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
         piexif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
         exif = load_exif_by_PIL("insert.jpg")
 
@@ -292,43 +372,119 @@ class ExifTests(unittest.TestCase):
 
         piexif.insert(exif_bytes, "insert.jpg")
 
-    def test_insert2(self):
+    def test_insert_m(self):
         """'insert' on memory.
         """
-        exif_bytes = piexif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
         o = io.BytesIO()
         piexif.insert(exif_bytes, I1, o)
         self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
         exif = load_exif_by_PIL(o)
 
     def test_dump_and_load(self):
-        exif_bytes = piexif.dump(ZEROTH_DICT, EXIF_DICT, GPS_DICT)
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
         im = Image.new("RGBA", (8, 8))
 
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        zeroth_ifd, exif_ifd, gps_ifd = piexif.load(o.getvalue())
-        zeroth_ifd.pop(ZerothIFD.ExifTag) # pointer to exif IFD
-        zeroth_ifd.pop(ZerothIFD.GPSTag) # pointer to GPS IFD
+        exif = piexif.load(o.getvalue())
+        zeroth_ifd, exif_ifd, gps_ifd = exif["0th"], exif["Exif"], exif["GPS"]
+        zeroth_ifd.pop(ImageIFD.ExifTag) # pointer to exif IFD
+        zeroth_ifd.pop(ImageIFD.GPSTag) # pointer to GPS IFD
         self.assertDictEqual(ZEROTH_DICT, zeroth_ifd)
         self.assertDictEqual(EXIF_DICT, exif_ifd)
         self.assertDictEqual(GPS_DICT, gps_ifd)
 
     def test_load_tif(self):
-        zeroth_ifd, exif_ifd, gps_ifd = piexif.load(INPUT_FILE_TIF)
-        exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+        exif = piexif.load(INPUT_FILE_TIF)
+        zeroth_ifd = exif["0th"]
+        exif_bytes = piexif.dump({"0th":zeroth_ifd})
 
         im = Image.new("RGBA", (8, 8))
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        zeroth_ifd2, exif_ifd2, gps_ifd2 = piexif.load(o.getvalue())
+        exif2 = piexif.load(o.getvalue())
+        zeroth_ifd2 = exif2["0th"]
         self.assertDictEqual(zeroth_ifd, zeroth_ifd2)
-        self.assertDictEqual(exif_ifd, exif_ifd2)
-        self.assertDictEqual(gps_ifd, gps_ifd2)
+
+    def test_dump_and_load_2(self):
+        thumbnail_io = io.BytesIO()
+        thumb = Image.open(INPUT_FILE2)
+        thumb.thumbnail((40, 40))
+        thumb.save(thumbnail_io, "JPEG")
+        thumb.close()
+        thumb.seek(0)
+        thumb_data = thumbnail_io.getvalue()
+        print(len(thumb_data))
+        exif_dict = {"0th":ZEROTH_DICT,
+                     "Exif":EXIF_DICT,
+                     "GPS":GPS_DICT,
+                     "Interop":INTEROP_DICT,
+                     "1st":FIRST_DICT,
+                     "thumbnail":thumb_data}
+        exif_bytes = piexif.dump(exif_dict)
+        im = Image.new("RGBA", (80, 80))
+
+        o = io.BytesIO()
+        im.save(o, format="jpeg", exif=exif_bytes)
+        im.close()
+        o.seek(0)
+        exif = piexif.load(o.getvalue())
+        exif["0th"].pop(ImageIFD.ExifTag) # pointer to exif IFD
+        exif["0th"].pop(ImageIFD.GPSTag) # pointer to GPS IFD
+        exif["0th"].pop(ImageIFD.InteroperabilityPointer)
+        self.assertDictEqual(ZEROTH_DICT, exif["0th"])
+        self.assertDictEqual(EXIF_DICT, exif["Exif"])
+        self.assertDictEqual(GPS_DICT, exif["GPS"])
+        self.assertDictEqual(INTEROP_DICT, exif["Interop"])
+        exif["1st"].pop(513) # pointer to exif IFD
+        exif["1st"].pop(514) # pointer to GPS IFD
+        self.assertDictEqual(FIRST_DICT, exif["1st"])
+        print(len(exif["thumbnail"]))
+        Image.open(io.BytesIO(exif["thumbnail"])).close()
+
+    def test_roundtrip_files(self):
+        files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
+        for input_file in files:
+            exif = piexif.load(input_file)
+            exif_bytes = piexif.dump(exif)
+            o = io.BytesIO()
+            piexif.insert(exif_bytes, input_file, o)
+            e = piexif.load(o.getvalue())
+            if "thumbnail" in e:
+                t = e.pop("thumbnail")
+                thumbnail = exif.pop("thumbnail")
+                if not (b"\xe0" <= thumbnail[3:4] <= b"\xef"):
+                    self.assertEqual(t, thumbnail)
+                else:
+                    print("Given JPEG doesn't follow exif thumbnail standard. "
+                          "APPn segments in thumbnail should be removed, "
+                          "whereas thumbnail JPEG has it. \n: " +
+                          input_file)
+            for ifd_name in e:
+                if ifd_name == "0th":
+                    if ImageIFD.ExifTag in exif["0th"]:
+                        exif["0th"].pop(ImageIFD.ExifTag)
+                        e["0th"].pop(ImageIFD.ExifTag)
+                    if ImageIFD.GPSTag in exif["0th"]:
+                        exif["0th"].pop(ImageIFD.GPSTag)
+                        e["0th"].pop(ImageIFD.GPSTag)
+                    if ImageIFD.InteroperabilityPointer in exif["0th"]:
+                        exif["0th"].pop(ImageIFD.InteroperabilityPointer)
+                        e["0th"].pop(ImageIFD.InteroperabilityPointer)
+                elif ifd_name == "1st":
+                    exif["1st"].pop(513)
+                    e["1st"].pop(513)
+                    exif["1st"].pop(514)
+                    e["1st"].pop(514)
+                for key in exif[ifd_name]:
+                    self.assertEqual(exif[ifd_name][key], e[ifd_name][key])
 
 
 def suite():

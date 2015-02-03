@@ -1,5 +1,5 @@
 TAGS = {
-    'Zeroth': {11: {'name': 'ProcessingSoftware', 'type': 'Ascii'},
+    'Image': {11: {'name': 'ProcessingSoftware', 'type': 'Ascii'},
                254: {'name': 'NewSubfileType', 'type': 'Long'},
                255: {'name': 'SubfileType', 'type': 'Short'},
                256: {'name': 'ImageWidth', 'type': 'Long'},
@@ -105,6 +105,7 @@ TAGS = {
                40093: {'name': 'XPAuthor', 'type': 'Byte'},
                40094: {'name': 'XPKeywords', 'type': 'Byte'},
                40095: {'name': 'XPSubject', 'type': 'Byte'},
+               40965: {'name': 'InteroperabilityPointer', 'type': 'Ascii'},
                50341: {'name': 'PrintImageMatching', 'type': 'Undefined'},
                50706: {'name': 'DNGVersion', 'type': 'Byte'},
                50707: {'name': 'DNGBackwardVersion', 'type': 'Byte'},
@@ -253,7 +254,7 @@ TAGS = {
              42036: {'name': 'LensModel', 'type': 'Ascii'},
              42037: {'name': 'LensSerialNumber', 'type': 'Ascii'},
              42240: {'name': 'Gamma', 'type': 'Rational'}},
-    'GPSInfo': {0: {'name': 'GPSVersionID', 'type': 'Byte'},
+    'GPS': {0: {'name': 'GPSVersionID', 'type': 'Byte'},
                 1: {'name': 'GPSLatitudeRef', 'type': 'Ascii'},
                 2: {'name': 'GPSLatitude', 'type': 'Rational'},
                 3: {'name': 'GPSLongitudeRef', 'type': 'Ascii'},
@@ -284,11 +285,12 @@ TAGS = {
                 28: {'name': 'GPSAreaInformation', 'type': 'Undefined'},
                 29: {'name': 'GPSDateStamp', 'type': 'Ascii'},
                 30: {'name': 'GPSDifferential', 'type': 'Short'},
-                31: {'name': 'GPSHPositioningError', 'type': 'Rational'}}
+                31: {'name': 'GPSHPositioningError', 'type': 'Rational'}},
+    'Interop': {1: {'name': 'InteroperabilityIndex', 'type': 'Ascii'}},
 }
 
 
-class ZerothIFD:
+class ImageIFD:
     """Exif tag number reference - 0th IFD"""
     ProcessingSoftware = 11
     NewSubfileType = 254
@@ -396,6 +398,7 @@ class ZerothIFD:
     XPAuthor = 40093
     XPKeywords = 40094
     XPSubject = 40095
+    InteroperabilityPointer = 40965
     PrintImageMatching = 50341
     DNGVersion = 50706
     DNGBackwardVersion = 50707
@@ -585,3 +588,8 @@ class GPSIFD:
     GPSDateStamp = 29
     GPSDifferential = 30
     GPSHPositioningError = 31
+
+
+class InteropIFD:
+    """Exif tag number reference - Interoperability IFD"""
+    InteroperabilityIndex = 1

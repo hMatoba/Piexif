@@ -1,5 +1,6 @@
 import copy
 import io
+import re
 import struct
 import sys
 
@@ -13,15 +14,14 @@ else:
     NUMBER_TYPE = int
 
 
-TYPES = {
-    "Byte": 1,
-    "Ascii": 2,
-    "Short": 3,
-    "Long": 4,
-    "Rational": 5,
-    "Undefined": 7,
-    "SLong": 9,
-    "SRational": 10}
+TYPES = {"Byte": 1,
+         "Ascii": 2,
+         "Short": 3,
+         "Long": 4,
+         "Rational": 5,
+         "Undefined": 7,
+         "SLong": 9,
+         "SRational": 10}
 
 
 POINTERS = (34665, 34853)
@@ -60,39 +60,19 @@ class ExifReader(object):
         else:
             raise ValueError("Given file is neither JPEG nor TIFF.")
 
-    def get_exif_ifd(self):
-        if self.exif_str is None:
-            raise ValueError("exif_str is empty.")
-        exif_dict = {}
-        gps_dict = {}
-
-        if self.exif_str[0:2] == LITTLE_ENDIAN:
-            self.endian_mark = "<"
-        else:
-            self.endian_mark = ">"
-        pointer = struct.unpack(self.endian_mark + "L", self.exif_str[4:8])[0]
-        zeroth_dict = self.get_ifd_dict(pointer)
-
-        if 34665 in zeroth_dict:
-            pointer = struct.unpack(self.endian_mark + "L",
-                                    zeroth_dict[34665][2])[0]
-            exif_dict = self.get_ifd_dict(pointer)
-
-        if 34853 in zeroth_dict:
-            pointer = struct.unpack(self.endian_mark + "L",
-                                    zeroth_dict[34853][2])[0]
-            gps_dict = self.get_ifd_dict(pointer)
-
-        return zeroth_dict, exif_dict, gps_dict
-
-    def get_ifd_dict(self, pointer):
+    def get_ifd_dict(self, pointer, ifd_name, read_unknown=False):
         ifd_dict = {}
         tag_count = struct.unpack(self.endian_mark + "H",
                                   self.exif_str[pointer: pointer+2])[0]
         offset = pointer + 2
+        if ifd_name in ["0th", "1st"]:
+            t = "Image"
+        else:
+            t = ifd_name
+        p_and_value = []
         for x in range(tag_count):
             pointer = offset + 12 * x
-            tag_code = struct.unpack(self.endian_mark + "H",
+            tag = struct.unpack(self.endian_mark + "H",
                        self.exif_str[pointer: pointer+2])[0]
             value_type = struct.unpack(self.endian_mark + "H",
                          self.exif_str[pointer + 2: pointer + 4])[0]
@@ -100,14 +80,21 @@ class ExifReader(object):
                                       self.exif_str[pointer + 4: pointer + 8]
                                       )[0]
             value = self.exif_str[pointer+8: pointer+12]
-            ifd_dict.update({tag_code:[value_type, value_num, value]})
+            p_and_value.append((pointer, value_type, value_num, value))
+            v_set = (value_type, value_num, value)
+            if tag in TAGS[t]:
+                ifd_dict[tag] = self.convert_value(v_set)
+            elif read_unknown:
+                ifd_dict[tag] = v_set
+            else:
+                pass
 
-#            # any length number value
-#            if (value_type in (1, 3, 4, 9)) and (value_num > 1):
-#                print(tag_code, value_type, value_num, value)
+        if ifd_name == "0th":
+            pointer = offset + 12 * tag_count
+            ifd_dict["first_ifd_pointer"] = self.exif_str[pointer:pointer + 4]
         return ifd_dict
 
-    def get_info(self, val):
+    def convert_value(self, val):
         data = None
         t = val[0]
         length = val[1]
@@ -126,10 +113,6 @@ class ExifReader(object):
                 data = self.exif_str[pointer: pointer+length - 1]
             else:
                 data = value[0: length - 1]
-            try:
-                data = data.decode()
-            except:
-                pass
         elif t == 3: # SHORT
             if length > 2:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
@@ -183,9 +166,9 @@ class ExifReader(object):
             if length > 1:
                 data = tuple(
                   (struct.unpack(self.endian_mark + "l",
-                    self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
+                   self.exif_str[pointer + x * 8: pointer + 4 + x * 8])[0],
                    struct.unpack(self.endian_mark + "l",
-                    self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
+                   self.exif_str[pointer + 4 + x * 8: pointer + 8 + x * 8])[0])
                   for x in range(length)
                 )
             else:
@@ -208,50 +191,93 @@ def load(input_data):
     r"""
     py:function:: piexif.load(filename)
 
-    Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+    Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
 
     :param str filename: JPEG or TIFF
-    :return: 0th IFD, Exif IFD, and GPS IFD
-    :rtype: dict, dict, dict
+    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
+    :rtype: dict
     """
+    exif_dict = {"0th":{},
+                 "Exif":{},
+                 "GPS":{},
+                 "Interop":{},
+                 "1st":{},
+                 "thumbnail":None}
     exifReader = ExifReader(input_data)
     if exifReader.exif_str is None:
-        return {}, {}, {}
-    zeroth_ifd, exif_ifd, gps_ifd = exifReader.get_exif_ifd()
-    zeroth_dict = {key: exifReader.get_info(zeroth_ifd[key])
-                   for key in zeroth_ifd if key in TAGS["Zeroth"]}
-    exif_dict = {key: exifReader.get_info(exif_ifd[key])
-                 for key in exif_ifd if key in TAGS["Exif"]}
-    gps_dict = {key: exifReader.get_info(gps_ifd[key])
-                for key in gps_ifd if key in TAGS["GPSInfo"]}
+        return exif_dict
 
-    return zeroth_dict, exif_dict, gps_dict
+    if exifReader.exif_str[0:2] == LITTLE_ENDIAN:
+        exifReader.endian_mark = "<"
+    else:
+        exifReader.endian_mark = ">"
+
+    pointer = struct.unpack(exifReader.endian_mark + "L",
+                            exifReader.exif_str[4:8])[0]
+    exif_dict["0th"] = exifReader.get_ifd_dict(pointer, "0th")
+    first_ifd_pointer = exif_dict["0th"].pop("first_ifd_pointer")
+    if 34665 in exif_dict["0th"]:
+        pointer = exif_dict["0th"][34665]
+        exif_dict["Exif"] = exifReader.get_ifd_dict(pointer, "Exif")
+    if 34853 in exif_dict["0th"]:
+        pointer = exif_dict["0th"][34853]
+        exif_dict["GPS"] = exifReader.get_ifd_dict(pointer, "GPS")
+    if 40965 in exif_dict["0th"]:
+        pointer = exif_dict["0th"][40965]
+        exif_dict["Interop"] = exifReader.get_ifd_dict(pointer, "Interop")
+    if first_ifd_pointer != b"\x00\x00\x00\x00":
+        pointer = struct.unpack(exifReader.endian_mark + "L",
+                                first_ifd_pointer)[0]
+        exif_dict["1st"] = exifReader.get_ifd_dict(pointer, "1st")
+        if (513 in exif_dict["1st"]) and (514 in exif_dict["1st"]):
+            end = exif_dict["1st"][513]+exif_dict["1st"][514]
+            thumb = exifReader.exif_str[exif_dict["1st"][513]:end]
+            exif_dict["thumbnail"] = thumb
+    return exif_dict
 
 
-def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
+def dump(exif_dict_original):
     """
     py:function:: piexif.load(data)
 
-    Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.
+    Return exif as bytes.
 
-    :param bytes data: JPEG or TIFF
-    :return: 0th IFD, Exif IFD, and GPS IFD
-    :rtype: dict, dict, dict
+    :param dict exif: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
+    :return: Exif
+    :rtype: bytes
     """
-    zeroth_ifd = copy.deepcopy(zeroth_ifd_original)
+    exif_dict = copy.deepcopy(exif_dict_original)
     header = b"\x45\x78\x69\x66\x00\x00\x4d\x4d\x00\x2a\x00\x00\x00\x08"
     exif_is = False
     gps_is = False
-    if len(exif_ifd):
-        zeroth_ifd.update({34665: 1})
-        exif_is = True
-    if len(gps_ifd):
-        zeroth_ifd.update({34853: 1})
-        gps_is = True
+    interop_is = False
+    first_is = False
 
-    zeroth_set = dict_to_bytes(zeroth_ifd, "Zeroth", 0)
+    if "0th" in exif_dict:
+        zeroth_ifd = exif_dict["0th"]
+    else:
+        zeroth_ifd = {}
+    if ("Exif" in exif_dict) and len(exif_dict["Exif"]):
+        zeroth_ifd[34665] = 1
+        exif_is = True
+        exif_ifd = exif_dict["Exif"]
+    if ("GPS" in exif_dict) and len(exif_dict["GPS"]):
+        zeroth_ifd[34853] = 1
+        gps_is = True
+        gps_ifd = exif_dict["GPS"]
+    if ("Interop" in exif_dict) and len(exif_dict["Interop"]):
+        zeroth_ifd[40965] = 1
+        interop_is = True
+        interop_ifd = exif_dict["Interop"]
+    if ("1st" in exif_dict) and ("thumbnail" in exif_dict):
+        first_is = True
+        exif_dict["1st"][513] = 1
+        exif_dict["1st"][514] = 1
+        first_ifd = exif_dict["1st"]
+
+    zeroth_set = dict_to_bytes(zeroth_ifd, "Image", 0, "0th")
     zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 +
-                     4 + len(zeroth_set[1]))
+                     interop_is * 12 + 4 + len(zeroth_set[1]))
 
     if exif_is:
         exif_set = dict_to_bytes(exif_ifd, "Exif", zeroth_length)
@@ -261,12 +287,28 @@ def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
         exif_bytes = b""
         exif_length = 0
     if gps_is:
-        gps_set = dict_to_bytes(gps_ifd, "GPSInfo", zeroth_length + exif_length)
+        gps_set = dict_to_bytes(gps_ifd, "GPS", zeroth_length + exif_length)
         gps_bytes = b"".join(gps_set)
         gps_length = len(gps_bytes)
     else:
         gps_bytes = b""
         gps_length = 0
+    if interop_is:
+        offset = zeroth_length + exif_length + gps_length
+        interop_set = dict_to_bytes(interop_ifd, "Interop", offset)
+        interop_bytes = b"".join(interop_set)
+        interop_length = len(interop_bytes)
+    else:
+        interop_bytes = b""
+        interop_length = 0
+    if first_is:
+        offset = zeroth_length + exif_length + gps_length + interop_length
+        first_set = dict_to_bytes(first_ifd, "Image", offset, "1st")
+        thumbnail = get_thumbnail(exif_dict["thumbnail"])
+        if len(thumbnail) > 64000:
+            raise ValueError("Given thumbnail is too large. max 64kB")
+    else:
+        first_bytes = b""
 
     if exif_is:
         pointer_value = TIFF_HEADER_LENGTH + zeroth_length
@@ -288,10 +330,46 @@ def dump(zeroth_ifd_original, exif_ifd={}, gps_ifd={}):
         gps_pointer = key_str + type_str + length_str + pointer_str
     else:
         gps_pointer = b""
-    zeroth_bytes = (zeroth_set[0] + exif_pointer + gps_pointer +
-                    b"\x00\x00\x00\x00" + zeroth_set[1])
+    if interop_is:
+        pointer_value = (TIFF_HEADER_LENGTH +
+                         zeroth_length + exif_length + gps_length)
+        pointer_str = struct.pack(">I", pointer_value)
+        key = 40965
+        key_str = struct.pack(">H", key)
+        type_str = struct.pack(">H", TYPES["Long"])
+        length_str = struct.pack(">I", 1)
+        interop_pointer = key_str + type_str + length_str + pointer_str
+    else:
+        interop_pointer = b""
+    if first_is:
+        pointer_value = (TIFF_HEADER_LENGTH + zeroth_length +
+                         exif_length + gps_length + interop_length)
+        first_ifd_pointer = struct.pack(">L", pointer_value)
+        thumbnail_pointer = (pointer_value + len(first_set[0]) + 24 +
+                             4 + len(first_set[1]))
+        thumbnail_p_bytes = (b"\x02\x01\x00\x04\x00\x00\x00\x01" +
+                             struct.pack(">L", thumbnail_pointer))
+        thumbnail_length_bytes = (b"\x02\x02\x00\x04\x00\x00\x00\x01" +
+                                  struct.pack(">L", len(thumbnail)))
+        first_bytes = (first_set[0] + thumbnail_p_bytes +
+                       thumbnail_length_bytes + b"\x00\x00\x00\x00" +
+                       first_set[1] + thumbnail)
+    else:
+        first_ifd_pointer = b"\x00\x00\x00\x00"
 
-    return header + zeroth_bytes + exif_bytes + gps_bytes
+    zeroth_bytes = (zeroth_set[0] + exif_pointer + gps_pointer +
+                    interop_pointer + first_ifd_pointer + zeroth_set[1])
+
+    return (header + zeroth_bytes + exif_bytes + gps_bytes +
+            interop_bytes + first_bytes)
+
+
+def get_thumbnail(jpeg):
+    segments = split_into_segments(jpeg)
+    while re.match(b"\xff[\xe0-\xe9]", segments[1][0:2]):
+        segments.pop(1)
+    thumbnail = b"".join(segments)
+    return thumbnail
 
 
 def pack_byte(*args):
@@ -310,12 +388,10 @@ def pack_slong(*args):
     return struct.pack(">" + "l" * len(args), *args)
 
 
-def dict_to_bytes(ifd_dict, group, ifd_offset):
-    exif_ifd_is = False
-    gps_ifd_is = False
+def dict_to_bytes(ifd_dict, group, ifd_offset, ifd=None):
     tag_count = len(ifd_dict)
     entry_header = struct.pack(">H", tag_count)
-    if group == "Zeroth":
+    if group == "Image":
         entries_length = 2 + tag_count * 12 + 4
     else:
         entries_length = 2 + tag_count * 12
@@ -323,11 +399,9 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
     values = b""
 
     for n, key in enumerate(sorted(ifd_dict)):
-        if key == 34665:
-            exif_ifd_is = True
+        if (ifd == "0th") and (key in (34665, 34853, 40965)):
             continue
-        elif key == 34853:
-            gps_ifd_is = True
+        elif (ifd == "1st") and (key in (513, 514)):
             continue
 
         raw_value = ifd_dict[key]
@@ -378,7 +452,10 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
 #                value_str = struct.pack(">I", offset)
 #                four_bytes_over = pack_slong(*raw_value)
         elif value_type == "Ascii":
-            new_value = raw_value.encode() + b"\x00"
+            try:
+                new_value = raw_value.encode() + b"\x00"
+            except:
+                new_value = raw_value + b"\x00"
             length = len(new_value)
             if length > 4:
                 offset = (TIFF_HEADER_LENGTH + ifd_offset +
@@ -397,7 +474,8 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 new_value = b""
                 for n, val in enumerate(raw_value):
                     num, den = val
-                    new_value += struct.pack(">L", num) + struct.pack(">L", den)
+                    new_value += (struct.pack(">L", num) +
+                                  struct.pack(">L", den))
             offset = (TIFF_HEADER_LENGTH + ifd_offset +
                       entries_length + len(values))
             value_str = struct.pack(">I", offset)
@@ -412,7 +490,8 @@ def dict_to_bytes(ifd_dict, group, ifd_offset):
                 new_value = b""
                 for n, val in enumerate(raw_value):
                     num, den = val
-                    new_value += struct.pack(">l", num) + struct.pack(">l", den)
+                    new_value += (struct.pack(">l", num) +
+                                  struct.pack(">l", den))
             offset = (TIFF_HEADER_LENGTH + ifd_offset +
                       entries_length + len(values))
             value_str = struct.pack(">I", offset)

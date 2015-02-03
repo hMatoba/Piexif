@@ -7,10 +7,10 @@ What for?
 
 To simplify exif manipulations with python. Writing, reading, and more...
 
-Depends on
+Dependency
 ----------
 
-Piexif doesn't depend on any 3rd module.
+Piexif doesn't depend on any third library.
 
 Environment
 -----------

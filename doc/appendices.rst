@@ -41,24 +41,25 @@ Exif in piexif example is below.
 
 ::
 
-    zeroth_ifd = {piexif.ZerothIFD.Make: u"Canon",  # ASCII, count any
-                  piexif.ZerothIFD.XResolution: (96, 1),  # RATIONAL, count 1
-                  piexif.ZerothIFD.YResolution: (96, 1),  # RATIONAL, count 1
-                  piexif.ZerothIFD.Software: u"piexif"  # ASCII, count any
+    zeroth_ifd = {piexif.ImageIFD.Make: u"Canon",  # ASCII, count any
+                  piexif.ImageIFD.XResolution: (96, 1),  # RATIONAL, count 1
+                  piexif.ImageIFD.YResolution: (96, 1),  # RATIONAL, count 1
+                  piexif.ImageIFD.Software: u"piexif"  # ASCII, count any
                   }
     exif_ifd = {piexif.ExifIFD.ExifVersion: b"\x02\x00\x00\x00"  # UNDEFINED, count 4
                 piexif.ExifIFD.LensMake: u"LensMake",  # ASCII, count any
-                piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1
+                piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1 ... also be accepted '(65535,)'
                 piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),  # Rational, count 4
                 }
     gps_ifd = {piexif.GPSIFD.GPSVersionID: (2, 0, 0, 0),  # BYTE, count 4
-               piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1
+               piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1 ... also be accepted '(1,)'
                }
-    exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+    exif = {"0th":zeroth_ifd, "Exif":exif_ifd, "GPS":gps_ifd}
+    exif_bytes = piexif.dump(exif)
     
     # round trip
     piexif.insert(exif_bytes, "foo.jpg")
-    z, e, g = piexif.load("foo.jpg")
+    e = piexif.load("foo.jpg")
 
 On GoogleAppEngine
 ------------------
@@ -71,7 +72,7 @@ On GoogleAppEngine, it can't save files on disk. Therefore files must be handled
     output = io.BytesIO()
 
     # load
-    zeroth_dict, exif_dict, gps_dict = piexif.load(jpg_data)
+    exif = piexif.load(jpg_data)
     
     # insert
     piexif.insert(exif_bytes, jpg_data, output)
