@@ -8,12 +8,9 @@ import unittest
 
 from PIL import Image
 import piexif
-from piexif import _common
+from piexif import _common, ImageIFD, ExifIFD, GPSIFD
 from piexif._exif import TAGS
 
-ImageIFD = piexif.ImageIFD
-ExifIFD = piexif.ExifIFD
-GPSIFD = piexif.GPSIFD
 
 print("piexif version: {0}".format(piexif.VERSION))
 
@@ -222,131 +219,23 @@ class ExifTests(unittest.TestCase):
 
     def test_load(self):
         exif = piexif.load(INPUT_FILE1)
-        zeroth_dict = exif["0th"]
-        exif_dict = exif["Exif"]
-        gps_dict = exif["GPS"]
         e = load_exif_by_PIL(INPUT_FILE1)
-        if 34853 in zeroth_dict:
-            zeroth_dict.pop(34853)
-        if 34853 in e:
-            gps = e.pop(34853)
-        for key in sorted(zeroth_dict):
-            if key in e:
-                if (isinstance(zeroth_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(zeroth_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(zeroth_dict[key], e[key])
-                else:
-                    self.assertEqual(zeroth_dict[key], e[key])
-        for key in sorted(exif_dict):
-            if key in e:
-                if (isinstance(exif_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(exif_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(exif_dict[key], e[key])
-                else:
-                    self.assertEqual(exif_dict[key], e[key])
-        for key in sorted(gps_dict):
-            if key in gps:
-                if (isinstance(gps_dict[key], tuple) and
-                    (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif (isinstance(gps_dict[key], int) and
-                      (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
-                elif ((isinstance(gps_dict[key], bytes)) and
-                      (isinstance(gps[key], str))):
-                    try:
-                        self.assertEqual(gps_dict[key].decode(), gps[key])
-                    except:
-                        self.assertEqual(gps_dict[key], gps[key])
-                else:
-                    self.assertEqual(gps_dict[key], gps[key])
+        self._compare_piexifDict_PILDict(exif, e)
 
     def test_load_m(self):
         """'load' on memory.
         """
         exif = piexif.load(I1)
-        zeroth_dict = exif["0th"]
-        exif_dict = exif["Exif"]
-        gps_dict = exif["GPS"]
         e = load_exif_by_PIL(INPUT_FILE1)
-        if 34853 in zeroth_dict:
-            zeroth_dict.pop(34853)
-        if 34853 in e:
-            gps = e.pop(34853)
-        for key in sorted(zeroth_dict):
-            if key in e:
-                if (isinstance(zeroth_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(zeroth_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(zeroth_dict[key], e[key])
-                else:
-                    self.assertEqual(zeroth_dict[key], e[key])
-        for key in sorted(exif_dict):
-            if key in e:
-                if (isinstance(exif_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(exif_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(exif_dict[key], e[key])
-                else:
-                    self.assertEqual(exif_dict[key], e[key])
-        for key in sorted(gps_dict):
-            if key in gps:
-                if (isinstance(gps_dict[key], tuple) and
-                    (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
-                elif (isinstance(gps_dict[key], int) and
-                      (type(gps_dict[key]) != type(gps[key]))):
-                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
-                elif ((isinstance(gps_dict[key], bytes)) and
-                      (isinstance(gps[key], str))):
-                    try:
-                        self.assertEqual(gps_dict[key].decode(), gps[key])
-                    except:
-                        self.assertEqual(gps_dict[key], gps[key])
-                else:
-                    self.assertEqual(gps_dict[key], gps[key])
+        self._compare_piexifDict_PILDict(exif, e)
 
     def test_load_le(self):
         """load test of little endian exif
         """
         exif = piexif.load(INPUT_FILE_LE1)
-        zeroth_dict, exif_dict = exif["0th"], exif["Exif"]
-        exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
         e = load_exif_by_PIL(INPUT_FILE_LE1)
-        if 34853 in zeroth_dict:
-            zeroth_dict.pop(34853)
-        if 34853 in e:
-            gps = e.pop(34853)
-        for key in sorted(zeroth_dict):
-            if key in e:
-                if (isinstance(zeroth_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(zeroth_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(zeroth_dict[key], e[key])
-                else:
-                    self.assertEqual(zeroth_dict[key], e[key])
-        for key in sorted(exif_dict):
-            if key in e:
-                if (isinstance(exif_dict[key], bytes) and
-                    isinstance(e[key], str)):
-                    try:
-                        self.assertEqual(exif_dict[key].decode(), e[key])
-                    except:
-                        self.assertEqual(exif_dict[key], e[key])
-                else:
-                    self.assertEqual(exif_dict[key], e[key])
+        self._compare_piexifDict_PILDict(exif, e)
+
 
     def test_dump(self):
         exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
@@ -408,7 +297,6 @@ class ExifTests(unittest.TestCase):
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
-        o.seek(0)
         exif2 = piexif.load(o.getvalue())
         zeroth_ifd2 = exif2["0th"]
         self.assertDictEqual(zeroth_ifd, zeroth_ifd2)
@@ -464,8 +352,8 @@ class ExifTests(unittest.TestCase):
                           "APPn segments in thumbnail should be removed, "
                           "whereas thumbnail JPEG has it. \n: " +
                           input_file)
-            for ifd_name in e:
-                if ifd_name == "0th":
+            for ifd in e:
+                if ifd == "0th":
                     if ImageIFD.ExifTag in exif["0th"]:
                         exif["0th"].pop(ImageIFD.ExifTag)
                         e["0th"].pop(ImageIFD.ExifTag)
@@ -475,14 +363,58 @@ class ExifTests(unittest.TestCase):
                     if ImageIFD.InteroperabilityPointer in exif["0th"]:
                         exif["0th"].pop(ImageIFD.InteroperabilityPointer)
                         e["0th"].pop(ImageIFD.InteroperabilityPointer)
-                elif ifd_name == "1st":
+                elif ifd == "1st":
                     exif["1st"].pop(513)
                     e["1st"].pop(513)
                     exif["1st"].pop(514)
                     e["1st"].pop(514)
-                for key in exif[ifd_name]:
-                    self.assertEqual(exif[ifd_name][key], e[ifd_name][key])
+                for key in exif[ifd]:
+                    self.assertEqual(exif[ifd][key], e[ifd][key])
 
+    def _compare_piexifDict_PILDict(self, piexifDict, pilDict):
+        zeroth_dict = piexifDict["0th"]
+        exif_dict = piexifDict["Exif"]
+        gps_dict = piexifDict["GPS"]
+        if 41728 in exif_dict:
+            exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        if 34853 in pilDict:
+            gps = pilDict.pop(34853)
+        for key in sorted(zeroth_dict):
+            if key in pilDict:
+                if (isinstance(zeroth_dict[key], bytes) and
+                    isinstance(pilDict[key], str)):
+                    try:
+                        self.assertEqual(zeroth_dict[key].decode(), pilDict[key])
+                    except:
+                        self.assertEqual(zeroth_dict[key], pilDict[key])
+                else:
+                    self.assertEqual(zeroth_dict[key], pilDict[key])
+        for key in sorted(exif_dict):
+            if key in pilDict:
+                if (isinstance(exif_dict[key], bytes) and
+                    isinstance(pilDict[key], str)):
+                    try:
+                        self.assertEqual(exif_dict[key].decode(), pilDict[key])
+                    except:
+                        self.assertEqual(exif_dict[key], pilDict[key])
+                else:
+                    self.assertEqual(exif_dict[key], pilDict[key])
+        for key in sorted(gps_dict):
+            if key in gps:
+                if (isinstance(gps_dict[key], tuple) and
+                    (type(gps_dict[key]) != type(gps[key]))):
+                    self.assertEqual(pack_byte(*gps_dict[key]), gps[key])
+                elif (isinstance(gps_dict[key], int) and
+                      (type(gps_dict[key]) != type(gps[key]))):
+                    self.assertEqual(struct.pack("B", gps_dict[key]), gps[key])
+                elif ((isinstance(gps_dict[key], bytes)) and
+                      (isinstance(gps[key], str))):
+                    try:
+                        self.assertEqual(gps_dict[key].decode(), gps[key])
+                    except:
+                        self.assertEqual(gps_dict[key], gps[key])
+                else:
+                    self.assertEqual(gps_dict[key], gps[key])
 
 def suite():
     suite = unittest.TestSuite()
