@@ -3,7 +3,7 @@ Piexif
 
 |Build Status| |Coverage Status| |docs|
 
-This is a renamed project from Pyxif. To simplify exif manipulations with python. Writing, reading, and more... Piexif isn't a wrapper. To everywhere with Python.
+This is a renamed project from Pyxif. To simplify exif manipulations with python. Writing, reading, and more... Piexif is pure python. To everywhere with Python.
 
 Document: http://piexif.readthedocs.org/en/1.0.x/
 
@@ -16,10 +16,20 @@ Download .zip, extract it and run
 
     $ python setup.py install
 
+Example
+-------
+
+::
+
+    exif_dict = piexif.load("foo1.jpg")
+    for ifd in ("0th", "Exif", "GPS", "1st"):
+        for tag in exif_dict[ifd]:
+            print(ifd, tag, exif_dict[ifd][tag])
+
 Environment
 -----------
 
-Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython.
+Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython. Piexif is on independent and can run on GoogleAppEngine.
 
 License
 -------

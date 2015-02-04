@@ -89,11 +89,11 @@ dump
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save("out.jpg", exif=exif_bytes)
 
-Properties of piexif.ImageIFD help to make 0thIFD dict and 1stIFD dict. piexif.ExifIFD is for ExifIFD dict. piexif.GPSIFD is for GPSIFD dict. piexif.InteropIFD is for InteroperabilityIFD dict.
+Properties of *piexif.ImageIFD* help to make 0thIFD dict and 1stIFD dict. *piexif.ExifIFD* is for ExifIFD dict. *piexif.GPSIFD* is for GPSIFD dict. *piexif.InteropIFD* is for InteroperabilityIFD dict.
 
 .. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
 .. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
-.. note:: If 'thumbnail' is contained, '1st' must be contained -- and vice versa. 
+.. note:: If 'thumbnail' is contained in dict, '1st' must be contained -- and vice versa. 1stIFD means thumbnail's information.
 
 insert
 ------

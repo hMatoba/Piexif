@@ -7,6 +7,17 @@ What for?
 
 To simplify exif manipulations with python. Writing, reading, and more...
 
+How to Use
+----------
+
+There are only just five functions.
+
+- *load(filename)* - Get exif as dict to read.
+- *dump(exif_dict)* - Get exif as bytes to save with JPEG.
+- *insert(exif_bytes, filename)* - Insert exif into JPEG.
+- *remove(filename)* - Remove exif from JPEG.
+- *transplant(filename, filename)* - Transplant exif from JPEG to JPEG.
+
 Dependency
 ----------
 
@@ -15,7 +26,7 @@ Piexif doesn't depend on any third library.
 Environment
 -----------
 
-Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython.
+Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on GoogleAppEngine.
 
 License
 -------
