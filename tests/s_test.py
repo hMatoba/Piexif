@@ -379,6 +379,7 @@ class ExifTests(unittest.TestCase):
         print(exif_dict)
         exif_bytes = piexif.dump(exif_dict)
         i.save(o, "jpeg", exif=exif_bytes)
+        i.close()
         o.seek(0)
         Image.open(o).close()
 
