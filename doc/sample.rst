@@ -2,6 +2,20 @@
 Samples
 =======
 
+With PIL(Pillow)
+----------------
+
+::
+
+    from PIL import Image
+    import piexif
+
+    im = Image.open(filename)
+    exif_dict = piexif.load(filename)
+    # process im and exif_dict...
+    exif_bytes = piexif.dump(exif_dict)
+    im.save(new_file, "jpeg", exif=exif_bytes)
+
 Check Containing Tag
 --------------------
 
@@ -9,7 +23,6 @@ Check Containing Tag
 
     from PIL import Image
     import piexif
-
 
     exif_dict = piexif.load(filename)
     if piexif.ImageIFD.Orientation in exif_dict["0th"]:
@@ -26,7 +39,6 @@ Rotate image by exif orientation tag and remove orientation tag.
 
     from PIL import Image
     import piexif
-
 
     def rotate_jpeg(filename):
         exif_dict = piexif.load(filename)
