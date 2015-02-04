@@ -8,8 +8,7 @@ import unittest
 
 from PIL import Image
 import piexif
-from piexif import _common, ImageIFD, ExifIFD, GPSIFD
-from piexif._exif import TAGS
+from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS
 
 
 print("piexif version: {0}".format(piexif.VERSION))
@@ -17,6 +16,7 @@ print("piexif version: {0}".format(piexif.VERSION))
 
 INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
 INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
+INPUT_FILE_PEN = os.path.join("tests", "images", "r_pen.jpg")
 INPUT_FILE_LE1 = os.path.join("tests", "images", "L01.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
 # JPEG without APP0 and APP1 segments
@@ -335,23 +335,28 @@ class ExifTests(unittest.TestCase):
         Image.open(io.BytesIO(exif["thumbnail"])).close()
 
     def test_roundtrip_files(self):
-        files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
+        files = glob.glob(os.path.join("tests", "images", "*.jpg"))
         for input_file in files:
             exif = piexif.load(input_file)
             exif_bytes = piexif.dump(exif)
             o = io.BytesIO()
             piexif.insert(exif_bytes, input_file, o)
             e = piexif.load(o.getvalue())
-            if "thumbnail" in e:
-                t = e.pop("thumbnail")
-                thumbnail = exif.pop("thumbnail")
+
+            t = e.pop("thumbnail")
+            thumbnail = exif.pop("thumbnail")
+            if t is not None:
                 if not (b"\xe0" <= thumbnail[3:4] <= b"\xef"):
                     self.assertEqual(t, thumbnail)
                 else:
                     print("Given JPEG doesn't follow exif thumbnail standard. "
-                          "APPn segments in thumbnail should be removed, "
-                          "whereas thumbnail JPEG has it. \n: " +
-                          input_file)
+                            "APPn segments in thumbnail should be removed, "
+                            "whereas thumbnail JPEG has it. \n: " +
+                            input_file)
+                exif["1st"].pop(513)
+                e["1st"].pop(513)
+                exif["1st"].pop(514)
+                e["1st"].pop(514)
             for ifd in e:
                 if ifd == "0th":
                     if ImageIFD.ExifTag in exif["0th"]:
@@ -363,13 +368,31 @@ class ExifTests(unittest.TestCase):
                     if ImageIFD.InteroperabilityPointer in exif["0th"]:
                         exif["0th"].pop(ImageIFD.InteroperabilityPointer)
                         e["0th"].pop(ImageIFD.InteroperabilityPointer)
-                elif ifd == "1st":
-                    exif["1st"].pop(513)
-                    e["1st"].pop(513)
-                    exif["1st"].pop(514)
-                    e["1st"].pop(514)
                 for key in exif[ifd]:
                     self.assertEqual(exif[ifd][key], e[ifd][key])
+
+    def test_load_from_pilImage_property(self):
+        o = io.BytesIO()
+        i = Image.open(INPUT_FILE1)
+        exif = i.info["exif"]
+        exif_dict = piexif.load(exif)
+        print(exif_dict)
+        exif_bytes = piexif.dump(exif_dict)
+        i.save(o, "jpeg", exif=exif_bytes)
+        o.seek(0)
+        Image.open(o).close()
+
+    def test_print_exif(self):
+        print("**********************************************")
+        exif = piexif.load(INPUT_FILE_PEN)
+        for ifd in ("0th", "Exif", "GPS", "Interop", "1st"):
+            print("\n{0} IFD:".format(ifd))
+            for key in sorted(exif[ifd]):
+                try:
+                    print("  ", key, TAGS[ifd][key]["name"], exif[ifd][key][:10])
+                except:
+                    print("  ", key, TAGS[ifd][key]["name"], exif[ifd][key])
+        print("**********************************************")
 
     def _compare_piexifDict_PILDict(self, piexifDict, pilDict):
         zeroth_dict = piexifDict["0th"]
@@ -415,6 +438,7 @@ class ExifTests(unittest.TestCase):
                         self.assertEqual(gps_dict[key], gps[key])
                 else:
                     self.assertEqual(gps_dict[key], gps[key])
+
 
 def suite():
     suite = unittest.TestSuite()

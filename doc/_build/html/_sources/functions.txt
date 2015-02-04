@@ -11,7 +11,7 @@ load
 ----
 .. py:function:: piexif.load(filename)
 
-   Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
+   Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag/value). "thumbnail" value is JPEG as bytes.
 
    :param str filename: JPEG or TIFF
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
@@ -36,7 +36,7 @@ load
 
    Return exif data as dict. The keys(IFD name), will be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". If there is no data to return, the key won't be contained. Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
 
-   :param bytes data: JPEG or TIFF
+   :param bytes data: JPEG, TIFF, or Exif
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
    :rtype: dict
 

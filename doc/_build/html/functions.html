@@ -87,6 +87,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sample.html">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#with-pil-pillow">With PIL(Pillow)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html#check-containing-tag">Check Containing Tag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
 </ul>
@@ -150,7 +151,7 @@
 <dl class="function">
 <dt id="piexif.load">
 <tt class="descclassname">piexif.</tt><tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#piexif.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return exif data as dict. Keys(IFD name), be contained, are &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221;. Without &#8220;thumbnail&#8221;, the value is dict(tag name/tag value). &#8220;thumbnail&#8221; value is JPEG as bytes.</p>
+<dd><p>Return exif data as dict. Keys(IFD name), be contained, are &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221;. Without &#8220;thumbnail&#8221;, the value is dict(tag/value). &#8220;thumbnail&#8221; value is JPEG as bytes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -187,7 +188,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; JPEG or TIFF</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; JPEG, TIFF, or Exif</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Exif data({&#8220;0th&#8221;:dict, &#8220;Exif&#8221;:dict, &#8220;GPS&#8221;:dict, &#8220;Interop&#8221;:dict, &#8220;1st&#8221;:dict, &#8220;thumbnail&#8221;:bytes})</td>
 </tr>

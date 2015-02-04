@@ -66,6 +66,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#how-to-use">How to Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#dependency">Dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
@@ -86,6 +87,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#with-pil-pillow">With PIL(Pillow)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-containing-tag">Check Containing Tag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
 </ul>
@@ -132,11 +134,26 @@
             
   <div class="section" id="samples">
 <h1>Samples<a class="headerlink" href="#samples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="with-pil-pillow">
+<h2>With PIL(Pillow)<a class="headerlink" href="#with-pil-pillow" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">piexif</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;exif&quot;</span><span class="p">])</span>
+<span class="c"># process im and exif_dict...</span>
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+<span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">][</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_file</span><span class="p">,</span> <span class="s">&quot;jpeg&quot;</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="check-containing-tag">
 <h2>Check Containing Tag<a class="headerlink" href="#check-containing-tag" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">piexif</span>
-
 
 <span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
@@ -152,31 +169,31 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">piexif</span>
 
-
 <span class="k">def</span> <span class="nf">rotate_jpeg</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s">&quot;exif&quot;</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+        <span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;exif&quot;</span><span class="p">])</span>
 
-    <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
-        <span class="n">orientation</span> <span class="o">=</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">)</span>
-        <span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]:</span>
+            <span class="n">orientation</span> <span class="o">=</span> <span class="n">exif_dict</span><span class="p">[</span><span class="s">&quot;0th&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Orientation</span><span class="p">)</span>
+            <span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
 
-        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
 
-        <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
+            <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

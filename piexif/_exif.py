@@ -289,6 +289,8 @@ TAGS = {
     'Interop': {1: {'name': 'InteroperabilityIndex', 'type': 'Ascii'}},
 }
 
+TAGS["0th"] = TAGS["Image"]
+TAGS["1st"] = TAGS["Image"]
 
 class ImageIFD:
     """Exif tag number reference - 0th IFD"""
