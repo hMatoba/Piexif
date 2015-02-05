@@ -180,6 +180,7 @@ class ExifTests(unittest.TestCase):
 
         with  self.assertRaises(ValueError):
             piexif.transplant(NOEXIF_FILE, INPUT_FILE2, "foo.jpg")
+        os.remove("transplant.jpg")
 
     def test_transplant_m(self):
         """'transplant' on memory.
@@ -193,12 +194,33 @@ class ExifTests(unittest.TestCase):
         piexif.remove(INPUT_FILE1, "remove.jpg")
         exif_dict = piexif.load("remove.jpg")
         none_dict = {"0th":{},
-                "Exif":{},
-                "GPS":{},
-                "Interop":{},
-                "1st":{},
-                "thumbnail":None}
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
         self.assertEqual(exif_dict, none_dict)
+
+        piexif.remove("remove.jpg")
+        exif_dict = piexif.load("remove.jpg")
+        self.assertEqual(exif_dict, none_dict)
+        os.remove("remove.jpg")
+
+    def test_remove2(self):
+        with open(INPUT_FILE1, "rb") as f:
+            data = f.read()
+        with open("remove2.jpg", "wb+") as f:
+            f.write(data)
+        piexif.remove("remove2.jpg")
+        exif_dict = piexif.load("remove2.jpg")
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
+        os.remove("remove2.jpg")
 
     def test_remove_m(self):
         """'remove' on memory.
@@ -257,6 +279,7 @@ class ExifTests(unittest.TestCase):
             piexif.insert(b"dummy", io.BytesIO())
 
         piexif.insert(exif_bytes, "insert.jpg")
+        os.remove("insert.jpg")
 
     def test_insert_m(self):
         """'insert' on memory.

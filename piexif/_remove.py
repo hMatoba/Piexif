@@ -3,7 +3,7 @@ import io
 from ._common import *
 
 
-def remove(src, new_file=""):
+def remove(src, new_file=None):
     """
     py:function:: piexif.remove(filename)
 
