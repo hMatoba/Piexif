@@ -459,7 +459,7 @@ def dict_to_bytes(ifd_dict, ifd, ifd_offset):
 #                four_bytes_over = pack_slong(*raw_value)
         elif value_type == "Ascii":
             try:
-                new_value = raw_value.encode() + b"\x00"
+                new_value = raw_value.encode("latin1") + b"\x00"
             except:
                 new_value = raw_value + b"\x00"
             length = len(new_value)
