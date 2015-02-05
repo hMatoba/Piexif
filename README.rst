@@ -6,7 +6,7 @@ Piexif
 
 This is a renamed project from Pyxif. To simplify exif manipulations with python. Writing, reading, and more... Piexif is pure python. To everywhere with Python.
 
-Document: http://piexif.readthedocs.org/en/1.0.x/
+Document: http://piexif.readthedocs.org/en/latest/
 
 Install
 -------
