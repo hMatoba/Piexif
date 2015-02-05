@@ -97,3 +97,4 @@ $RECYCLE.BIN/
 samples2
 load_sample.py
 *.pdf
+*.suo

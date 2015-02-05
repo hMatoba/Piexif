@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Appendices &mdash; Piexif 0.7.0 documentation</title>
+  <title>Appendices &mdash; Piexif 1.0.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
         <link rel="author" title="About these documents"
               href="about.html"/>
-    <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
+    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/>
         <link rel="next" title="Samples" href="sample.html"/>
         <link rel="prev" title="Functions" href="functions.html"/> 
 
@@ -66,7 +66,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#dependency">Dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
 </ul>
@@ -86,7 +86,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sample.html">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#check-containing-tag">Check Containing Tag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#b">1.0.0b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#c">0.7.0c</a></li>
 </ul>
 </li>
 </ul>
@@ -182,24 +188,25 @@
 <p class="last">If value type is number and value count is one, tuple that is length one value(e.g. (int,)) also be accepted.</p>
 </div>
 <p>Exif in piexif example is below.</p>
-<div class="highlight-python"><div class="highlight"><pre>zeroth_ifd = {piexif.ZerothIFD.Make: u&quot;Canon&quot;,  # ASCII, count any
-              piexif.ZerothIFD.XResolution: (96, 1),  # RATIONAL, count 1
-              piexif.ZerothIFD.YResolution: (96, 1),  # RATIONAL, count 1
-              piexif.ZerothIFD.Software: u&quot;piexif&quot;  # ASCII, count any
+<div class="highlight-python"><div class="highlight"><pre>zeroth_ifd = {piexif.ImageIFD.Make: u&quot;Canon&quot;,  # ASCII, count any
+              piexif.ImageIFD.XResolution: (96, 1),  # RATIONAL, count 1
+              piexif.ImageIFD.YResolution: (96, 1),  # RATIONAL, count 1
+              piexif.ImageIFD.Software: u&quot;piexif&quot;  # ASCII, count any
               }
 exif_ifd = {piexif.ExifIFD.ExifVersion: b&quot;\x02\x00\x00\x00&quot;  # UNDEFINED, count 4
             piexif.ExifIFD.LensMake: u&quot;LensMake&quot;,  # ASCII, count any
-            piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1
+            piexif.ExifIFD.Sharpness: 65535,  # SHORT, count 1 ... also be accepted &#39;(65535,)&#39;
             piexif.ExifIFD.LensSpecification: ((1, 1), (1, 1), (1, 1), (1, 1)),  # Rational, count 4
             }
 gps_ifd = {piexif.GPSIFD.GPSVersionID: (2, 0, 0, 0),  # BYTE, count 4
-           piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1
+           piexif.GPSIFD.GPSAltitudeRef: 1,  # BYTE, count 1 ... also be accepted &#39;(1,)&#39;
            }
-exif_bytes = piexif.dump(zeroth_ifd, exif_ifd, gps_ifd)
+exif_dict = {&quot;0th&quot;:zeroth_ifd, &quot;Exif&quot;:exif_ifd, &quot;GPS&quot;:gps_ifd}
+exif_bytes = piexif.dump(exif_dict)
 
 # round trip
 piexif.insert(exif_bytes, &quot;foo.jpg&quot;)
-z, e, g = piexif.load(&quot;foo.jpg&quot;)
+exif_dict_tripped = piexif.load(&quot;foo.jpg&quot;)
 </pre></div>
 </div>
 </div>
@@ -210,7 +217,7 @@ z, e, g = piexif.load(&quot;foo.jpg&quot;)
 <span class="n">output</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
 
 <span class="c"># load</span>
-<span class="n">zeroth_dict</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">,</span> <span class="n">gps_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">jpg_data</span><span class="p">)</span>
+<span class="n">exif</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">jpg_data</span><span class="p">)</span>
 
 <span class="c"># insert</span>
 <span class="n">piexif</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">exif_bytes</span><span class="p">,</span> <span class="n">jpg_data</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
@@ -264,7 +271,7 @@ z, e, g = piexif.load(&quot;foo.jpg&quot;)
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.0',
+            VERSION:'1.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

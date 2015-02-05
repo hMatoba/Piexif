@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Functions &mdash; Piexif 0.7.0 documentation</title>
+  <title>Functions &mdash; Piexif 1.0.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
         <link rel="author" title="About these documents"
               href="about.html"/>
-    <link rel="top" title="Piexif 0.7.0 documentation" href="index.html"/>
+    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/>
         <link rel="next" title="Appendices" href="appendices.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -66,7 +66,8 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#depends-on">Depends on</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#dependency">Dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#environment">Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
 </ul>
@@ -83,6 +84,17 @@
 <li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="appendices.html#exif-data-in-piexif">Exif Data in Piexif</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendices.html#on-googleappengine">On GoogleAppEngine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Samples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#with-pil-pillow">With PIL(Pillow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#check-containing-tag">Check Containing Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#b">1.0.0b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#c">0.7.0c</a></li>
 </ul>
 </li>
 </ul>
@@ -126,6 +138,10 @@
 <p class="first admonition-title">Warning</p>
 <p class="last">It could set any value in exif without actual value. For example, actual XResolution is 300, whereas XResolution value in exif is 0. Confliction might happen.</p>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To edit exif tags and values appropriately, read official document from P167-. <a class="reference external" href="http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf">http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf</a></p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This document is written for using Piexif on Python 3.x.</p>
@@ -135,43 +151,48 @@
 <dl class="function">
 <dt id="piexif.load">
 <tt class="descclassname">piexif.</tt><tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#piexif.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.</p>
+<dd><p>Return exif data as dict. Keys(IFD name), be contained, are &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221;. Without &#8220;thumbnail&#8221;, the value is dict(tag/value). &#8220;thumbnail&#8221; value is JPEG as bytes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; JPEG or TIFF</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0th IFD, Exif IFD, and GPS IFD</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Exif data({&#8220;0th&#8221;:dict, &#8220;Exif&#8221;:dict, &#8220;GPS&#8221;:dict, &#8220;Interop&#8221;:dict, &#8220;1st&#8221;:dict, &#8220;thumbnail&#8221;:bytes})</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict, dict, dict</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">zeroth_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">zeroth_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">gps_dict</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_dict</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+<span class="n">thumbnail</span> <span class="o">=</span> <span class="n">exif_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;thumbnail&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">thumbnail</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;thumbnail.jpg&quot;</span><span class="p">,</span> <span class="s">&quot;wb+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">thumbnail</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ifd_name</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">{0} IFD:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ifd_name</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exif_dict</span><span class="p">[</span><span class="n">ifd_name</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="n">ifd_name</span><span class="p">][</span><span class="n">key</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">exif_dict</span><span class="p">[</span><span class="n">ifd_name</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
 </pre></div>
 </div>
 <dl class="function">
 <dt>
 <tt class="descclassname">piexif.</tt><tt class="descname">load</tt><big>(</big><em>data</em><big>)</big></dt>
-<dd><p>Return three IFD data that are 0thIFD, ExifIFD, and GPSIFD as dict.</p>
+<dd><p>Return exif data as dict. The keys(IFD name), will be contained, are &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221;. If there is no data to return, the key won&#8217;t be contained. Without &#8220;thumbnail&#8221;, the value is dict(tag name/tag value). &#8220;thumbnail&#8221; value is JPEG as bytes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; JPEG or TIFF</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; JPEG, TIFF, or Exif</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0th IFD, Exif IFD, and GPS IFD</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Exif data({&#8220;0th&#8221;:dict, &#8220;Exif&#8221;:dict, &#8220;GPS&#8221;:dict, &#8220;Interop&#8221;:dict, &#8220;1st&#8221;:dict, &#8220;thumbnail&#8221;:bytes})</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict, dict, dict</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -182,33 +203,36 @@
 <h2>dump<a class="headerlink" href="#dump" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="piexif.dump">
-<tt class="descclassname">piexif.</tt><tt class="descname">dump</tt><big>(</big><em>zeroth_ifd</em>, <em>exif_ifd</em>, <em>gps_ifd</em><big>)</big><a class="headerlink" href="#piexif.dump" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">piexif.</tt><tt class="descname">dump</tt><big>(</big><em>exif_dict</em><big>)</big><a class="headerlink" href="#piexif.dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return exif as bytes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>zeroth_ifd</strong> (<em>dict</em>) &#8211; 0th IFD as dict</li>
-<li><strong>exif_ifd</strong> (<em>dict</em>) &#8211; Exif IFD as dict</li>
-<li><strong>gps_ifd</strong> (<em>dict</em>) &#8211; GPS IFD as dict</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>exif_dict</strong> (<em>dict</em>) &#8211; Exif data({&#8220;0th&#8221;:0thIFD - dict, &#8220;Exif&#8221;:ExifIFD - dict, &#8220;GPS&#8221;:GPSIFD - dict, &#8220;Interop&#8221;:InteroperabilityIFD - dict, &#8220;1st&#8221;:1stIFD - dict, &#8220;thumbnail&#8221;:JPEG data - bytes})</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Exif</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Exif</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bytes</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<div class="highlight-python"><div class="highlight"><pre><span class="n">zeroth_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">piexif</span><span class="o">.</span><span class="n">ZerothIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;piexif&quot;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">piexif</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+<span class="n">thumb_im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
+<span class="n">thumb_im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+<span class="n">thumb_im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s">&quot;jpeg&quot;</span><span class="p">)</span>
+<span class="n">thumbnail</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+<span class="n">zeroth_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+              <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;piexif&quot;</span>
               <span class="p">}</span>
 <span class="n">exif_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">DateTimeOriginal</span><span class="p">:</span> <span class="s">u&quot;2099:09:29 10:10:10&quot;</span><span class="p">,</span>
             <span class="n">piexif</span><span class="o">.</span><span class="n">ExifIFD</span><span class="o">.</span><span class="n">LensMake</span><span class="p">:</span> <span class="s">u&quot;LensMake&quot;</span><span class="p">,</span>
@@ -219,12 +243,31 @@
            <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSAltitudeRef</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
            <span class="n">piexif</span><span class="o">.</span><span class="n">GPSIFD</span><span class="o">.</span><span class="n">GPSDateStamp</span><span class="p">:</span> <span class="s">u&quot;1999:99:99 99:99:99&quot;</span><span class="p">,</span>
            <span class="p">}</span>
-<span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">first_ifd</span> <span class="o">=</span> <span class="p">{</span><span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="s">u&quot;Canon&quot;</span><span class="p">,</span>
+             <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+             <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+             <span class="n">piexif</span><span class="o">.</span><span class="n">ImageIFD</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="s">u&quot;piexif&quot;</span>
+             <span class="p">}</span>
+
+<span class="n">exif_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;0th&quot;</span><span class="p">:</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="s">&quot;Exif&quot;</span><span class="p">:</span><span class="n">exif_ifd</span><span class="p">,</span> <span class="s">&quot;GPS&quot;</span><span class="p">:</span><span class="n">gps_ifd</span><span class="p">,</span> <span class="s">&quot;1st&quot;</span><span class="p">:</span><span class="n">first_ifd</span><span class="p">,</span> <span class="s">&quot;thumbnail&quot;</span><span class="p">:</span><span class="n">thumbnail</span><span class="p">}</span>
+<span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
 <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
 <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
 <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;out.jpg&quot;</span><span class="p">,</span> <span class="n">exif</span><span class="o">=</span><span class="n">exif_bytes</span><span class="p">)</span>
 </pre></div>
+</div>
+<p>Properties of <em>piexif.ImageIFD</em> help to make 0thIFD dict and 1stIFD dict. <em>piexif.ExifIFD</em> is for ExifIFD dict. <em>piexif.GPSIFD</em> is for GPSIFD dict. <em>piexif.InteropIFD</em> is for InteroperabilityIFD dict.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If &#8216;thumbnail&#8217; is contained in dict, &#8216;1st&#8217; must be contained &#8211; and vice versa. 1stIFD means thumbnail&#8217;s information.</p>
 </div>
 </div>
 <div class="section" id="insert">
@@ -247,7 +290,7 @@
 </table>
 </dd></dl>
 
-<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">zeroth_ifd</span><span class="p">,</span> <span class="n">exif_ifd</span><span class="p">,</span> <span class="n">gps_ifd</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">exif_bytes</span> <span class="o">=</span> <span class="n">piexif</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exif_dict</span><span class="p">)</span>
 <span class="n">piexif</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">exif_bytes</span><span class="p">,</span> <span class="s">&quot;foo.jpg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -393,7 +436,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.0',
+            VERSION:'1.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

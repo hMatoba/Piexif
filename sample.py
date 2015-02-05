@@ -5,36 +5,28 @@ from PIL import Image
 
 
 def load_sample(input_file):
-    zeroth_dict, exif_dict, gps_dict = piexif.load(input_file)
-
-    print("******************************")
-    print("0th IFD: {0}".format(len(zeroth_dict)))
-    for key in sorted(zeroth_dict):
-        print(key, zeroth_dict[key])
-
-    print("\nEXIF IFD: {0}".format(len(exif_dict)))
-    for key in sorted(exif_dict):
-        if isinstance(exif_dict[key], (str, bytes)) and len(exif_dict[key]) > 30:
-            print(key, exif_dict[key][:10] + b"...", len(exif_dict[key]))
-        else:
-            print(key, exif_dict[key])
-
-    print("\nGPS IFD: {0}".format(len(gps_dict)))
-    for key in sorted(gps_dict):
-        if isinstance(gps_dict[key], (str, bytes)) and len(gps_dict[key]) > 30:
-            print(key, gps_dict[key][:10] + b"...", len(exif_dict[key]))
-        else:
-            print(key, gps_dict[key])
+    exif = piexif.load(input_file)
+    thumbnail = exif.pop("thumbnail")
+    if thumbnail is not None:
+        with open("foo.jpg", "wb+") as f:
+            f.write(thumbnail)
+    for ifd_name in exif:
+        print("\n{0} IFD:".format(ifd_name))
+        for key in exif[ifd_name]:
+            try:
+                print(key, exif[ifd_name][key][:10])
+            except:
+                print(key, exif[ifd_name][key])
 
 
 def dump_sample(input_file, output_file):
-    zeroth_ifd = {piexif.ZerothIFD.Make: u"foo",
-                  piexif.ZerothIFD.XResolution: (96, 1),
-                  piexif.ZerothIFD.YResolution: (96, 1),
-                  piexif.ZerothIFD.Software: u"paint.net 4.0.3",
+    zeroth_ifd = {piexif.ImageIFD.Make: "foo",
+                  piexif.ImageIFD.XResolution: (96, 1),
+                  piexif.ImageIFD.YResolution: (96, 1),
+                  piexif.ImageIFD.Software: "pixief",
                   }
 
-    exif_bytes = piexif.dump(zeroth_ifd)
+    exif_bytes = piexif.dump({"0th":zeroth_ifd})
     im = Image.open(input_file)
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save(output_file, exif=exif_bytes)
@@ -55,7 +47,7 @@ def insert_sample():
     zeroth_ifd = {282: (96, 1),
                   283: (96, 1),
                   296: 2,
-                  305: 'paint.net 4.0.3'}
+                  305: 'piexif'}
     exif_bytes = piexif.dump(zeroth_ifd)
     piexif.insert(exif_bytes,
                  "remove_sample.jpg",

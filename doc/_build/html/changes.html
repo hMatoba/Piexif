@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -8,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Piexif 1.0.0 documentation</title>
+  <title>Changelog &mdash; Piexif 1.0.0 documentation</title>
   
 
   
@@ -31,7 +30,8 @@
   
         <link rel="author" title="About these documents"
               href="about.html"/>
-    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/> 
+    <link rel="top" title="Piexif 1.0.0 documentation" href="index.html"/>
+        <link rel="prev" title="Samples" href="sample.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -62,7 +62,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Piexif</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#what-for">What for?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#how-to-use">How to Use</a></li>
@@ -91,9 +91,9 @@
 <li class="toctree-l2"><a class="reference internal" href="sample.html#rotate-image-by-exif-orientation">Rotate Image by Exif Orientation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#b">1.0.0b</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#c">0.7.0c</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#b">1.0.0b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c">0.7.0c</a></li>
 </ul>
 </li>
 </ul>
@@ -120,8 +120,10 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li></li>
+    <li>Changelog</li>
       <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/changes.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -129,45 +131,35 @@
 </div>
           <div role="main" class="document">
             
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- <a href="#P"><strong>P</strong></a>
- 
+  <div class="section" id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="b">
+<h2>1.0.0b<a class="headerlink" href="#b" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Add handling InteroperabilityIFD, 1stIFD, and thumbnail image.</li>
+<li><em>&#8216;load&#8217;</em> returns a dict that contains &#8220;0th&#8221;, &#8220;Exif&#8221;, &#8220;GPS&#8221;, &#8220;Interop&#8221;, &#8220;1st&#8221;, and &#8220;thumbnail&#8221; keys.</li>
+<li><em>&#8216;dump&#8217;</em> argument is changed from three dicts to a dict.</li>
+<li><em>piexif.ZerothIFD</em> is renamed <em>piexif.ImageIFD</em> for 1stIFD support.</li>
+</ul>
 </div>
-<h2 id="P">P</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="functions.html#piexif.dump">piexif.dump() (built-in function)</a>
-  </dt>
-
-      
-  <dt><a href="functions.html#piexif.insert">piexif.insert() (built-in function)</a>, <a href="functions.html#piexif.insert">[1]</a>
-  </dt>
-
-      
-  <dt><a href="functions.html#piexif.load">piexif.load() (built-in function)</a>, <a href="functions.html#piexif.load">[1]</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="functions.html#piexif.remove">piexif.remove() (built-in function)</a>, <a href="functions.html#piexif.remove">[1]</a>
-  </dt>
-
-      
-  <dt><a href="functions.html#piexif.transplant">piexif.transplant() (built-in function)</a>, <a href="functions.html#piexif.transplant">[1]</a>
-  </dt>
-
-  </dl></td>
-</tr></table>
-
+<div class="section" id="c">
+<h2>0.7.0c<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Rename project.</li>
+</ul>
+</div>
+</div>
 
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sample.html" class="btn btn-neutral" title="Samples"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

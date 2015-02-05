@@ -23,7 +23,6 @@ def split_into_segments(data):
 
         if (head >= len(data)):
             raise ValueError("Wrong JPEG data.")
-
     return segments
 
 
