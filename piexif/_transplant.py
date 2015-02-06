@@ -3,7 +3,7 @@ import io
 from ._common import *
 
 
-def transplant(exif_src, image, new_file=""):
+def transplant(exif_src, image, new_file=None):
     """
     py:function:: piexif.transplant(filename1, filename2)
 

@@ -43,7 +43,7 @@ class ExifReader(object):
                 self.tiftag = app1[10:]
             else:
                 self.tiftag = None
-        elif data[0:2] in (b"\x49\x49", b"\x4d4d"):  # TIFF
+        elif data[0:2] in (b"\x49\x49", b"\x4d\x4d"):  # TIFF
             self.tiftag = data
         elif data[0:4] == b"Exif":  # Exif
             self.tiftag = data[6:]
@@ -90,8 +90,8 @@ class ExifReader(object):
                 ifd_dict[tag] = self.convert_value(v_set)
             elif read_unknown:
                 ifd_dict[tag] = v_set
-            else:
-                pass
+            #else:
+            #    pass
 
         if ifd_name == "0th":
             pointer = offset + 12 * tag_count
@@ -390,9 +390,93 @@ def pack_long(*args):
     return struct.pack(">" + "L" * len(args), *args)
 
 
-def pack_slong(*args):
-    return struct.pack(">" + "l" * len(args), *args)
+#def pack_slong(*args):
+#    return struct.pack(">" + "l" * len(args), *args)
 
+
+def value_to_bytes(raw_value, value_type, offset):
+    four_bytes_over = b""
+    value_str = b""
+
+    if value_type == "Byte":
+        length = len(raw_value)
+        if length <= 4:
+            value_str = (pack_byte(*raw_value) +
+                            b"\x00" * (4 - length))
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = pack_byte(*raw_value)
+    elif value_type == "Short":
+        length = len(raw_value)
+        if length <= 2:
+            value_str = (pack_short(*raw_value) +
+                            b"\x00\x00" * (2 - length))
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = pack_short(*raw_value)
+    elif value_type == "Long":
+        length = len(raw_value)
+        if length <= 1:
+            value_str = pack_long(*raw_value)
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = pack_long(*raw_value)
+#        elif value_type == "SLong":
+#            length = len(raw_value)
+#            if length <= 1:
+#                value_str = pack_long(*raw_value)
+#            else:
+#                value_str = struct.pack(">I", offset)
+#                four_bytes_over = pack_slong(*raw_value)
+    elif value_type == "Ascii":
+        try:
+            new_value = raw_value.encode("latin1") + b"\x00"
+        except:
+            new_value = raw_value + b"\x00"
+        length = len(new_value)
+        if length > 4:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = new_value
+        else:
+            value_str = new_value + b"\x00" * (4 - length)
+    elif value_type == "Rational":
+        if isinstance(raw_value[0], NUMBER_TYPE):
+            length = 1
+            num, den = raw_value
+            new_value = struct.pack(">L", num) + struct.pack(">L", den)
+        elif isinstance(raw_value[0], tuple):
+            length = len(raw_value)
+            new_value = b""
+            for n, val in enumerate(raw_value):
+                num, den = val
+                new_value += (struct.pack(">L", num) +
+                                struct.pack(">L", den))
+        value_str = struct.pack(">I", offset)
+        four_bytes_over = new_value
+    elif value_type == "SRational":
+        if isinstance(raw_value[0], NUMBER_TYPE):
+            length = 1
+            num, den = raw_value
+            new_value = struct.pack(">l", num) + struct.pack(">l", den)
+        elif isinstance(raw_value[0], tuple):
+            length = len(raw_value)
+            new_value = b""
+            for n, val in enumerate(raw_value):
+                num, den = val
+                new_value += (struct.pack(">l", num) +
+                                struct.pack(">l", den))
+        value_str = struct.pack(">I", offset)
+        four_bytes_over = new_value
+    elif value_type == "Undefined":
+        length = len(raw_value)
+        if length > 4:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = raw_value
+        else:
+            value_str = raw_value + b"\x00" * (4 - length)
+
+    length_str = struct.pack(">I", length)
+    return length_str, value_str, four_bytes_over
 
 def dict_to_bytes(ifd_dict, ifd, ifd_offset):
     tag_count = len(ifd_dict)
@@ -418,101 +502,11 @@ def dict_to_bytes(ifd_dict, ifd, ifd_offset):
 
         if isinstance(raw_value, NUMBER_TYPE):
             raw_value = (raw_value,)
+        offset = TIFF_HEADER_LENGTH + entries_length + ifd_offset + len(values)
 
-        if value_type == "Byte":
-            length = len(raw_value)
-            if length <= 4:
-                value_str = (pack_byte(*raw_value) +
-                             b"\x00" * (4 - length))
-            else:
-                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                          entries_length + len(values))
-                value_str = struct.pack(">I", offset)
-                four_bytes_over = pack_byte(*raw_value)
-        elif value_type == "Short":
-            length = len(raw_value)
-            if length <= 2:
-                value_str = (pack_short(*raw_value) +
-                             b"\x00\x00" * (2 - length))
-            else:
-                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                          entries_length + len(values))
-                value_str = struct.pack(">I", offset)
-                four_bytes_over = pack_short(*raw_value)
-        elif value_type == "Long":
-            length = len(raw_value)
-            if length <= 1:
-                value_str = pack_long(*raw_value)
-            else:
-                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                          entries_length + len(values))
-                value_str = struct.pack(">I", offset)
-                four_bytes_over = pack_long(*raw_value)
-#        elif value_type == "SLong":
-#            length = len(raw_value)
-#            if length <= 1:
-#                value_str = pack_long(*raw_value)
-#            else:
-#                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-#                          entries_length + len(values))
-#                value_str = struct.pack(">I", offset)
-#                four_bytes_over = pack_slong(*raw_value)
-        elif value_type == "Ascii":
-            try:
-                new_value = raw_value.encode("latin1") + b"\x00"
-            except:
-                new_value = raw_value + b"\x00"
-            length = len(new_value)
-            if length > 4:
-                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                          entries_length + len(values))
-                value_str = struct.pack(">I", offset)
-                four_bytes_over = new_value
-            else:
-                value_str = new_value + b"\x00" * (4 - length)
-        elif value_type == "Rational":
-            if isinstance(raw_value[0], NUMBER_TYPE):
-                length = 1
-                num, den = raw_value
-                new_value = struct.pack(">L", num) + struct.pack(">L", den)
-            elif isinstance(raw_value[0], tuple):
-                length = len(raw_value)
-                new_value = b""
-                for n, val in enumerate(raw_value):
-                    num, den = val
-                    new_value += (struct.pack(">L", num) +
-                                  struct.pack(">L", den))
-            offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                      entries_length + len(values))
-            value_str = struct.pack(">I", offset)
-            four_bytes_over = new_value
-        elif value_type == "SRational":
-            if isinstance(raw_value[0], NUMBER_TYPE):
-                length = 1
-                num, den = raw_value
-                new_value = struct.pack(">l", num) + struct.pack(">l", den)
-            elif isinstance(raw_value[0], tuple):
-                length = len(raw_value)
-                new_value = b""
-                for n, val in enumerate(raw_value):
-                    num, den = val
-                    new_value += (struct.pack(">l", num) +
-                                  struct.pack(">l", den))
-            offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                      entries_length + len(values))
-            value_str = struct.pack(">I", offset)
-            four_bytes_over = new_value
-        elif value_type == "Undefined":
-            length = len(raw_value)
-            if length > 4:
-                offset = (TIFF_HEADER_LENGTH + ifd_offset +
-                          entries_length + len(values))
-                value_str = struct.pack(">I", offset)
-                four_bytes_over = raw_value
-            else:
-                value_str = raw_value + b"\x00" * (4 - length)
-
-        length_str = struct.pack(">I", length)
+        length_str, value_str, four_bytes_over = value_to_bytes(raw_value,
+                                                                value_type,
+                                                                offset)
         entries += key_str + type_str + length_str + value_str
         values += four_bytes_over
     return (entry_header + entries, values)

@@ -4,7 +4,7 @@ import struct
 from ._common import *
 
 
-def insert(exif, image, new_file=""):
+def insert(exif, image, new_file=None):
     """
     py:function:: piexif.insert(exif_bytes, filename)
 
