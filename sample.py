@@ -48,7 +48,7 @@ def insert_sample():
                   283: (96, 1),
                   296: 2,
                   305: 'piexif'}
-    exif_bytes = piexif.dump(zeroth_ifd)
+    exif_bytes = piexif.dump({"0th":zeroth_ifd})
     piexif.insert(exif_bytes,
                  "remove_sample.jpg",
                  "insert_sample.jpg")
