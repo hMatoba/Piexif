@@ -446,7 +446,7 @@ class ExifTests(unittest.TestCase):
             exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
         if 34853 in pilDict:
             gps = pilDict.pop(34853)
-        counter = {"Byte":0, "Ascii":0, "Short":0, "Long":0, "Rational":0, 
+        counter = {"Byte":0, "Ascii":0, "Short":0, "Long":0, "Rational":0,
                    "SRational":0, "Undefined":0}
         for key in sorted(zeroth_dict):
             if key in pilDict:
@@ -468,13 +468,13 @@ class ExifTests(unittest.TestCase):
 
 class UTests(unittest.TestCase):
     def test_ExifReader_return_unknown(self):
-        b1 = b"MM\x00\x2a\x00\x00\x00\x08" 
+        b1 = b"MM\x00\x2a\x00\x00\x00\x08"
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
         er = piexif._load_and_dump.ExifReader(b1 + b2)
-        if er.tiftag[0:2] == b"II": 
-            exifReader.endian_mark = "<" 
-        else: 
-            er.endian_mark = ">" 
+        if er.tiftag[0:2] == b"II":
+            exifReader.endian_mark = "<"
+        else:
+            er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
         self.assertEqual(ifd[65535], (0, 0, b"\x00\x00"))
 
@@ -494,13 +494,13 @@ class UTests(unittest.TestCase):
             er.convert_value((None, None, None))
 
     def test_ExifReader_return_unknown(self):
-        b1 = b"MM\x00\x2a\x00\x00\x00\x08" 
+        b1 = b"MM\x00\x2a\x00\x00\x00\x08"
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
         er = piexif._load_and_dump.ExifReader(b1 + b2)
-        if er.tiftag[0:2] == b"II": 
-            exifReader.endian_mark = "<" 
-        else: 
-            er.endian_mark = ">" 
+        if er.tiftag[0:2] == b"II":
+            exifReader.endian_mark = "<"
+        else:
+            er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
         self.assertEqual(ifd[65535], (0, 0, b"\x00\x00"))
 
