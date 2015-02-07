@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0.0b
-------
+1.0.0
+-----
 
 - Add handling InteroperabilityIFD, 1stIFD, and thumbnail image.
 - *'load'* returns a dict that contains "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail" keys.

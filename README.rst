@@ -11,11 +11,18 @@ Document: http://piexif.readthedocs.org/en/latest/
 Install
 -------
 
-Download .zip, extract it and run
+'easy_install'::
 
-::
+    $ easy_install piexif
+
+or 'pip'::
+
+    $ pip install piexif
+
+or download .zip, extract it and run::
 
     $ python setup.py install
+
 
 Example
 -------
