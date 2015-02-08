@@ -476,7 +476,9 @@ class UTests(unittest.TestCase):
         else:
             er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
-        self.assertEqual(ifd[65535], (0, 0, b"\x00\x00"))
+        self.assertEqual(ifd[65535][0], 0)
+        self.assertEqual(ifd[65535][1], 0)
+        self.assertEqual(ifd[65535][2], b"\x00\x00")
 
     def test_ExifReader_convert_value(self):
         byte_v = (1, 2, 3, 4, 5)
@@ -492,19 +494,6 @@ class UTests(unittest.TestCase):
         er = piexif._load_and_dump.ExifReader(I1)
         with self.assertRaises(ValueError):
             er.convert_value((None, None, None))
-
-    def test_ExifReader_return_unknown(self):
-        b1 = b"MM\x00\x2a\x00\x00\x00\x08"
-        b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
-        er = piexif._load_and_dump.ExifReader(b1 + b2)
-        if er.tiftag[0:2] == b"II":
-            exifReader.endian_mark = "<"
-        else:
-            er.endian_mark = ">"
-        ifd = er.get_ifd_dict(8, "0th", True)
-        self.assertEqual(ifd[65535][0], 0)
-        self.assertEqual(ifd[65535][1], 0)
-        self.assertEqual(ifd[65535][2], b"\x00\x00")
 
     def test_split_into_segments_fail1(self):
         with self.assertRaises(ValueError):
