@@ -481,14 +481,23 @@ class UTests(unittest.TestCase):
         self.assertEqual(ifd[65535][2], b"\x00\x00")
 
     def test_ExifReader_convert_value(self):
-        byte_v = (1, 2, 3, 4, 5)
-        long_v = (4294967295, 4294967295)
-        exif_dict = {"Exif":{ExifIFD.ISOSpeed:long_v},
-                     "GPS":{GPSIFD.GPSVersionID:byte_v}}
-        exif_bytes = piexif.dump(exif_dict)
-        e = piexif.load(exif_bytes)
-        self.assertEqual(e["Exif"][ExifIFD.ISOSpeed], long_v)
-        self.assertEqual(e["GPS"][GPSIFD.GPSVersionID], byte_v)
+        byte_v = (255,
+                  (255, 254),
+                  (255, 254, 253),
+                  (255, 254, 253, 252),
+                  (255, 254, 253, 252, 251))
+        long_v = (4294967295,
+                  (4294967295, 4294967294),
+                  (4294967295, 4294967294, 4294967293),
+                  (4294967295, 4294967294, 4294967293, 4294967292),
+                  (4294967295, 4294967294, 4294967293, 4294967292, 4294967291))
+        for x in range(5):
+            exif_dict = {"Exif":{ExifIFD.ISOSpeed:long_v[x]},
+                         "GPS":{GPSIFD.GPSVersionID:byte_v[x]}}
+            exif_bytes = piexif.dump(exif_dict)
+            e = piexif.load(exif_bytes)
+            self.assertEqual(e["Exif"][ExifIFD.ISOSpeed], long_v[x])
+            self.assertEqual(e["GPS"][GPSIFD.GPSVersionID], byte_v[x])
 
     def test_ExifReader_convert_value_fail(self):
         er = piexif._load_and_dump.ExifReader(I1)
