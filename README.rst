@@ -32,7 +32,7 @@ Example
     exif_dict = piexif.load("foo1.jpg")
     for ifd in ("0th", "Exif", "GPS", "1st"):
         for tag in exif_dict[ifd]:
-            print(ifd, tag, exif_dict[ifd][tag])
+            print(piexif.TAGS[ifd][tag]["name"], exif_dict[ifd][tag])
 
 Environment
 -----------
