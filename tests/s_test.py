@@ -502,7 +502,9 @@ class UTests(unittest.TestCase):
         else:
             er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
-        self.assertEqual(ifd[65535], (0, 0, b"\x00\x00"))
+        self.assertEqual(ifd[65535][0], 0)
+        self.assertEqual(ifd[65535][1], 0)
+        self.assertEqual(ifd[65535][2], b"\x00\x00")
 
     def test_split_into_segments_fail1(self):
         with self.assertRaises(ValueError):

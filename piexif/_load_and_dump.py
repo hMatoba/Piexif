@@ -89,7 +89,7 @@ class ExifReader(object):
             if tag in TAGS[t]:
                 ifd_dict[tag] = self.convert_value(v_set)
             elif read_unknown:
-                ifd_dict[tag] = v_set
+                ifd_dict[tag] = (v_set[0], v_set[1], v_set[2], self.tiftag)
             #else:
             #    pass
 
