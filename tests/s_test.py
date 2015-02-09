@@ -184,10 +184,11 @@ class ExifTests(unittest.TestCase):
         Image.open(o).close()
 
     def test_load(self):
-        for input_file in (os.path.join("tests", "images", "r_canon.jpg"),
+        for input_file in (os.path.join("tests", "images", "r_sony.jpg"),
                            os.path.join("tests", "images", "r_ricoh.jpg")):
             exif = piexif.load(input_file)
             e = load_exif_by_PIL(input_file)
+            print("********************\n" + input_file + "\n")
             self._compare_piexifDict_PILDict(exif, e)
 
     def test_load_m(self):
@@ -195,6 +196,7 @@ class ExifTests(unittest.TestCase):
         """
         exif = piexif.load(I1)
         e = load_exif_by_PIL(INPUT_FILE1)
+        print("********************\n\n" + INPUT_FILE1 + "\n")
         self._compare_piexifDict_PILDict(exif, e)
 
     def test_load_tif(self):
@@ -319,7 +321,7 @@ class ExifTests(unittest.TestCase):
         self.assertDictEqual(EXIF_DICT, exif_ifd)
         self.assertDictEqual(GPS_DICT, gps_ifd)
 
-    def test_dump_and_load_2(self):
+    def test_dump_and_load2(self):
         thumbnail_io = io.BytesIO()
         thumb = Image.open(INPUT_FILE2)
         thumb.thumbnail((40, 40))
@@ -351,6 +353,61 @@ class ExifTests(unittest.TestCase):
         exif["1st"].pop(514) # pointer to GPS IFD
         self.assertDictEqual(FIRST_DICT, exif["1st"])
         Image.open(io.BytesIO(exif["thumbnail"])).close()
+
+    def test_dump_and_load3(self):
+        ascii_v = ["a", "ab", "abc", "abcd", "abcde"]
+        undefined_v = [b"\x00", 
+                       b"\x00\x01", 
+                       b"\x00\x01\x02", 
+                       b"\x00\x01\x02\x03", 
+                       b"\x00\x01\x02\x03\x04"]
+        byte_v = [255,
+                  (255, 254),
+                  (255, 254, 253),
+                  (255, 254, 253, 252),
+                  (255, 254, 253, 252, 251)]
+        short_v = [65535,
+                   (65535, 65534),
+                   (65535, 65534, 65533),
+                   (65535, 65534, 65533, 65532),
+                   (65535, 65534, 65533, 65532, 65531)]
+        long_v = [4294967295,
+                  (4294967295, 4294967294),
+                  (4294967295, 4294967294, 4294967293),
+                  (4294967295, 4294967294, 4294967293, 4294967292),
+                  (5, 4, 3, 2, 1)]
+        rational_v = [(4294967295, 4294967294),
+                      ((4294967295, 4294967294), (4294967293, 4294967292)),
+                      ((1, 2), (3, 4), (5, 6)),
+                      ((1, 2), (3, 4), (5, 6), (7, 8)),
+                      ((1, 2), (3, 4), (5, 6), (7, 8), (9, 10))]
+        srational_v = [(2147483647, -2147483648),
+                       ((2147483647, -2147483648), (2147483645, 2147483644)),
+                       ((1, 2), (3, 4), (5, 6)),
+                       ((1, 2), (3, 4), (5, 6), (7, 8)),
+                       ((1, 2), (3, 4), (5, 6), (7, 8), (9, 10))]
+        for x in range(5):
+            exif_dict = {
+                "0th":{ImageIFD.ProcessingSoftware:ascii_v[x],
+                       ImageIFD.InterColorProfile:undefined_v[x],
+                       ImageIFD.SubfileType:short_v[x],
+                       ImageIFD.WhitePoint:rational_v[x],
+                       ImageIFD.BlackLevelDeltaH:srational_v[x]},
+                "Exif":{ExifIFD.ISOSpeed:long_v[x]},
+                "GPS":{GPSIFD.GPSVersionID:byte_v[x]},}
+            exif_bytes = piexif.dump(exif_dict)
+            e = piexif.load(exif_bytes)
+            self.assertEqual(
+                e["0th"][ImageIFD.ProcessingSoftware].decode("latin1"),
+                ascii_v[x])
+            self.assertEqual(
+                e["0th"][ImageIFD.InterColorProfile], undefined_v[x])
+            self.assertEqual(e["0th"][ImageIFD.SubfileType], short_v[x])
+            self.assertEqual(e["0th"][ImageIFD.WhitePoint], rational_v[x])
+            self.assertEqual(
+                e["0th"][ImageIFD.BlackLevelDeltaH], srational_v[x])
+            self.assertEqual(e["Exif"][ExifIFD.ISOSpeed], long_v[x])
+            self.assertEqual(e["GPS"][GPSIFD.GPSVersionID], byte_v[x])
 
     def test_roundtrip_files(self):
         files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
@@ -451,16 +508,34 @@ class ExifTests(unittest.TestCase):
         for key in sorted(zeroth_dict):
             if key in pilDict:
                 self._compare_value(zeroth_dict[key], pilDict[key])
+                try:
+                    print(TAGS["0th"][key]["name"],
+                          zeroth_dict[key][:10], pilDict[key][:10])
+                except:
+                     print(TAGS["0th"][key]["name"],
+                           zeroth_dict[key], pilDict[key])
                 t = TAGS["0th"][key]["type"]
                 counter[t] += 1
         for key in sorted(exif_dict):
             if key in pilDict:
                 self._compare_value(exif_dict[key], pilDict[key])
+                try:
+                    print(TAGS["Exif"][key]["name"],
+                          exif_dict[key][:10], pilDict[key][:10])
+                except:
+                     print(TAGS["Exif"][key]["name"],
+                           exif_dict[key], pilDict[key])
                 t = TAGS["Exif"][key]["type"]
                 counter[t] += 1
         for key in sorted(gps_dict):
             if key in gps:
                 self._compare_value(gps_dict[key], gps[key])
+                try:
+                    print(TAGS["GPS"][key]["name"],
+                          gps_dict[key][:10], gps[key][:10])
+                except:
+                     print(TAGS["GPS"][key]["name"],
+                           gps_dict[key], gps[key])
                 t = TAGS["GPS"][key]["type"]
                 counter[t] += 1
         print(counter)
@@ -479,25 +554,6 @@ class UTests(unittest.TestCase):
         self.assertEqual(ifd[65535][0], 0)
         self.assertEqual(ifd[65535][1], 0)
         self.assertEqual(ifd[65535][2], b"\x00\x00")
-
-    def test_ExifReader_convert_value(self):
-        byte_v = (255,
-                  (255, 254),
-                  (255, 254, 253),
-                  (255, 254, 253, 252),
-                  (255, 254, 253, 252, 251))
-        long_v = (4294967295,
-                  (4294967295, 4294967294),
-                  (4294967295, 4294967294, 4294967293),
-                  (4294967295, 4294967294, 4294967293, 4294967292),
-                  (4294967295, 4294967294, 4294967293, 4294967292, 4294967291))
-        for x in range(5):
-            exif_dict = {"Exif":{ExifIFD.ISOSpeed:long_v[x]},
-                         "GPS":{GPSIFD.GPSVersionID:byte_v[x]}}
-            exif_bytes = piexif.dump(exif_dict)
-            e = piexif.load(exif_bytes)
-            self.assertEqual(e["Exif"][ExifIFD.ISOSpeed], long_v[x])
-            self.assertEqual(e["GPS"][GPSIFD.GPSVersionID], byte_v[x])
 
     def test_ExifReader_convert_value_fail(self):
         er = piexif._load_and_dump.ExifReader(I1)
