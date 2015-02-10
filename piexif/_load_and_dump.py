@@ -226,8 +226,8 @@ def load(input_data):
     if 34853 in exif_dict["0th"]:
         pointer = exif_dict["0th"][34853]
         exif_dict["GPS"] = exifReader.get_ifd_dict(pointer, "GPS")
-    if 40965 in exif_dict["0th"]:
-        pointer = exif_dict["0th"][40965]
+    if 40965 in exif_dict["Exif"]:
+        pointer = exif_dict["Exif"][40965]
         exif_dict["Interop"] = exifReader.get_ifd_dict(pointer, "Interop")
     if first_ifd_pointer != b"\x00\x00\x00\x00":
         pointer = struct.unpack(exifReader.endian_mark + "L",
@@ -261,18 +261,19 @@ def dump(exif_dict_original):
         zeroth_ifd = exif_dict["0th"]
     else:
         zeroth_ifd = {}
-    if ("Exif" in exif_dict) and len(exif_dict["Exif"]):
+    if (("Exif" in exif_dict) and len(exif_dict["Exif"]) or
+          ("Interop" in exif_dict) and len(exif_dict["Interop"]) ):
         zeroth_ifd[34665] = 1
         exif_is = True
         exif_ifd = exif_dict["Exif"]
+        if ("Interop" in exif_dict) and len(exif_dict["Interop"]):
+            exif_ifd[40965] = 1
+            interop_is = True
+            interop_ifd = exif_dict["Interop"]
     if ("GPS" in exif_dict) and len(exif_dict["GPS"]):
         zeroth_ifd[34853] = 1
         gps_is = True
         gps_ifd = exif_dict["GPS"]
-    if ("Interop" in exif_dict) and len(exif_dict["Interop"]):
-        zeroth_ifd[40965] = 1
-        interop_is = True
-        interop_ifd = exif_dict["Interop"]
     if (("1st" in exif_dict) and
             ("thumbnail" in exif_dict) and
             (exif_dict["thumbnail"] is not None)):
@@ -282,13 +283,14 @@ def dump(exif_dict_original):
         first_ifd = exif_dict["1st"]
 
     zeroth_set = dict_to_bytes(zeroth_ifd, "0th", 0)
-    zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 +
-                     interop_is * 12 + 4 + len(zeroth_set[1]))
+    zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 + 
+                     len(zeroth_set[1]))
 
     if exif_is:
         exif_set = dict_to_bytes(exif_ifd, "Exif", zeroth_length)
-        exif_bytes = b"".join(exif_set)
-        exif_length = len(exif_bytes)
+        exif_length = len(exif_set[0]) + interop_is * 12 + len(exif_set[1])
+        #exif_bytes = b"".join(exif_set)
+        #exif_length = len(exif_bytes)
     else:
         exif_bytes = b""
         exif_length = 0
@@ -364,7 +366,9 @@ def dump(exif_dict_original):
         first_ifd_pointer = b"\x00\x00\x00\x00"
 
     zeroth_bytes = (zeroth_set[0] + exif_pointer + gps_pointer +
-                    interop_pointer + first_ifd_pointer + zeroth_set[1])
+                    first_ifd_pointer + zeroth_set[1])
+    if exif_is:
+        exif_bytes = exif_set[0] + interop_pointer + exif_set[1]
 
     return (header + zeroth_bytes + exif_bytes + gps_bytes +
             interop_bytes + first_bytes)
@@ -489,7 +493,9 @@ def dict_to_bytes(ifd_dict, ifd, ifd_offset):
     values = b""
 
     for n, key in enumerate(sorted(ifd_dict)):
-        if (ifd == "0th") and (key in (34665, 34853, 40965)):
+        if (ifd == "0th") and (key in (34665, 34853)):
+            continue
+        elif (ifd == "Exif") and (key == 40965):
             continue
         elif (ifd == "1st") and (key in (513, 514)):
             continue

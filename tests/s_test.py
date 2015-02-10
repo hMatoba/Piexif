@@ -345,7 +345,7 @@ class ExifTests(unittest.TestCase):
         exif = piexif.load(o.getvalue())
         exif["0th"].pop(ImageIFD.ExifTag) # pointer to exif IFD
         exif["0th"].pop(ImageIFD.GPSTag) # pointer to GPS IFD
-        exif["0th"].pop(ImageIFD.InteroperabilityPointer)
+        exif["Exif"].pop(ExifIFD.InteroperabilityTag)
         self.assertDictEqual(ZEROTH_DICT, exif["0th"])
         self.assertDictEqual(EXIF_DICT, exif["Exif"])
         self.assertDictEqual(GPS_DICT, exif["GPS"])
@@ -442,9 +442,10 @@ class ExifTests(unittest.TestCase):
                     if ImageIFD.GPSTag in exif["0th"]:
                         exif["0th"].pop(ImageIFD.GPSTag)
                         e["0th"].pop(ImageIFD.GPSTag)
-                    if ImageIFD.InteroperabilityPointer in exif["0th"]:
-                        exif["0th"].pop(ImageIFD.InteroperabilityPointer)
-                        e["0th"].pop(ImageIFD.InteroperabilityPointer)
+                elif ifd == "Exif":
+                    if ExifIFD.InteroperabilityTag in exif["Exif"]:
+                        exif["Exif"].pop(ExifIFD.InteroperabilityTag)
+                        e["Exif"].pop(ExifIFD.InteroperabilityTag)
                 for key in exif[ifd]:
                     self.assertEqual(exif[ifd][key], e[ifd][key])
             print(" - pass")

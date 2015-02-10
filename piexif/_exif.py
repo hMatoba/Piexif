@@ -105,7 +105,6 @@ TAGS = {
                40093: {'name': 'XPAuthor', 'type': 'Byte'},
                40094: {'name': 'XPKeywords', 'type': 'Byte'},
                40095: {'name': 'XPSubject', 'type': 'Byte'},
-               40965: {'name': 'InteroperabilityPointer', 'type': 'Ascii'},
                50341: {'name': 'PrintImageMatching', 'type': 'Undefined'},
                50706: {'name': 'DNGVersion', 'type': 'Byte'},
                50707: {'name': 'DNGBackwardVersion', 'type': 'Byte'},
@@ -400,7 +399,6 @@ class ImageIFD:
     XPAuthor = 40093
     XPKeywords = 40094
     XPSubject = 40095
-    InteroperabilityPointer = 40965
     PrintImageMatching = 50341
     DNGVersion = 50706
     DNGBackwardVersion = 50707

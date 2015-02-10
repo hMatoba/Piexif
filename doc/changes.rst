@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.1
+-----
+
+- Fix bug. 'load' and 'dump' InteroperabilityIFD was wrong.
+
 1.0.0
 -----
 
