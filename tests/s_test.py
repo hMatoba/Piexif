@@ -189,6 +189,7 @@ class ExifTests(unittest.TestCase):
             exif = piexif.load(input_file)
             e = load_exif_by_PIL(input_file)
             print("********************\n" + input_file + "\n")
+            print("tag,  piexif value, PIL value")
             self._compare_piexifDict_PILDict(exif, e)
 
     def test_load_m(self):
