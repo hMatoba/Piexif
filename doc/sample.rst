@@ -72,7 +72,7 @@ Rotate image by exif orientation tag and remove orientation tag.
 Piexif on Server
 ----------------
 
-Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON, therefor piexif has a good compatible with AJAX, document oriented DB...
+Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON, therefore piexif has a good compatible with AJAX, document oriented DB...
 
 ::
 
