@@ -95,7 +95,8 @@ Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON
             thumbnail = exif_dict.pop("thumbnail")
             data_d = {}
             for ifd in exif_dict:
-                data_d[ifd] = {piexif.TAGS[ifd][tag]["name"]:exif_dict[ifd][tag] for tag in exif_dict[ifd]}
+                data_d[ifd] = {piexif.TAGS[ifd][tag]["name"]:exif_dict[ifd][tag]
+                               for tag in exif_dict[ifd]}
             data_d["thumbnail"] = thumbnail
             data = json.dumps(data_d, encoding="latin1")
             return self.write(data)
