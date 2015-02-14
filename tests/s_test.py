@@ -84,6 +84,7 @@ def pack_byte(*args):
 class ExifTests(unittest.TestCase):
     """tests for main five functions."""
 
+# load ------
     def test_no_exif_load(self):
         exif_dict = piexif.load(NOEXIF_FILE)
         none_dict = {"0th":{},
@@ -94,103 +95,14 @@ class ExifTests(unittest.TestCase):
                      "thumbnail":None}
         self.assertEqual(exif_dict, none_dict)
 
-    def test_no_exif_dump(self):
-        o = io.BytesIO()
-        exif_bytes = piexif.dump({})
-        i = Image.new("RGBA", (8, 8))
-        i.save(o, format="jpeg", exif=exif_bytes)
-        o.seek(0)
-        exif_dict2 = load_exif_by_PIL(o)
-        self.assertDictEqual({},  exif_dict2)
-
-    def test_transplant(self):
-        piexif.transplant(INPUT_FILE1, INPUT_FILE_PEN, "transplant.jpg")
-        i = Image.open("transplant.jpg")
-        i.close()
-        exif_src = piexif.load(INPUT_FILE1)
-        img_src = piexif.load(INPUT_FILE_PEN)
-        generated = piexif.load("transplant.jpg")
-        self.assertEqual(exif_src, generated)
-        self.assertNotEqual(img_src, generated)
-
-        piexif.transplant(INPUT_FILE1, "transplant.jpg")
-        self.assertEqual(piexif.load(INPUT_FILE1),
-                         piexif.load("transplant.jpg"))
-        os.remove("transplant.jpg")
-
-    def test_transplant_m(self):
-        """'transplant' on memory.
-        """
-        o = io.BytesIO()
-        piexif.transplant(I1, I2, o)
-        self.assertEqual(piexif.load(I1), piexif.load(o.getvalue()))
-        Image.open(o).close()
-
-    def test_transplant_fail1(self):
-        with  self.assertRaises(ValueError):
-            piexif.transplant(I1, I2, False)
-
-    def test_transplant_fail2(self):
-        with  self.assertRaises(ValueError):
-            piexif.transplant(NOEXIF_FILE, I2, "foo.jpg")
-
-    def test_remove(self):
-        piexif.remove(INPUT_FILE1, "remove.jpg")
-        exif_dict = piexif.load("remove.jpg")
-        none_dict = {"0th":{},
-                     "Exif":{},
-                     "GPS":{},
-                     "Interop":{},
-                     "1st":{},
-                     "thumbnail":None}
-        self.assertEqual(exif_dict, none_dict)
-
-        piexif.remove("remove.jpg")
-        exif_dict = piexif.load("remove.jpg")
-        self.assertEqual(exif_dict, none_dict)
-        os.remove("remove.jpg")
-
-    def test_remove2(self):
-        with open(INPUT_FILE1, "rb") as f:
-            data = f.read()
-        with open("remove2.jpg", "wb+") as f:
-            f.write(data)
-        piexif.remove("remove2.jpg")
-        exif_dict = piexif.load("remove2.jpg")
-        none_dict = {"0th":{},
-                     "Exif":{},
-                     "GPS":{},
-                     "Interop":{},
-                     "1st":{},
-                     "thumbnail":None}
-        self.assertEqual(exif_dict, none_dict)
-        os.remove("remove2.jpg")
-
-    def test_remove_m(self):
-        """'remove' on memory.
-        """
-        o = io.BytesIO()
-        with  self.assertRaises(ValueError):
-            piexif.remove(I1)
-        piexif.remove(I1, o)
-        exif_dict = piexif.load(o.getvalue())
-        none_dict = {"0th":{},
-                     "Exif":{},
-                     "GPS":{},
-                     "Interop":{},
-                     "1st":{},
-                     "thumbnail":None}
-        self.assertEqual(exif_dict, none_dict)
-        Image.open(o).close()
-
     def test_load(self):
-        for input_file in (os.path.join("tests", "images", "r_sony.jpg"),
-                           os.path.join("tests", "images", "r_ricoh.jpg")):
+        files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
+        for input_file in files:
             exif = piexif.load(input_file)
             e = load_exif_by_PIL(input_file)
             print("********************\n" + input_file + "\n")
             print("tag,  piexif value, PIL value")
-            self._compare_piexifDict_PILDict(exif, e)
+            self._compare_piexifDict_PILDict(exif, e, p=False)
 
     def test_load_m(self):
         """'load' on memory.
@@ -238,6 +150,27 @@ class ExifTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             exif = piexif.load("foo")
 
+    def test_load_from_pilImage_property(self):
+        o = io.BytesIO()
+        i = Image.open(INPUT_FILE1)
+        exif = i.info["exif"]
+        exif_dict = piexif.load(exif)
+        exif_bytes = piexif.dump(exif_dict)
+        i.save(o, "jpeg", exif=exif_bytes)
+        i.close()
+        o.seek(0)
+        Image.open(o).close()
+
+# dump ------
+    def test_no_exif_dump(self):
+        o = io.BytesIO()
+        exif_bytes = piexif.dump({})
+        i = Image.new("RGBA", (8, 8))
+        i.save(o, format="jpeg", exif=exif_bytes)
+        o.seek(0)
+        exif_dict2 = load_exif_by_PIL(o)
+        self.assertDictEqual({},  exif_dict2)
+
     def test_dump(self):
         exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
         t = time.time()
@@ -264,47 +197,7 @@ class ExifTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             exif_bytes = piexif.dump(exif_dict)
 
-    def test_insert(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
-        exif_bytes = piexif.dump(exif_dict)
-        piexif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
-        exif = load_exif_by_PIL("insert.jpg")
-
-        piexif.insert(exif_bytes, NOEXIF_FILE, "insert.jpg")
-
-        with self.assertRaises(ValueError):
-            piexif.insert(b"dummy", io.BytesIO())
-
-        piexif.insert(exif_bytes, "insert.jpg")
-        os.remove("insert.jpg")
-
-    def test_insert_m(self):
-        """'insert' on memory.
-        """
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
-        exif_bytes = piexif.dump(exif_dict)
-        o = io.BytesIO()
-        piexif.insert(exif_bytes, I1, o)
-        self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
-        exif = load_exif_by_PIL(o)
-
-    def test_insert_fail1(self):
-        with open(INPUT_FILE1, "rb") as f:
-            data = f.read()
-        with open("insert.jpg", "wb+") as f:
-            f.write(data)
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
-        exif_bytes = piexif.dump(exif_dict)
-        with  self.assertRaises(ValueError):
-            piexif.insert(exif_bytes, INPUT_FILE_TIF)
-        os.remove("insert.jpg")
-
-    def test_insert_fail2(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
-        exif_bytes = piexif.dump(exif_dict)
-        with  self.assertRaises(ValueError):
-            piexif.insert(exif_bytes, I1, False)
-
+# load and dump ------
     def test_dump_and_load(self):
         exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
         exif_bytes = piexif.dump(exif_dict)
@@ -450,17 +343,131 @@ class ExifTests(unittest.TestCase):
                     self.assertEqual(exif[ifd][key], e[ifd][key])
             print(" - pass")
 
-    def test_load_from_pilImage_property(self):
-        o = io.BytesIO()
-        i = Image.open(INPUT_FILE1)
-        exif = i.info["exif"]
-        exif_dict = piexif.load(exif)
-        exif_bytes = piexif.dump(exif_dict)
-        i.save(o, "jpeg", exif=exif_bytes)
+# transplant ------
+    def test_transplant(self):
+        piexif.transplant(INPUT_FILE1, INPUT_FILE_PEN, "transplant.jpg")
+        i = Image.open("transplant.jpg")
         i.close()
-        o.seek(0)
+        exif_src = piexif.load(INPUT_FILE1)
+        img_src = piexif.load(INPUT_FILE_PEN)
+        generated = piexif.load("transplant.jpg")
+        self.assertEqual(exif_src, generated)
+        self.assertNotEqual(img_src, generated)
+
+        piexif.transplant(INPUT_FILE1, "transplant.jpg")
+        self.assertEqual(piexif.load(INPUT_FILE1),
+                         piexif.load("transplant.jpg"))
+        os.remove("transplant.jpg")
+
+    def test_transplant_m(self):
+        """'transplant' on memory.
+        """
+        o = io.BytesIO()
+        piexif.transplant(I1, I2, o)
+        self.assertEqual(piexif.load(I1), piexif.load(o.getvalue()))
         Image.open(o).close()
 
+    def test_transplant_fail1(self):
+        with  self.assertRaises(ValueError):
+            piexif.transplant(I1, I2, False)
+
+    def test_transplant_fail2(self):
+        with  self.assertRaises(ValueError):
+            piexif.transplant(NOEXIF_FILE, I2, "foo.jpg")
+
+# remove ------
+    def test_remove(self):
+        piexif.remove(INPUT_FILE1, "remove.jpg")
+        exif_dict = piexif.load("remove.jpg")
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
+
+        piexif.remove("remove.jpg")
+        exif_dict = piexif.load("remove.jpg")
+        self.assertEqual(exif_dict, none_dict)
+        os.remove("remove.jpg")
+
+    def test_remove2(self):
+        with open(INPUT_FILE1, "rb") as f:
+            data = f.read()
+        with open("remove2.jpg", "wb+") as f:
+            f.write(data)
+        piexif.remove("remove2.jpg")
+        exif_dict = piexif.load("remove2.jpg")
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
+        os.remove("remove2.jpg")
+
+    def test_remove_m(self):
+        """'remove' on memory.
+        """
+        o = io.BytesIO()
+        with  self.assertRaises(ValueError):
+            piexif.remove(I1)
+        piexif.remove(I1, o)
+        exif_dict = piexif.load(o.getvalue())
+        none_dict = {"0th":{},
+                     "Exif":{},
+                     "GPS":{},
+                     "Interop":{},
+                     "1st":{},
+                     "thumbnail":None}
+        self.assertEqual(exif_dict, none_dict)
+        Image.open(o).close()
+
+# insert ------
+    def test_insert(self):
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
+        piexif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
+        exif = load_exif_by_PIL("insert.jpg")
+
+        piexif.insert(exif_bytes, NOEXIF_FILE, "insert.jpg")
+
+        with self.assertRaises(ValueError):
+            piexif.insert(b"dummy", io.BytesIO())
+
+        piexif.insert(exif_bytes, "insert.jpg")
+        os.remove("insert.jpg")
+
+    def test_insert_m(self):
+        """'insert' on memory.
+        """
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
+        o = io.BytesIO()
+        piexif.insert(exif_bytes, I1, o)
+        self.assertEqual(o.getvalue()[0:2], b"\xff\xd8")
+        exif = load_exif_by_PIL(o)
+
+    def test_insert_fail1(self):
+        with open(INPUT_FILE1, "rb") as f:
+            data = f.read()
+        with open("insert.jpg", "wb+") as f:
+            f.write(data)
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
+        with  self.assertRaises(ValueError):
+            piexif.insert(exif_bytes, INPUT_FILE_TIF)
+        os.remove("insert.jpg")
+
+    def test_insert_fail2(self):
+        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_bytes = piexif.dump(exif_dict)
+        with  self.assertRaises(ValueError):
+            piexif.insert(exif_bytes, I1, False)
+
+# ------
     def test_print_exif(self):
         print("\n**********************************************")
         t = time.time()
@@ -497,7 +504,7 @@ class ExifTests(unittest.TestCase):
         else:
             self.assertEqual(v1, v2)
 
-    def _compare_piexifDict_PILDict(self, piexifDict, pilDict):
+    def _compare_piexifDict_PILDict(self, piexifDict, pilDict, p=True):
         zeroth_dict = piexifDict["0th"]
         exif_dict = piexifDict["Exif"]
         gps_dict = piexifDict["GPS"]
@@ -510,34 +517,37 @@ class ExifTests(unittest.TestCase):
         for key in sorted(zeroth_dict):
             if key in pilDict:
                 self._compare_value(zeroth_dict[key], pilDict[key])
-                try:
-                    print(TAGS["0th"][key]["name"],
-                          zeroth_dict[key][:10], pilDict[key][:10])
-                except:
-                     print(TAGS["0th"][key]["name"],
-                           zeroth_dict[key], pilDict[key])
+                if p:
+                    try:
+                        print(TAGS["0th"][key]["name"],
+                              zeroth_dict[key][:10], pilDict[key][:10])
+                    except:
+                         print(TAGS["0th"][key]["name"],
+                               zeroth_dict[key], pilDict[key])
                 t = TAGS["0th"][key]["type"]
                 counter[t] += 1
         for key in sorted(exif_dict):
             if key in pilDict:
                 self._compare_value(exif_dict[key], pilDict[key])
-                try:
-                    print(TAGS["Exif"][key]["name"],
-                          exif_dict[key][:10], pilDict[key][:10])
-                except:
-                     print(TAGS["Exif"][key]["name"],
-                           exif_dict[key], pilDict[key])
+                if p:
+                    try:
+                        print(TAGS["Exif"][key]["name"],
+                              exif_dict[key][:10], pilDict[key][:10])
+                    except:
+                         print(TAGS["Exif"][key]["name"],
+                               exif_dict[key], pilDict[key])
                 t = TAGS["Exif"][key]["type"]
                 counter[t] += 1
         for key in sorted(gps_dict):
             if key in gps:
                 self._compare_value(gps_dict[key], gps[key])
-                try:
-                    print(TAGS["GPS"][key]["name"],
-                          gps_dict[key][:10], gps[key][:10])
-                except:
-                     print(TAGS["GPS"][key]["name"],
-                           gps_dict[key], gps[key])
+                if p:
+                    try:
+                        print(TAGS["GPS"][key]["name"],
+                              gps_dict[key][:10], gps[key][:10])
+                    except:
+                         print(TAGS["GPS"][key]["name"],
+                               gps_dict[key], gps[key])
                 t = TAGS["GPS"][key]["type"]
                 counter[t] += 1
         print(counter)
