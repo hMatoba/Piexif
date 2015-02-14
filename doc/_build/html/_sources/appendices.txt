@@ -6,7 +6,7 @@ Exif Data in Piexif
 -------------------
 
 Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or... See the document of Exif.
-http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
+http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 
 +---------------+----------------------+
 | **Exif Type** | **Python Type(3.x)** |

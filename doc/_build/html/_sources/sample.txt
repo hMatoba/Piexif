@@ -68,3 +68,41 @@ Rotate image by exif orientation tag and remove orientation tag.
                     img = img.rotate(90)
 
                 img.save(filename, exif=exif_bytes)
+
+Piexif on Server
+----------------
+
+Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON, therefore piexif has a good compatible with AJAX, document oriented DB...
+
+::
+
+    import json
+    
+    import tornado.web
+    import tornado.wsgi
+    import piexif
+    
+    
+    class PostHandler(tornado.web.RequestHandler):
+        def post(self):
+            jpg_data = self.request.body
+            try:
+                exif_dict = piexif.load(jpg_data)
+            except:
+                self.set_status(400)
+                return self.write("Wrong jpeg")
+            self.add_header("Content-Type", "application/json")
+            thumbnail = exif_dict.pop("thumbnail")
+            data_d = {}
+            for ifd in exif_dict:
+                data_d[ifd] = {piexif.TAGS[ifd][tag]["name"]:exif_dict[ifd][tag]
+                               for tag in exif_dict[ifd]}
+            data_d["thumbnail"] = thumbnail
+            data = json.dumps(data_d, encoding="latin1")
+            return self.write(data)
+    
+    application = tornado.web.Application([
+        (r"/p", PostHandler),
+    ])
+    
+    application = tornado.wsgi.WSGIAdapter(application)
