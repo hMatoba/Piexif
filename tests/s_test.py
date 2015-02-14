@@ -101,7 +101,6 @@ class ExifTests(unittest.TestCase):
             exif = piexif.load(input_file)
             e = load_exif_by_PIL(input_file)
             print("********************\n" + input_file + "\n")
-            print("tag,  piexif value, PIL value")
             self._compare_piexifDict_PILDict(exif, e, p=False)
 
     def test_load_m(self):
@@ -500,7 +499,10 @@ class ExifTests(unittest.TestCase):
                 except:
                     self.assertEqual(v1, v2)
             else:
-                self.assertEqual(v1, v2)
+                try:
+                    self.assertEqual(v1, v2.encode("latin1"))
+                except:
+                    self.assertEqual(v1, v2)
         else:
             self.assertEqual(v1, v2)
 
