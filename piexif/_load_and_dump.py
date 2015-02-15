@@ -1,16 +1,10 @@
 import copy
 import io
+import numbers
 import struct
-import sys
 
 from ._common import *
 from ._exif import *
-
-
-if sys.version_info[0] == 2:
-    NUMBER_TYPE = (int, long)
-else:
-    NUMBER_TYPE = int
 
 
 TYPES = {"Byte": 1,
@@ -444,7 +438,7 @@ def value_to_bytes(raw_value, value_type, offset):
         else:
             value_str = new_value + b"\x00" * (4 - length)
     elif value_type == "Rational":
-        if isinstance(raw_value[0], NUMBER_TYPE):
+        if isinstance(raw_value[0], numbers.Integral):
             length = 1
             num, den = raw_value
             new_value = struct.pack(">L", num) + struct.pack(">L", den)
@@ -458,7 +452,7 @@ def value_to_bytes(raw_value, value_type, offset):
         value_str = struct.pack(">I", offset)
         four_bytes_over = new_value
     elif value_type == "SRational":
-        if isinstance(raw_value[0], NUMBER_TYPE):
+        if isinstance(raw_value[0], numbers.Integral):
             length = 1
             num, den = raw_value
             new_value = struct.pack(">l", num) + struct.pack(">l", den)
@@ -506,7 +500,7 @@ def dict_to_bytes(ifd_dict, ifd, ifd_offset):
         type_str = struct.pack(">H", TYPES[value_type])
         four_bytes_over = b""
 
-        if isinstance(raw_value, NUMBER_TYPE):
+        if isinstance(raw_value, numbers.Integral):
             raw_value = (raw_value,)
         offset = TIFF_HEADER_LENGTH + entries_length + ifd_offset + len(values)
 
