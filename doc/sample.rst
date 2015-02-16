@@ -76,6 +76,7 @@ Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON
 
 ::
 
+    """GoogleAppEngine and Python 2.7"""
     import json
     
     import tornado.web
