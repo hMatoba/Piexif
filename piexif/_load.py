@@ -8,7 +8,7 @@ LITTLE_ENDIAN = b"\x49\x49"
 
 
 def load(input_data):
-    r"""
+    """
     py:function:: piexif.load(filename)
 
     Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
