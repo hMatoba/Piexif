@@ -1,3 +1,13 @@
+TYPES = {"Byte": 1,
+         "Ascii": 2,
+         "Short": 3,
+         "Long": 4,
+         "Rational": 5,
+         "Undefined": 7,
+         "SLong": 9,
+         "SRational": 10}
+
+
 TAGS = {
     'Image': {11: {'name': 'ProcessingSoftware', 'type': 'Ascii'},
                254: {'name': 'NewSubfileType', 'type': 'Long'},

@@ -559,7 +559,7 @@ class UTests(unittest.TestCase):
     def test_ExifReader_return_unknown(self):
         b1 = b"MM\x00\x2a\x00\x00\x00\x08"
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
-        er = piexif._load_and_dump.ExifReader(b1 + b2)
+        er = piexif._load._ExifReader(b1 + b2)
         if er.tiftag[0:2] == b"II":
             exifReader.endian_mark = "<"
         else:
@@ -570,7 +570,7 @@ class UTests(unittest.TestCase):
         self.assertEqual(ifd[65535][2], b"\x00\x00")
 
     def test_ExifReader_convert_value_fail(self):
-        er = piexif._load_and_dump.ExifReader(I1)
+        er = piexif._load._ExifReader(I1)
         with self.assertRaises(ValueError):
             er.convert_value((None, None, None))
 

@@ -33,9 +33,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="piexif\_common.py" />
+    <Compile Include="piexif\_dump.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="piexif\_exif.py" />
     <Compile Include="piexif\_insert.py" />
-    <Compile Include="piexif\_load_and_dump.py" />
+    <Compile Include="piexif\_load.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="piexif\_remove.py" />
     <Compile Include="piexif\_transplant.py" />
     <Compile Include="piexif\__init__.py" />
