@@ -26,6 +26,16 @@ or download .zip, extract it and run::
 
     $ python setup.py install
 
+How to Use
+----------
+
+There are only just five functions.
+
+- *load(filename)* - Get exif data as *dict*.
+- *dump(exif_dict)* - Get exif as *bytes* to save with JPEG.
+- *insert(exif_bytes, filename)* - Insert exif into JPEG.
+- *remove(filename)* - Remove exif from JPEG.
+- *transplant(filename, filename)* - Transplant exif from JPEG to JPEG.
 
 Example
 -------
