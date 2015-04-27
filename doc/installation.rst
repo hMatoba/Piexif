@@ -13,6 +13,4 @@ or 'pip'::
 
     $ pip install piexif
 
-or download .zip, extract it and run::
-
-    $ python setup.py install
+or download .zip, extract it. Put 'piexif' directory into your environment.
