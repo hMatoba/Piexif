@@ -572,7 +572,7 @@ class UTests(unittest.TestCase):
     def test_ExifReader_convert_value_fail(self):
         er = piexif._load._ExifReader(I1)
         with self.assertRaises(ValueError):
-            er.convert_value((None, None, None))
+            er.convert_value((None, None, None, None))
 
     def test_split_into_segments_fail1(self):
         with self.assertRaises(ValueError):

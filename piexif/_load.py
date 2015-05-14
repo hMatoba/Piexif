@@ -107,7 +107,7 @@ class _ExifReader(object):
                                       )[0]
             value = self.tiftag[pointer+8: pointer+12]
             p_and_value.append((pointer, value_type, value_num, value))
-            v_set = (value_type, value_num, value)
+            v_set = (value_type, value_num, value, tag)
             if tag in TAGS[t]:
                 ifd_dict[tag] = self.convert_value(v_set)
             elif read_unknown:
@@ -205,7 +205,8 @@ class _ExifReader(object):
                                       )[0])
         else:
             raise ValueError("Exif might be wrong. Got incorrect value " +
-                             "type to decode.")
+                             "type to decode.\n" +
+                             "tag: " + str(val[3]) + "\ntype: " + str(t))
 
         if isinstance(data, tuple) and (len(data) == 1):
             return data[0]
