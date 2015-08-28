@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.2
+-----
+
+- Add some error detail to 'dump'.
+
 1.0.1
 -----
 

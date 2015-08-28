@@ -52,7 +52,7 @@ def dump(exif_dict_original):
         first_ifd = exif_dict["1st"]
 
     zeroth_set = _dict_to_bytes(zeroth_ifd, "0th", 0)
-    zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 + 
+    zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 +
                      len(zeroth_set[1]))
 
     if exif_is:
@@ -205,7 +205,10 @@ def _value_to_bytes(raw_value, value_type, offset):
         try:
             new_value = raw_value.encode("latin1") + b"\x00"
         except:
-            new_value = raw_value + b"\x00"
+            try:
+                new_value = raw_value + b"\x00"
+            except TypeError:
+                raise ValueError("Got invalid type to convert.")
         length = len(new_value)
         if length > 4:
             value_str = struct.pack(">I", offset)
@@ -244,9 +247,16 @@ def _value_to_bytes(raw_value, value_type, offset):
         length = len(raw_value)
         if length > 4:
             value_str = struct.pack(">I", offset)
-            four_bytes_over = raw_value
+            try:
+                four_bytes_over = b"" + raw_value
+            except TypeError:
+                raise ValueError("Got invalid type to convert.")
         else:
-            value_str = raw_value + b"\x00" * (4 - length)
+            try:
+                value_str = raw_value + b"\x00" * (4 - length)
+            except TypeError:
+                raise ValueError("Got invalid type to convert.")
+
 
     length_str = struct.pack(">I", length)
     return length_str, value_str, four_bytes_over
@@ -279,9 +289,16 @@ def _dict_to_bytes(ifd_dict, ifd, ifd_offset):
             raw_value = (raw_value,)
         offset = TIFF_HEADER_LENGTH + entries_length + ifd_offset + len(values)
 
-        length_str, value_str, four_bytes_over = _value_to_bytes(raw_value,
-                                                                value_type,
-                                                                offset)
+        try:
+            length_str, value_str, four_bytes_over = _value_to_bytes(raw_value,
+                                                                     value_type,
+                                                                     offset)
+        except ValueError:
+            raise ValueError(
+                '"dump" got wrong type of exif value.\n' +
+                '{0} in {1} IFD. Got as {2}.'.format(key, ifd, type(ifd_dict[key]))
+            )
+
         entries += key_str + type_str + length_str + value_str
         values += four_bytes_over
     return (entry_header + entries, values)

@@ -194,7 +194,25 @@ class ExifTests(unittest.TestCase):
                      "1st":FIRST_DICT,
                      "thumbnail":thumb_data}
         with self.assertRaises(ValueError):
-            exif_bytes = piexif.dump(exif_dict)
+            piexif.dump(exif_dict)
+
+    def test_dump_fail2(self):
+        exif_ifd = {ExifIFD.DateTimeOriginal: 123}
+        exif_dict = {"Exif":exif_ifd}
+        with self.assertRaises(ValueError):
+            piexif.dump(exif_dict)
+
+    def test_dump_fail3(self):
+        exif_ifd = {ExifIFD.OECF: 1}
+        exif_dict = {"Exif":exif_ifd}
+        with self.assertRaises(ValueError):
+            piexif.dump(exif_dict)
+
+    def test_dump_fail4(self):
+        exif_ifd = {ExifIFD.OECF: (1, 2, 3, 4, 5)}
+        exif_dict = {"Exif":exif_ifd}
+        with self.assertRaises(ValueError):
+            piexif.dump(exif_dict)
 
 # load and dump ------
     def test_dump_and_load(self):
@@ -249,10 +267,10 @@ class ExifTests(unittest.TestCase):
 
     def test_dump_and_load3(self):
         ascii_v = ["a", "ab", "abc", "abcd", "abcde"]
-        undefined_v = [b"\x00", 
-                       b"\x00\x01", 
-                       b"\x00\x01\x02", 
-                       b"\x00\x01\x02\x03", 
+        undefined_v = [b"\x00",
+                       b"\x00\x01",
+                       b"\x00\x01\x02",
+                       b"\x00\x01\x02\x03",
                        b"\x00\x01\x02\x03\x04"]
         byte_v = [255,
                   (255, 254),
