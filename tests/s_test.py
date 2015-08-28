@@ -30,7 +30,7 @@ with open(INPUT_FILE2, "rb") as f:
     I2 = f.read()
 
 
-ZEROTH_DICT = {ImageIFD.Software: b"PIL", # ascii
+ZEROTH_IFD = {ImageIFD.Software: b"PIL", # ascii
                ImageIFD.Make: b"Make", # ascii
                ImageIFD.Model: b"XXX-XXX", # ascii
                ImageIFD.ResolutionUnit: 65535, # short
@@ -40,7 +40,7 @@ ZEROTH_DICT = {ImageIFD.Software: b"PIL", # ascii
                }
 
 
-EXIF_DICT = {ExifIFD.DateTimeOriginal: b"2099:09:29 10:10:10", # ascii
+EXIF_IFD = {ExifIFD.DateTimeOriginal: b"2099:09:29 10:10:10", # ascii
              ExifIFD.LensMake: b"LensMake", # ascii
              ExifIFD.OECF: b"\xaa\xaa\xaa\xaa\xaa\xaa",  # undefined
              ExifIFD.Sharpness: 65535, # short
@@ -51,7 +51,7 @@ EXIF_DICT = {ExifIFD.DateTimeOriginal: b"2099:09:29 10:10:10", # ascii
              }
 
 
-GPS_DICT = {GPSIFD.GPSVersionID: (0, 0, 0, 1), # byte
+GPS_IFD = {GPSIFD.GPSVersionID: (0, 0, 0, 1), # byte
             GPSIFD.GPSAltitudeRef: 1, # byte
             GPSIFD.GPSDateStamp: b"1999:99:99 99:99:99", # ascii
             GPSIFD.GPSDifferential: 65535, # short
@@ -59,7 +59,7 @@ GPS_DICT = {GPSIFD.GPSVersionID: (0, 0, 0, 1), # byte
             }
 
 
-FIRST_DICT = {ImageIFD.Software: b"PIL", # ascii
+FIRST_IFD = {ImageIFD.Software: b"PIL", # ascii
               ImageIFD.Make: b"Make", # ascii
               ImageIFD.Model: b"XXX-XXX", # ascii
               ImageIFD.BitsPerSample: (24, 24, 24), # short * 3
@@ -67,7 +67,7 @@ FIRST_DICT = {ImageIFD.Software: b"PIL", # ascii
               }
 
 
-INTEROP_DICT = {piexif.InteropIFD.InteroperabilityIndex: b"R98"}
+INTEROP_IFD = {piexif.InteropIFD.InteroperabilityIndex: b"R98"}
 
 
 def load_exif_by_PIL(f):
@@ -171,7 +171,7 @@ class ExifTests(unittest.TestCase):
         self.assertDictEqual({},  exif_dict2)
 
     def test_dump(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         t = time.time()
         exif_bytes = piexif.dump(exif_dict)
         t_cost = time.time() - t
@@ -187,11 +187,11 @@ class ExifTests(unittest.TestCase):
     def test_dump_fail(self):
         with open(os.path.join("tests", "images", "large.jpg"), "rb") as f:
             thumb_data = f.read()
-        exif_dict = {"0th":ZEROTH_DICT,
-                     "Exif":EXIF_DICT,
-                     "GPS":GPS_DICT,
-                     "Interop":INTEROP_DICT,
-                     "1st":FIRST_DICT,
+        exif_dict = {"0th":ZEROTH_IFD,
+                     "Exif":EXIF_IFD,
+                     "GPS":GPS_IFD,
+                     "Interop":INTEROP_IFD,
+                     "1st":FIRST_IFD,
                      "thumbnail":thumb_data}
         with self.assertRaises(ValueError):
             piexif.dump(exif_dict)
@@ -216,7 +216,7 @@ class ExifTests(unittest.TestCase):
 
 # load and dump ------
     def test_dump_and_load(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
         im = Image.new("RGBA", (8, 8))
 
@@ -228,9 +228,9 @@ class ExifTests(unittest.TestCase):
         zeroth_ifd, exif_ifd, gps_ifd = exif["0th"], exif["Exif"], exif["GPS"]
         zeroth_ifd.pop(ImageIFD.ExifTag) # pointer to exif IFD
         zeroth_ifd.pop(ImageIFD.GPSTag) # pointer to GPS IFD
-        self.assertDictEqual(ZEROTH_DICT, zeroth_ifd)
-        self.assertDictEqual(EXIF_DICT, exif_ifd)
-        self.assertDictEqual(GPS_DICT, gps_ifd)
+        self.assertDictEqual(ZEROTH_IFD, zeroth_ifd)
+        self.assertDictEqual(EXIF_IFD, exif_ifd)
+        self.assertDictEqual(GPS_IFD, gps_ifd)
 
     def test_dump_and_load2(self):
         thumbnail_io = io.BytesIO()
@@ -239,11 +239,11 @@ class ExifTests(unittest.TestCase):
         thumb.save(thumbnail_io, "JPEG")
         thumb.close()
         thumb_data = thumbnail_io.getvalue()
-        exif_dict = {"0th":ZEROTH_DICT,
-                     "Exif":EXIF_DICT,
-                     "GPS":GPS_DICT,
-                     "Interop":INTEROP_DICT,
-                     "1st":FIRST_DICT,
+        exif_dict = {"0th":ZEROTH_IFD,
+                     "Exif":EXIF_IFD,
+                     "GPS":GPS_IFD,
+                     "Interop":INTEROP_IFD,
+                     "1st":FIRST_IFD,
                      "thumbnail":thumb_data}
         exif_bytes = piexif.dump(exif_dict)
         im = Image.new("RGBA", (80, 80))
@@ -256,13 +256,13 @@ class ExifTests(unittest.TestCase):
         exif["0th"].pop(ImageIFD.ExifTag) # pointer to exif IFD
         exif["0th"].pop(ImageIFD.GPSTag) # pointer to GPS IFD
         exif["Exif"].pop(ExifIFD.InteroperabilityTag)
-        self.assertDictEqual(ZEROTH_DICT, exif["0th"])
-        self.assertDictEqual(EXIF_DICT, exif["Exif"])
-        self.assertDictEqual(GPS_DICT, exif["GPS"])
-        self.assertDictEqual(INTEROP_DICT, exif["Interop"])
+        self.assertDictEqual(ZEROTH_IFD, exif["0th"])
+        self.assertDictEqual(EXIF_IFD, exif["Exif"])
+        self.assertDictEqual(GPS_IFD, exif["GPS"])
+        self.assertDictEqual(INTEROP_IFD, exif["Interop"])
         exif["1st"].pop(513) # pointer to exif IFD
         exif["1st"].pop(514) # pointer to GPS IFD
-        self.assertDictEqual(FIRST_DICT, exif["1st"])
+        self.assertDictEqual(FIRST_IFD, exif["1st"])
         Image.open(io.BytesIO(exif["thumbnail"])).close()
 
     def test_dump_and_load3(self):
@@ -444,7 +444,7 @@ class ExifTests(unittest.TestCase):
 
 # insert ------
     def test_insert(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
         piexif.insert(exif_bytes, INPUT_FILE1, "insert.jpg")
         exif = load_exif_by_PIL("insert.jpg")
@@ -460,7 +460,7 @@ class ExifTests(unittest.TestCase):
     def test_insert_m(self):
         """'insert' on memory.
         """
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
         o = io.BytesIO()
         piexif.insert(exif_bytes, I1, o)
@@ -472,14 +472,14 @@ class ExifTests(unittest.TestCase):
             data = f.read()
         with open("insert.jpg", "wb+") as f:
             f.write(data)
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
         with  self.assertRaises(ValueError):
             piexif.insert(exif_bytes, INPUT_FILE_TIF)
         os.remove("insert.jpg")
 
     def test_insert_fail2(self):
-        exif_dict = {"0th":ZEROTH_DICT, "Exif":EXIF_DICT, "GPS":GPS_DICT}
+        exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
         with  self.assertRaises(ValueError):
             piexif.insert(exif_bytes, I1, False)
@@ -525,49 +525,49 @@ class ExifTests(unittest.TestCase):
             self.assertEqual(v1, v2)
 
     def _compare_piexifDict_PILDict(self, piexifDict, pilDict, p=True):
-        zeroth_dict = piexifDict["0th"]
-        exif_dict = piexifDict["Exif"]
-        gps_dict = piexifDict["GPS"]
-        if 41728 in exif_dict:
-            exif_dict.pop(41728) # value type is UNDEFINED but PIL returns int
+        zeroth_ifd = piexifDict["0th"]
+        exif_ifd = piexifDict["Exif"]
+        gps_ifd = piexifDict["GPS"]
+        if 41728 in exif_ifd:
+            exif_ifd.pop(41728) # value type is UNDEFINED but PIL returns int
         if 34853 in pilDict:
             gps = pilDict.pop(34853)
         counter = {"Byte":0, "Ascii":0, "Short":0, "Long":0, "Rational":0,
                    "SRational":0, "Undefined":0}
-        for key in sorted(zeroth_dict):
+        for key in sorted(zeroth_ifd):
             if key in pilDict:
-                self._compare_value(zeroth_dict[key], pilDict[key])
+                self._compare_value(zeroth_ifd[key], pilDict[key])
                 if p:
                     try:
                         print(TAGS["0th"][key]["name"],
-                              zeroth_dict[key][:10], pilDict[key][:10])
+                              zeroth_ifd[key][:10], pilDict[key][:10])
                     except:
                          print(TAGS["0th"][key]["name"],
-                               zeroth_dict[key], pilDict[key])
+                               zeroth_ifd[key], pilDict[key])
                 t = TAGS["0th"][key]["type"]
                 counter[t] += 1
-        for key in sorted(exif_dict):
+        for key in sorted(exif_ifd):
             if key in pilDict:
-                self._compare_value(exif_dict[key], pilDict[key])
+                self._compare_value(exif_ifd[key], pilDict[key])
                 if p:
                     try:
                         print(TAGS["Exif"][key]["name"],
-                              exif_dict[key][:10], pilDict[key][:10])
+                              exif_ifd[key][:10], pilDict[key][:10])
                     except:
                          print(TAGS["Exif"][key]["name"],
-                               exif_dict[key], pilDict[key])
+                               exif_ifd[key], pilDict[key])
                 t = TAGS["Exif"][key]["type"]
                 counter[t] += 1
-        for key in sorted(gps_dict):
+        for key in sorted(gps_ifd):
             if key in gps:
-                self._compare_value(gps_dict[key], gps[key])
+                self._compare_value(gps_ifd[key], gps[key])
                 if p:
                     try:
                         print(TAGS["GPS"][key]["name"],
-                              gps_dict[key][:10], gps[key][:10])
+                              gps_ifd[key][:10], gps[key][:10])
                     except:
                          print(TAGS["GPS"][key]["name"],
-                               gps_dict[key], gps[key])
+                               gps_ifd[key], gps[key])
                 t = TAGS["GPS"][key]["type"]
                 counter[t] += 1
         print(counter)
