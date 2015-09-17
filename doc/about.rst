@@ -26,7 +26,7 @@ Piexif doesn't depend on any third library.
 Environment
 -----------
 
-Tested on Python 2.7, 3.3, 3.4, pypy, and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on GoogleAppEngine.
+Tested on Python 2.7, 3.3, 3.4, 3.5, pypy, and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on GoogleAppEngine.
 
 License
 -------
