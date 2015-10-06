@@ -86,5 +86,5 @@ This software is released under the MIT License, see LICENSE.txt.
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
 .. |docs| image:: https://readthedocs.org/projects/piexif/badge/?version=latest
    :target: https://readthedocs.org/projects/piexif/
-.. |Windows Build| image:: https://ci.appveyor.com/api/projects/status/piciqihy9f4763r0?svg=true
+.. |Windows Build| image:: https://img.shields.io/appveyor/ci/hmatoba/piexif.svg?label=windows%20build
    :target: https://ci.appveyor.com/project/hMatoba/piexif
