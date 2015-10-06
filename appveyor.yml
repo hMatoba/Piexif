@@ -1,0 +1,23 @@
+build: false
+
+init:
+- ECHO %PYTHON%
+environment:
+  matrix:
+  - PYTHON: C:/Python27-x64
+  - PYTHON: C:/Python35-x64
+  - PYTHON: C:/Python34-x64
+  - PYTHON: C:/Python33-x64
+
+install:
+  - ECHO "Filesystem root:"
+  - ps: "ls \"C:/\""
+
+  - ECHO "Installed SDKs:"
+  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
+  
+test_script:
+- '%PYTHON%\python.exe setup.py test'
+
+matrix:
+  fast_finish: true
