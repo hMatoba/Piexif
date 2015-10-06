@@ -1,7 +1,7 @@
 Piexif
 ======
 
-|Build Status| |Coverage Status| |docs|
+|Build Status| |Windows Build| |Coverage Status| |docs|
 
 
 This is a renamed project from Pyxif. To simplify exif manipulations with python. Writing, reading, and more... Piexif is pure python. To everywhere with Python.
@@ -86,3 +86,5 @@ This software is released under the MIT License, see LICENSE.txt.
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
 .. |docs| image:: https://readthedocs.org/projects/piexif/badge/?version=latest
    :target: https://readthedocs.org/projects/piexif/
+.. |Windows Build| image:: https://ci.appveyor.com/api/projects/status/piciqihy9f4763r0?svg=true
+   :target: https://ci.appveyor.com/project/hMatoba/piexif
