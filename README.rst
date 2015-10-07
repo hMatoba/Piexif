@@ -27,7 +27,7 @@ or download .zip, extract it. Put 'piexif' directory into your environment.
 Why Choose Piexif
 -----------------
 
-- Pure Python. So, runs on Python 2.7, 3.3, 3.4, 3.5 and...
+- Pure Python. So, it runs everywhere where Python runs.
 - Easy exif manipulations. Read, write, remove...
 - Documented. http://piexif.readthedocs.org/en/latest/
 
