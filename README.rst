@@ -80,7 +80,7 @@ License
 
 This software is released under the MIT License, see LICENSE.txt.
 
-.. |Build Status| image:: https://travis-ci.org/hMatoba/Piexif.svg?branch=master
+.. |Build Status| image:: https://img.shields.io/travis/hMatoba/Piexif/master.svg?label=Linux%20build
    :target: https://travis-ci.org/hMatoba/Piexif
 .. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
