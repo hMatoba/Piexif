@@ -100,3 +100,4 @@ load_sample.py
 *.suo
 doc/_build/
 run_coverage.bat
+up2pypi.bat
