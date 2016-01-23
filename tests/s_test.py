@@ -37,6 +37,8 @@ ZEROTH_IFD = {ImageIFD.Software: b"PIL", # ascii
                ImageIFD.BitsPerSample: (24, 24, 24), # short * 3
                ImageIFD.XResolution: (4294967295, 1), # rational
                ImageIFD.BlackLevelDeltaH: ((1, 1), (1, 1), (1, 1)), # srational
+               ImageIFD.ZZZTestSlong1: -11,
+               ImageIFD.ZZZTestSlong2: (-11, -11, -11, -11),
                }
 
 

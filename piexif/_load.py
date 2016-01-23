@@ -179,14 +179,14 @@ class _ExifReader(object):
                 data = self.tiftag[pointer: pointer+length]
             else:
                 data = value[0:length]
-#        elif t == 9: # SLONG
-#            if length > 1:
-#                pointer = struct.unpack(self.endian_mark + "L", value)[0]
-#                data = struct.unpack(self.endian_mark + "l" * length,
-#                                     self.exif_str[pointer: pointer+length*4])
-#            else:
-#                data = struct.unpack(self.endian_mark + "l" * length,
-#                                     value)
+        elif t == 9: # SLONG
+            if length > 1:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "l" * length,
+                                     self.tiftag[pointer: pointer+length*4])
+            else:
+                data = struct.unpack(self.endian_mark + "l" * length,
+                                     value)
         elif t == 10: # SRATIONAL
             pointer = struct.unpack(self.endian_mark + "L", value)[0]
             if length > 1:

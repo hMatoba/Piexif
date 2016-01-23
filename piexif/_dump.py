@@ -163,8 +163,8 @@ def _pack_long(*args):
     return struct.pack(">" + "L" * len(args), *args)
 
 
-#def _pack_slong(*args):
-#    return struct.pack(">" + "l" * len(args), *args)
+def _pack_slong(*args):
+    return struct.pack(">" + "l" * len(args), *args)
 
 
 def _value_to_bytes(raw_value, value_type, offset):
@@ -194,13 +194,13 @@ def _value_to_bytes(raw_value, value_type, offset):
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_long(*raw_value)
-#        elif value_type == "SLong":
-#            length = len(raw_value)
-#            if length <= 1:
-#                value_str = pack_long(*raw_value)
-#            else:
-#                value_str = struct.pack(">I", offset)
-#                four_bytes_over = pack_slong(*raw_value)
+    elif value_type == "SLong":
+        length = len(raw_value)
+        if length <= 1:
+            value_str = _pack_slong(*raw_value)
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = _pack_slong(*raw_value)
     elif value_type == "Ascii":
         try:
             new_value = raw_value.encode("latin1") + b"\x00"

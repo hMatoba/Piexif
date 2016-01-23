@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.3
+-----
+
+- Support SLong type.
+
 1.0.2
 -----
 

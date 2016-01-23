@@ -192,7 +192,9 @@ TAGS = {
                50982: {'name': 'ProfileLookTableData', 'type': 'Float'},
                51008: {'name': 'OpcodeList1', 'type': 'Undefined'},
                51009: {'name': 'OpcodeList2', 'type': 'Undefined'},
-               51022: {'name': 'OpcodeList3', 'type': 'Undefined'}},
+               51022: {'name': 'OpcodeList3', 'type': 'Undefined'},
+               60606: {'name': 'ZZZTestSlong1', 'type': 'SLong'},
+               60607: {'name': 'ZZZTestSlong2', 'type': 'SLong'}},
     'Exif': {33434: {'name': 'ExposureTime', 'type': 'Rational'},
              33437: {'name': 'FNumber', 'type': 'Rational'},
              34850: {'name': 'ExposureProgram', 'type': 'Short'},
@@ -488,6 +490,8 @@ class ImageIFD:
     OpcodeList2 = 51009
     OpcodeList3 = 51022
     NoiseProfile = 51041
+    ZZZTestSlong1 = 60606
+    ZZZTestSlong2 = 60607
 
 
 class ExifIFD:
