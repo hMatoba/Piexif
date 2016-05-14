@@ -25,11 +25,11 @@ def split_into_segments(data):
     return segments
 
 
-def get_app1(segments):
+def get_exif_seg(segments):
     """Returns Exif from JPEG meta data list
     """
     for seg in segments:
-        if seg[0:2] == b"\xff\xe1":
+        if seg[0:2] == b"\xff\xe1" and sef[4:10] == b"Exif\x00\x00":
             return seg
     return None
 
@@ -37,7 +37,9 @@ def get_app1(segments):
 def merge_segments(segments, exif=b""):
     """Merges Exif with APP0 and APP1 manipulations.
     """
-    if segments[1][0:2] == b"\xff\xe0" and segments[2][0:2] == b"\xff\xe1":
+    if segments[1][0:2] == b"\xff\xe0" and \
+       segments[2][0:2] == b"\xff\xe1" and \
+       segments[2][4:10] == b"Exif\x00\x00":
         if exif:
             segments[2] = exif
             segments.pop(1)
@@ -48,7 +50,8 @@ def merge_segments(segments, exif=b""):
     elif segments[1][0:2] == b"\xff\xe0":
         if exif:
             segments[1] = exif
-    elif segments[1][0:2] == b"\xff\xe1":
+    elif segments[1][0:2] == b"\xff\xe1" and \
+         segments[1][4:10] == b"Exif\x00\x00":
         if exif:
             segments[1] = exif
         elif exif is None:

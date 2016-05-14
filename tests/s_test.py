@@ -616,9 +616,9 @@ class UTests(unittest.TestCase):
         without_app0 = o.getvalue()
         Image.open(o).close()
 
-        exif = _common.get_app1(segments)
+        exif = _common.get_exif_seg(segments)
 
-        # Remove APP1, when second 'merged_segments' arguments is None
+        # Remove Exif, when second 'merged_segments' arguments is None
         # and no APP0.
         segments = _common.split_into_segments(without_app0)
         new_data = _common.merge_segments(segments, None)
@@ -629,7 +629,7 @@ class UTests(unittest.TestCase):
         o = io.BytesIO(new_data)
         Image.open(o).close()
 
-        # Insert exif to jpeg that has APP0 and APP1.
+        # Insert exif to jpeg that has APP0 and Exif.
         o = io.BytesIO()
         i = Image.new("RGBA", (8, 8))
         i.save(o, format="jpeg", exif=exif)
@@ -643,7 +643,7 @@ class UTests(unittest.TestCase):
         o = io.BytesIO(new_data)
         Image.open(o).close()
 
-        # Insert exif to jpeg that doesn't have APP0 and APP1.
+        # Insert exif to jpeg that doesn't have APP0 and Exif.
         with open(NOAPP01_FILE, "rb") as f:
             original = f.read()
         segments = _common.split_into_segments(original)
@@ -653,8 +653,8 @@ class UTests(unittest.TestCase):
         o = io.BytesIO(new_data)
         Image.open(o).close()
 
-        # Remove APP1, when second 'merged_segments' arguments is None
-        # and APP1 exists.
+        # Remove Exif, when second 'merged_segments' arguments is None
+        # and Exif exists.
         with open(INPUT_FILE1, "rb") as f:
             original = f.read()
         segments = _common.split_into_segments(original)

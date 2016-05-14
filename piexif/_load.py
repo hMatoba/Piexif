@@ -60,7 +60,7 @@ class _ExifReader(object):
     def __init__(self, data):
         if data[0:2] == b"\xff\xd8":  # JPEG
             segments = split_into_segments(data)
-            app1 = get_app1(segments)
+            app1 = get_exif_seg(segments)
             if app1:
                 self.tiftag = app1[10:]
             else:
@@ -74,7 +74,7 @@ class _ExifReader(object):
                 data = f.read()
             if data[0:2] == b"\xff\xd8":  # JPEG
                 segments = split_into_segments(data)
-                app1 = get_app1(segments)
+                app1 = get_exif_seg(segments)
                 if app1:
                     self.tiftag = app1[10:]
                 else:
