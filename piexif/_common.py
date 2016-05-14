@@ -29,7 +29,7 @@ def get_exif_seg(segments):
     """Returns Exif from JPEG meta data list
     """
     for seg in segments:
-        if seg[0:2] == b"\xff\xe1" and sef[4:10] == b"Exif\x00\x00":
+        if seg[0:2] == b"\xff\xe1" and seg[4:10] == b"Exif\x00\x00":
             return seg
     return None
 
