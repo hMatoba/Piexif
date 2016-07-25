@@ -30,6 +30,7 @@ def dump(exif_dict_original):
         zeroth_ifd = exif_dict["0th"]
     else:
         zeroth_ifd = {}
+
     if (("Exif" in exif_dict) and len(exif_dict["Exif"]) or
           ("Interop" in exif_dict) and len(exif_dict["Interop"]) ):
         zeroth_ifd[34665] = 1
@@ -39,10 +40,18 @@ def dump(exif_dict_original):
             exif_ifd[40965] = 1
             interop_is = True
             interop_ifd = exif_dict["Interop"]
+        elif 40965 in exif_ifd:
+            exif_ifd.pop(40965)
+    elif 34665 in zeroth_ifd:
+        zeroth_ifd.pop(34665)
+
     if ("GPS" in exif_dict) and len(exif_dict["GPS"]):
         zeroth_ifd[34853] = 1
         gps_is = True
         gps_ifd = exif_dict["GPS"]
+    elif 34853 in zeroth_ifd:
+        zeroth_ifd.pop(34853)
+
     if (("1st" in exif_dict) and
             ("thumbnail" in exif_dict) and
             (exif_dict["thumbnail"] is not None)):
@@ -86,7 +95,6 @@ def dump(exif_dict_original):
             raise ValueError("Given thumbnail is too large. max 64kB")
     else:
         first_bytes = b""
-
     if exif_is:
         pointer_value = TIFF_HEADER_LENGTH + zeroth_length
         pointer_str = struct.pack(">I", pointer_value)
