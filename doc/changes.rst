@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.5
+-----
+
+- Bug fix: https://github.com/hMatoba/Piexif/issues/16
+
 1.0.4
 -----
 
