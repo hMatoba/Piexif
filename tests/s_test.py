@@ -534,8 +534,7 @@ class ExifTests(unittest.TestCase):
             exif_ifd.pop(41728) # value type is UNDEFINED but PIL returns int
         if 34853 in pilDict:
             gps = pilDict.pop(34853)
-        counter = {"Byte":0, "Ascii":0, "Short":0, "Long":0, "Rational":0,
-                   "SRational":0, "Undefined":0}
+
         for key in sorted(zeroth_ifd):
             if key in pilDict:
                 self._compare_value(zeroth_ifd[key], pilDict[key])
@@ -546,8 +545,6 @@ class ExifTests(unittest.TestCase):
                     except:
                          print(TAGS["0th"][key]["name"],
                                zeroth_ifd[key], pilDict[key])
-                t = TAGS["0th"][key]["type"]
-                counter[t] += 1
         for key in sorted(exif_ifd):
             if key in pilDict:
                 self._compare_value(exif_ifd[key], pilDict[key])
@@ -558,8 +555,6 @@ class ExifTests(unittest.TestCase):
                     except:
                          print(TAGS["Exif"][key]["name"],
                                exif_ifd[key], pilDict[key])
-                t = TAGS["Exif"][key]["type"]
-                counter[t] += 1
         for key in sorted(gps_ifd):
             if key in gps:
                 self._compare_value(gps_ifd[key], gps[key])
@@ -570,9 +565,6 @@ class ExifTests(unittest.TestCase):
                     except:
                          print(TAGS["GPS"][key]["name"],
                                gps_ifd[key], gps[key])
-                t = TAGS["GPS"][key]["type"]
-                counter[t] += 1
-        print(counter)
 
 
 class UTests(unittest.TestCase):

@@ -33,31 +33,31 @@ def dump(exif_dict_original):
 
     if (("Exif" in exif_dict) and len(exif_dict["Exif"]) or
           ("Interop" in exif_dict) and len(exif_dict["Interop"]) ):
-        zeroth_ifd[34665] = 1
+        zeroth_ifd[ImageIFD.ExifTag] = 1
         exif_is = True
         exif_ifd = exif_dict["Exif"]
         if ("Interop" in exif_dict) and len(exif_dict["Interop"]):
-            exif_ifd[40965] = 1
+            exif_ifd[ExifIFD. InteroperabilityTag] = 1
             interop_is = True
             interop_ifd = exif_dict["Interop"]
-        elif 40965 in exif_ifd:
-            exif_ifd.pop(40965)
-    elif 34665 in zeroth_ifd:
-        zeroth_ifd.pop(34665)
+        elif ExifIFD. InteroperabilityTag in exif_ifd:
+            exif_ifd.pop(ExifIFD.InteroperabilityTag)
+    elif ImageIFD.ExifTag in zeroth_ifd:
+        zeroth_ifd.pop(ImageIFD.ExifTag)
 
     if ("GPS" in exif_dict) and len(exif_dict["GPS"]):
-        zeroth_ifd[34853] = 1
+        zeroth_ifd[ImageIFD.GPSTag] = 1
         gps_is = True
         gps_ifd = exif_dict["GPS"]
-    elif 34853 in zeroth_ifd:
-        zeroth_ifd.pop(34853)
+    elif ImageIFD.GPSTag in zeroth_ifd:
+        zeroth_ifd.pop(ImageIFD.GPSTag)
 
     if (("1st" in exif_dict) and
             ("thumbnail" in exif_dict) and
             (exif_dict["thumbnail"] is not None)):
         first_is = True
-        exif_dict["1st"][513] = 1
-        exif_dict["1st"][514] = 1
+        exif_dict["1st"][ImageIFD.JPEGInterchangeFormat] = 1
+        exif_dict["1st"][ImageIFD.JPEGInterchangeFormatLength] = 1
         first_ifd = exif_dict["1st"]
 
     zeroth_set = _dict_to_bytes(zeroth_ifd, "0th", 0)
@@ -91,16 +91,17 @@ def dump(exif_dict_original):
         offset = zeroth_length + exif_length + gps_length + interop_length
         first_set = _dict_to_bytes(first_ifd, "1st", offset)
         thumbnail = _get_thumbnail(exif_dict["thumbnail"])
-        if len(thumbnail) > 64000:
+        thumbnail_max_size = 64000
+        if len(thumbnail) > thumbnail_max_size:
             raise ValueError("Given thumbnail is too large. max 64kB")
     else:
         first_bytes = b""
     if exif_is:
         pointer_value = TIFF_HEADER_LENGTH + zeroth_length
         pointer_str = struct.pack(">I", pointer_value)
-        key = 34665
+        key = ImageIFD.ExifTag
         key_str = struct.pack(">H", key)
-        type_str = struct.pack(">H", TYPES["Long"])
+        type_str = struct.pack(">H", TYPES.Long)
         length_str = struct.pack(">I", 1)
         exif_pointer = key_str + type_str + length_str + pointer_str
     else:
@@ -108,9 +109,9 @@ def dump(exif_dict_original):
     if gps_is:
         pointer_value = TIFF_HEADER_LENGTH + zeroth_length + exif_length
         pointer_str = struct.pack(">I", pointer_value)
-        key = 34853
+        key = ImageIFD.GPSTag
         key_str = struct.pack(">H", key)
-        type_str = struct.pack(">H", TYPES["Long"])
+        type_str = struct.pack(">H", TYPES.Long)
         length_str = struct.pack(">I", 1)
         gps_pointer = key_str + type_str + length_str + pointer_str
     else:
@@ -119,9 +120,9 @@ def dump(exif_dict_original):
         pointer_value = (TIFF_HEADER_LENGTH +
                          zeroth_length + exif_length + gps_length)
         pointer_str = struct.pack(">I", pointer_value)
-        key = 40965
+        key = ExifIFD.InteroperabilityTag
         key_str = struct.pack(">H", key)
-        type_str = struct.pack(">H", TYPES["Long"])
+        type_str = struct.pack(">H", TYPES.Long)
         length_str = struct.pack(">I", 1)
         interop_pointer = key_str + type_str + length_str + pointer_str
     else:
@@ -179,7 +180,7 @@ def _value_to_bytes(raw_value, value_type, offset):
     four_bytes_over = b""
     value_str = b""
 
-    if value_type == "Byte":
+    if value_type == TYPES.Byte:
         length = len(raw_value)
         if length <= 4:
             value_str = (_pack_byte(*raw_value) +
@@ -187,7 +188,7 @@ def _value_to_bytes(raw_value, value_type, offset):
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_byte(*raw_value)
-    elif value_type == "Short":
+    elif value_type == TYPES.Short:
         length = len(raw_value)
         if length <= 2:
             value_str = (_pack_short(*raw_value) +
@@ -195,21 +196,21 @@ def _value_to_bytes(raw_value, value_type, offset):
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_short(*raw_value)
-    elif value_type == "Long":
+    elif value_type == TYPES.Long:
         length = len(raw_value)
         if length <= 1:
             value_str = _pack_long(*raw_value)
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_long(*raw_value)
-    elif value_type == "SLong":
+    elif value_type == TYPES.SLong:
         length = len(raw_value)
         if length <= 1:
             value_str = _pack_slong(*raw_value)
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_slong(*raw_value)
-    elif value_type == "Ascii":
+    elif value_type == TYPES.Ascii:
         try:
             new_value = raw_value.encode("latin1") + b"\x00"
         except:
@@ -223,7 +224,7 @@ def _value_to_bytes(raw_value, value_type, offset):
             four_bytes_over = new_value
         else:
             value_str = new_value + b"\x00" * (4 - length)
-    elif value_type == "Rational":
+    elif value_type == TYPES.Rational:
         if isinstance(raw_value[0], numbers.Integral):
             length = 1
             num, den = raw_value
@@ -237,7 +238,7 @@ def _value_to_bytes(raw_value, value_type, offset):
                                 struct.pack(">L", den))
         value_str = struct.pack(">I", offset)
         four_bytes_over = new_value
-    elif value_type == "SRational":
+    elif value_type == TYPES.SRational:
         if isinstance(raw_value[0], numbers.Integral):
             length = 1
             num, den = raw_value
@@ -251,7 +252,7 @@ def _value_to_bytes(raw_value, value_type, offset):
                                 struct.pack(">l", den))
         value_str = struct.pack(">I", offset)
         four_bytes_over = new_value
-    elif value_type == "Undefined":
+    elif value_type == TYPES.Undefined:
         length = len(raw_value)
         if length > 4:
             value_str = struct.pack(">I", offset)
@@ -280,17 +281,17 @@ def _dict_to_bytes(ifd_dict, ifd, ifd_offset):
     values = b""
 
     for n, key in enumerate(sorted(ifd_dict)):
-        if (ifd == "0th") and (key in (34665, 34853)):
+        if (ifd == "0th") and (key in (ImageIFD.ExifTag, ImageIFD.GPSTag)):
             continue
-        elif (ifd == "Exif") and (key == 40965):
+        elif (ifd == "Exif") and (key == ExifIFD.InteroperabilityTag):
             continue
-        elif (ifd == "1st") and (key in (513, 514)):
+        elif (ifd == "1st") and (key in (ImageIFD.JPEGInterchangeFormat, ImageIFD.JPEGInterchangeFormatLength)):
             continue
 
         raw_value = ifd_dict[key]
         key_str = struct.pack(">H", key)
         value_type = TAGS[ifd][key]["type"]
-        type_str = struct.pack(">H", TYPES[value_type])
+        type_str = struct.pack(">H", value_type)
         four_bytes_over = b""
 
         if isinstance(raw_value, numbers.Integral):

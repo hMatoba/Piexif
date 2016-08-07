@@ -36,22 +36,24 @@ def load(input_data):
                             exifReader.tiftag[4:8])[0]
     exif_dict["0th"] = exifReader.get_ifd_dict(pointer, "0th")
     first_ifd_pointer = exif_dict["0th"].pop("first_ifd_pointer")
-    if 34665 in exif_dict["0th"]:
-        pointer = exif_dict["0th"][34665]
+    if ImageIFD.ExifTag in exif_dict["0th"]:
+        pointer = exif_dict["0th"][ImageIFD.ExifTag]
         exif_dict["Exif"] = exifReader.get_ifd_dict(pointer, "Exif")
-    if 34853 in exif_dict["0th"]:
-        pointer = exif_dict["0th"][34853]
+    if ImageIFD.GPSTag in exif_dict["0th"]:
+        pointer = exif_dict["0th"][ImageIFD.GPSTag]
         exif_dict["GPS"] = exifReader.get_ifd_dict(pointer, "GPS")
-    if 40965 in exif_dict["Exif"]:
-        pointer = exif_dict["Exif"][40965]
+    if ExifIFD.InteroperabilityTag in exif_dict["Exif"]:
+        pointer = exif_dict["Exif"][ExifIFD.InteroperabilityTag]
         exif_dict["Interop"] = exifReader.get_ifd_dict(pointer, "Interop")
     if first_ifd_pointer != b"\x00\x00\x00\x00":
         pointer = struct.unpack(exifReader.endian_mark + "L",
                                 first_ifd_pointer)[0]
         exif_dict["1st"] = exifReader.get_ifd_dict(pointer, "1st")
-        if (513 in exif_dict["1st"]) and (514 in exif_dict["1st"]):
-            end = exif_dict["1st"][513]+exif_dict["1st"][514]
-            thumb = exifReader.tiftag[exif_dict["1st"][513]:end]
+        if (ImageIFD.JPEGInterchangeFormat in exif_dict["1st"] and
+            ImageIFD.JPEGInterchangeFormatLength in exif_dict["1st"]):
+            end = (exif_dict["1st"][ImageIFD.JPEGInterchangeFormat] +
+                   exif_dict["1st"][ImageIFD.JPEGInterchangeFormatLength])
+            thumb = exifReader.tiftag[exif_dict["1st"][ImageIFD.JPEGInterchangeFormat]:end]
             exif_dict["thumbnail"] = thumb
     return exif_dict
 
