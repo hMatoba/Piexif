@@ -4,6 +4,11 @@ Changelog
 1.0.6
 -----
 
+- Fix packaging.
+
+1.0.6
+-----
+
 - Refactoring.
 
 1.0.5

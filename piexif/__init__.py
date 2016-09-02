@@ -6,4 +6,4 @@ from ._insert import insert
 from ._exif import *
 
 
-VERSION = '1.0.6'
+VERSION = '1.0.7'
