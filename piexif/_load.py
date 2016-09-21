@@ -1,5 +1,4 @@
 import struct
-import sys
 from ._common import *
 from ._exif import *
 
@@ -7,7 +6,7 @@ from ._exif import *
 LITTLE_ENDIAN = b"\x49\x49"
 
 
-def load(input_data):
+def load(input_data, byte_data=False):
     """
     py:function:: piexif.load(filename)
 
@@ -26,11 +25,11 @@ def load(input_data):
     # this is just a hack to make it work.
     # The load function (IMHO) has to be redesigned because it has to deal with
     # incoming bytes and strings (filenames)
-    if isinstance(input_data, str):
+    if byte_data:
+        data = input_data
+    else:
         with open(input_data, 'rb') as f:
             data = f.read()
-    else:
-        data = input_data
 
     exifReader = _ExifReader(data)
     if exifReader.tiftag is None:
