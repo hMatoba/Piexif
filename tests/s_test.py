@@ -19,6 +19,7 @@ INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
 INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
 INPUT_FILE_PEN = os.path.join("tests", "images", "r_pen.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
+NODOCX_FILE = os.path.join("tests", "images", "02.docx")
 # JPEG without APP0 and APP1 segments
 NOAPP01_FILE = os.path.join("tests", "images", "noapp01.jpg")
 INPUT_FILE_TIF = os.path.join("tests", "images", "01.tif")
@@ -89,13 +90,22 @@ class ExifTests(unittest.TestCase):
 # load ------
     def test_no_exif_load(self):
         exif_dict = piexif.load(NOEXIF_FILE)
-        none_dict = {"0th":{},
-                     "Exif":{},
-                     "GPS":{},
-                     "Interop":{},
-                     "1st":{},
-                     "thumbnail":None}
+        none_dict = {"0th": {},
+                     "Exif": {},
+                     "GPS": {},
+                     "Interop": {},
+                     "1st": {},
+                     "thumbnail": None}
         self.assertEqual(exif_dict, none_dict)
+
+    def test_jpg_in_docx_load(self):
+        """
+        Loads an Image with jpg suffix and a copy with docx suffix and compares
+        exif data.
+        """
+        exif_dict_docx = piexif.load(NODOCX_FILE)
+        exif_dict_jpg = piexif.load(INPUT_FILE2)
+        self.assertEqual(exif_dict_docx, exif_dict_jpg)
 
     def test_load(self):
         files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
@@ -112,6 +122,7 @@ class ExifTests(unittest.TestCase):
         e = load_exif_by_PIL(INPUT_FILE1)
         print("********************\n\n" + INPUT_FILE1 + "\n")
         self._compare_piexifDict_PILDict(exif, e)
+
 
     def test_load_tif(self):
         exif = piexif.load(INPUT_FILE_TIF)
@@ -148,7 +159,7 @@ class ExifTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             exif = piexif.load(os.path.join("tests", "images", "notjpeg.jpg"))
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(FileNotFoundError):
             exif = piexif.load("foo")
 
     def test_load_from_pilImage_property(self):
