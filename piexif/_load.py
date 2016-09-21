@@ -1,5 +1,4 @@
 import struct
-
 from ._common import *
 from ._exif import *
 
@@ -7,7 +6,7 @@ from ._exif import *
 LITTLE_ENDIAN = b"\x49\x49"
 
 
-def load(input_data):
+def load(input_data, byte_data=False):
     """
     py:function:: piexif.load(filename)
 
@@ -17,13 +16,22 @@ def load(input_data):
     :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
     :rtype: dict
     """
-    exif_dict = {"0th":{},
-                 "Exif":{},
-                 "GPS":{},
-                 "Interop":{},
-                 "1st":{},
-                 "thumbnail":None}
-    exifReader = _ExifReader(input_data)
+    exif_dict = {"0th": {},
+                 "Exif": {},
+                 "GPS": {},
+                 "Interop": {},
+                 "1st": {},
+                 "thumbnail": None}
+    # this is just a hack to make it work.
+    # The load function (IMHO) has to be redesigned because it has to deal with
+    # incoming bytes and strings (filenames)
+    if byte_data:
+        data = input_data
+    else:
+        with open(input_data, 'rb') as f:
+            data = f.read()
+
+    exifReader = _ExifReader(data)
     if exifReader.tiftag is None:
         return exif_dict
 
@@ -71,20 +79,6 @@ class _ExifReader(object):
             self.tiftag = data
         elif data[0:4] == b"Exif":  # Exif
             self.tiftag = data[6:]
-        elif data[-4:].lower() in (".jpg", "jpeg", ".jpe", ".tif", "tiff"):
-            with open(data, 'rb') as f:
-                data = f.read()
-            if data[0:2] == b"\xff\xd8":  # JPEG
-                segments = split_into_segments(data)
-                app1 = get_exif_seg(segments)
-                if app1:
-                    self.tiftag = app1[10:]
-                else:
-                    self.tiftag = None
-            elif data[0:2] in (b"\x49\x49", b"\x4d4d"):  # TIFF
-                self.tiftag = data
-            else:
-                raise ValueError("Given file is neither JPEG nor TIFF.")
         else:
             raise ValueError("Given file is neither JPEG nor TIFF.")
 

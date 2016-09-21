@@ -19,6 +19,7 @@ INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
 INPUT_FILE2 = os.path.join("tests", "images", "02.jpg")
 INPUT_FILE_PEN = os.path.join("tests", "images", "r_pen.jpg")
 NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
+NODOCX_FILE = os.path.join("tests", "images", "02.docx")
 # JPEG without APP0 and APP1 segments
 NOAPP01_FILE = os.path.join("tests", "images", "noapp01.jpg")
 INPUT_FILE_TIF = os.path.join("tests", "images", "01.tif")
@@ -89,13 +90,22 @@ class ExifTests(unittest.TestCase):
 # load ------
     def test_no_exif_load(self):
         exif_dict = piexif.load(NOEXIF_FILE)
-        none_dict = {"0th":{},
-                     "Exif":{},
-                     "GPS":{},
-                     "Interop":{},
-                     "1st":{},
-                     "thumbnail":None}
+        none_dict = {"0th": {},
+                     "Exif": {},
+                     "GPS": {},
+                     "Interop": {},
+                     "1st": {},
+                     "thumbnail": None}
         self.assertEqual(exif_dict, none_dict)
+
+    def test_jpg_in_docx_load(self):
+        """
+        Loads an Image with jpg suffix and a copy with docx suffix and compares
+        exif data.
+        """
+        exif_dict_docx = piexif.load(NODOCX_FILE)
+        exif_dict_jpg = piexif.load(INPUT_FILE2)
+        self.assertEqual(exif_dict_docx, exif_dict_jpg)
 
     def test_load(self):
         files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
@@ -108,10 +118,11 @@ class ExifTests(unittest.TestCase):
     def test_load_m(self):
         """'load' on memory.
         """
-        exif = piexif.load(I1)
+        exif = piexif.load(I1, True)
         e = load_exif_by_PIL(INPUT_FILE1)
         print("********************\n\n" + INPUT_FILE1 + "\n")
         self._compare_piexifDict_PILDict(exif, e)
+
 
     def test_load_tif(self):
         exif = piexif.load(INPUT_FILE_TIF)
@@ -122,14 +133,14 @@ class ExifTests(unittest.TestCase):
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
-        exif2 = piexif.load(o.getvalue())
+        exif2 = piexif.load(o.getvalue(), True)
         zeroth_ifd2 = exif2["0th"]
         self.assertDictEqual(zeroth_ifd, zeroth_ifd2)
 
     def test_load_tif_m(self):
         with open(INPUT_FILE_TIF, "rb") as f:
             tif = f.read()
-        exif = piexif.load(tif)
+        exif = piexif.load(tif, True)
         zeroth_ifd = exif["0th"]
         exif_bytes = piexif.dump({"0th":zeroth_ifd})
 
@@ -137,7 +148,7 @@ class ExifTests(unittest.TestCase):
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
-        exif2 = piexif.load(o.getvalue())
+        exif2 = piexif.load(o.getvalue(), True)
         zeroth_ifd2 = exif2["0th"]
         self.assertDictEqual(zeroth_ifd, zeroth_ifd2)
 
@@ -148,14 +159,14 @@ class ExifTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             exif = piexif.load(os.path.join("tests", "images", "notjpeg.jpg"))
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IOError):
             exif = piexif.load("foo")
 
     def test_load_from_pilImage_property(self):
         o = io.BytesIO()
         i = Image.open(INPUT_FILE1)
         exif = i.info["exif"]
-        exif_dict = piexif.load(exif)
+        exif_dict = piexif.load(exif, True)
         exif_bytes = piexif.dump(exif_dict)
         i.save(o, "jpeg", exif=exif_bytes)
         i.close()
@@ -226,7 +237,7 @@ class ExifTests(unittest.TestCase):
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        exif = piexif.load(o.getvalue())
+        exif = piexif.load(o.getvalue(), True)
         zeroth_ifd, exif_ifd, gps_ifd = exif["0th"], exif["Exif"], exif["GPS"]
         zeroth_ifd.pop(ImageIFD.ExifTag) # pointer to exif IFD
         zeroth_ifd.pop(ImageIFD.GPSTag) # pointer to GPS IFD
@@ -254,7 +265,7 @@ class ExifTests(unittest.TestCase):
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
         o.seek(0)
-        exif = piexif.load(o.getvalue())
+        exif = piexif.load(o.getvalue(), True)
         exif["0th"].pop(ImageIFD.ExifTag) # pointer to exif IFD
         exif["0th"].pop(ImageIFD.GPSTag) # pointer to GPS IFD
         exif["Exif"].pop(ExifIFD.InteroperabilityTag)
@@ -309,7 +320,7 @@ class ExifTests(unittest.TestCase):
                 "Exif":{ExifIFD.ISOSpeed:long_v[x]},
                 "GPS":{GPSIFD.GPSVersionID:byte_v[x]},}
             exif_bytes = piexif.dump(exif_dict)
-            e = piexif.load(exif_bytes)
+            e = piexif.load(exif_bytes, True)
             self.assertEqual(
                 e["0th"][ImageIFD.ProcessingSoftware].decode("latin1"),
                 ascii_v[x])
@@ -330,7 +341,7 @@ class ExifTests(unittest.TestCase):
             exif_bytes = piexif.dump(exif)
             o = io.BytesIO()
             piexif.insert(exif_bytes, input_file, o)
-            e = piexif.load(o.getvalue())
+            e = piexif.load(o.getvalue(), True)
 
             t = e.pop("thumbnail")
             thumbnail = exif.pop("thumbnail")
@@ -383,7 +394,7 @@ class ExifTests(unittest.TestCase):
         """
         o = io.BytesIO()
         piexif.transplant(I1, I2, o)
-        self.assertEqual(piexif.load(I1), piexif.load(o.getvalue()))
+        self.assertEqual(piexif.load(I1, True), piexif.load(o.getvalue(), True))
         Image.open(o).close()
 
     def test_transplant_fail1(self):
@@ -434,7 +445,7 @@ class ExifTests(unittest.TestCase):
         with  self.assertRaises(ValueError):
             piexif.remove(I1)
         piexif.remove(I1, o)
-        exif_dict = piexif.load(o.getvalue())
+        exif_dict = piexif.load(o.getvalue(), True)
         none_dict = {"0th":{},
                      "Exif":{},
                      "GPS":{},
