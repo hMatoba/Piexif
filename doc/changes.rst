@@ -1,7 +1,12 @@
 Changelog
 =========
 
-1.0.6
+1.0.8
+-----
+
+- Exclude checking extension in "load".
+
+1.0.7
 -----
 
 - Fix packaging.

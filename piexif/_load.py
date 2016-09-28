@@ -71,9 +71,12 @@ class _ExifReader(object):
             self.tiftag = data
         elif data[0:4] == b"Exif":  # Exif
             self.tiftag = data[6:]
-        elif data[-4:].lower() in (".jpg", "jpeg", ".jpe", ".tif", "tiff"):
-            with open(data, 'rb') as f:
-                data = f.read()
+        else:
+            try:
+                with open(data, 'rb') as f:
+                    data = f.read()
+            except:
+                raise ValueError("Got invalid value.")
             if data[0:2] == b"\xff\xd8":  # JPEG
                 segments = split_into_segments(data)
                 app1 = get_exif_seg(segments)
@@ -85,8 +88,6 @@ class _ExifReader(object):
                 self.tiftag = data
             else:
                 raise ValueError("Given file is neither JPEG nor TIFF.")
-        else:
-            raise ValueError("Given file is neither JPEG nor TIFF.")
 
     def get_ifd_dict(self, pointer, ifd_name, read_unknown=False):
         ifd_dict = {}
