@@ -148,6 +148,9 @@ class ExifTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             exif = piexif.load(os.path.join("tests", "images", "notjpeg.jpg"))
 
+        with self.assertRaises(ValueError):
+            exif = piexif.load(os.path.join("Oh", "My", "God"))
+
     def test_load_from_pilImage_property(self):
         o = io.BytesIO()
         i = Image.open(INPUT_FILE1)
