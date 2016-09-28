@@ -1,14 +1,11 @@
 Changelog
 =========
 
-<<<<<<< HEAD
 1.0.8
 -----
 
 - Exclude checking extension in "load".
 
-=======
->>>>>>> origin/master
 1.0.7
 -----
 
