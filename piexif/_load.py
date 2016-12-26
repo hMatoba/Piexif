@@ -74,18 +74,18 @@ class _ExifReader(object):
         else:
             try:
                 with open(data, 'rb') as f:
-                    data = f.read()
+                    magic_number = f.read(2)
             except:
                 raise ValueError("Got invalid value.")
-            if data[0:2] == b"\xff\xd8":  # JPEG
-                segments = split_into_segments(data)
-                app1 = get_exif_seg(segments)
+            if magic_number == b"\xff\xd8":  # JPEG
+                app1 = read_exif_from_file(data)
                 if app1:
                     self.tiftag = app1[10:]
                 else:
                     self.tiftag = None
-            elif data[0:2] in (b"\x49\x49", b"\x4d4d"):  # TIFF
-                self.tiftag = data
+            elif magic_number in (b"\x49\x49", b"\x4d4d"):  # TIFF
+                with open(data, 'rb') as f:
+                    self.tiftag = f.read()
             else:
                 raise ValueError("Given file is neither JPEG nor TIFF.")
 

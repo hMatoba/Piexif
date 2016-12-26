@@ -24,6 +24,34 @@ def split_into_segments(data):
             raise ValueError("Wrong JPEG data.")
     return segments
 
+def read_exif_from_file(filename):
+    """Slices JPEG meta data into a list from JPEG binary data.
+    """
+    f = open(filename, "rb")
+    data = f.read(6)
+
+    if data[0:2] != b"\xff\xd8":
+        raise ValueError("Given data isn't JPEG.")
+
+    head = data[2:6]
+    head_pos = 2
+    HEAD_LENGTH = 4
+    exif = None
+    while 1:
+        length = struct.unpack(">H", head[2: 4])[0]
+
+        if head[:2] == b"\xff\xe1":
+            segment_data = f.read(length - 2)
+            exif = head + segment_data
+            break
+        elif head[0:1] == b"\xff":
+            f.read(length - 2)
+            head = f.read(HEAD_LENGTH)
+        else:
+            break
+
+    f.close()
+    return exif
 
 def get_exif_seg(segments):
     """Returns Exif from JPEG meta data list

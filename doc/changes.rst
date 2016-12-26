@@ -1,6 +1,12 @@
 Changelog
 =========
 
+
+1.0.9
+-----
+
+- Performance up "load" jpeg from file.
+
 1.0.8
 -----
 
