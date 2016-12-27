@@ -83,7 +83,7 @@ class _ExifReader(object):
                     self.tiftag = app1[10:]
                 else:
                     self.tiftag = None
-            elif magic_number in (b"\x49\x49", b"\x4d4d"):  # TIFF
+            elif magic_number in (b"\x49\x49", b"\x4d\x4d"):  # TIFF
                 with open(data, 'rb') as f:
                     self.tiftag = f.read()
             else:
