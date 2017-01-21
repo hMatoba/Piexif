@@ -212,6 +212,9 @@ TAGS = {
              36864: {'name': 'ExifVersion', 'type': TYPES.Undefined},
              36867: {'name': 'DateTimeOriginal', 'type': TYPES.Ascii},
              36868: {'name': 'DateTimeDigitized', 'type': TYPES.Ascii},
+             36880: {'name': 'OffsetTime', 'type': TYPES.Ascii},
+             36881: {'name': 'OffsetTimeOriginal', 'type': TYPES.Ascii},
+             36882: {'name': 'OffsetTimeDigitized', 'type': TYPES.Ascii},
              37121: {'name': 'ComponentsConfiguration', 'type': TYPES.Undefined},
              37122: {'name': 'CompressedBitsPerPixel', 'type': TYPES.Rational},
              37377: {'name': 'ShutterSpeedValue', 'type': TYPES.SRational},
@@ -230,6 +233,12 @@ TAGS = {
              37520: {'name': 'SubSecTime', 'type': TYPES.Ascii},
              37521: {'name': 'SubSecTimeOriginal', 'type': TYPES.Ascii},
              37522: {'name': 'SubSecTimeDigitized', 'type': TYPES.Ascii},
+             37888: {'name': 'Temperature', 'type': TYPES.SRational},
+             37889: {'name': 'Humidity', 'type': TYPES.Rational},
+             37890: {'name': 'Pressure', 'type': TYPES.Rational},
+             37891: {'name': 'WaterDepth', 'type': TYPES.SRational},
+             37892: {'name': 'Acceleration', 'type': TYPES.Rational},
+             37893: {'name': 'CameraElevationAngle', 'type': TYPES.SRational},
              40960: {'name': 'FlashpixVersion', 'type': TYPES.Undefined},
              40961: {'name': 'ColorSpace', 'type': TYPES.Short},
              40962: {'name': 'PixelXDimension', 'type': TYPES.Long},
@@ -513,6 +522,9 @@ class ExifIFD:
     ExifVersion = 36864
     DateTimeOriginal = 36867
     DateTimeDigitized = 36868
+    OffsetTime = 36880
+    OffsetTimeOriginal = 36881
+    OffsetTimeDigitized = 36882
     ComponentsConfiguration = 37121
     CompressedBitsPerPixel = 37122
     ShutterSpeedValue = 37377
@@ -525,6 +537,12 @@ class ExifIFD:
     LightSource = 37384
     Flash = 37385
     FocalLength = 37386
+    Temperature = 37888
+    Humidity = 37889
+    Pressure = 37890
+    WaterDepth = 37891
+    Acceleration = 37892
+    CameraElevationAngle = 37893
     SubjectArea = 37396
     MakerNote = 37500
     UserComment = 37510

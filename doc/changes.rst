@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.0.10
+------
+
+- Add tags in Exif ver.2.31
 
 1.0.9
 -----
