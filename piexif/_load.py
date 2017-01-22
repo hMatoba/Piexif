@@ -7,7 +7,7 @@ from ._exif import *
 LITTLE_ENDIAN = b"\x49\x49"
 
 
-def load(input_data):
+def load(input_data, key_is_name=False):
     """
     py:function:: piexif.load(filename)
 
@@ -55,6 +55,9 @@ def load(input_data):
                    exif_dict["1st"][ImageIFD.JPEGInterchangeFormatLength])
             thumb = exifReader.tiftag[exif_dict["1st"][ImageIFD.JPEGInterchangeFormat]:end]
             exif_dict["thumbnail"] = thumb
+
+    if key_is_name:
+        exif_dict = _get_key_name_dict(exif_dict)
     return exif_dict
 
 
@@ -215,3 +218,15 @@ class _ExifReader(object):
             return data[0]
         else:
             return data
+
+
+def _get_key_name_dict(exif_dict):
+    new_dict = {
+        "0th":{TAGS["Image"][n]["name"]:value for n, value in exif_dict["0th"].items()},
+        "Exif":{TAGS["Exif"][n]["name"]:value for n, value in exif_dict["Exif"].items()},
+        "1st":{TAGS["Image"][n]["name"]:value for n, value in exif_dict["1st"].items()},
+        "GPS":{TAGS["GPS"][n]["name"]:value for n, value in exif_dict["GPS"].items()},
+        "Interop":{TAGS["Interop"][n]["name"]:value for n, value in exif_dict["Interop"].items()},
+        "thumbnail":exif_dict["thumbnail"],
+    }
+    return new_dict

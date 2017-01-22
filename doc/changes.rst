@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.11
+------
+
+- Add option argument to "load".
+
 1.0.10
 ------
 

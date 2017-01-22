@@ -162,6 +162,29 @@ class ExifTests(unittest.TestCase):
         o.seek(0)
         Image.open(o).close()
 
+    def test_load_name_dict(self):
+        thumbnail_io = io.BytesIO()
+        thumb = Image.open(INPUT_FILE2)
+        thumb.thumbnail((40, 40))
+        thumb.save(thumbnail_io, "JPEG")
+        thumb.close()
+        thumb_data = thumbnail_io.getvalue()
+        exif_dict = {"0th":ZEROTH_IFD,
+                     "Exif":EXIF_IFD,
+                     "GPS":GPS_IFD,
+                     "Interop":INTEROP_IFD,
+                     "1st":FIRST_IFD,
+                     "thumbnail":thumb_data}
+        exif_bytes = piexif.dump(exif_dict)
+        im = Image.new("RGBA", (80, 80))
+
+        o = io.BytesIO()
+        im.save(o, format="jpeg", exif=exif_bytes)
+        im.close()
+        o.seek(0)
+        exif = piexif.load(o.getvalue(), True)
+        print(exif)
+
 # dump ------
     def test_no_exif_dump(self):
         o = io.BytesIO()

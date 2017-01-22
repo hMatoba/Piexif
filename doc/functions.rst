@@ -9,7 +9,7 @@ Functions
 
 load
 ----
-.. py:function:: piexif.load(filename)
+.. py:function:: piexif.load(filename, key_is_name=False)
 
    Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag/value). "thumbnail" value is JPEG as bytes.
 
