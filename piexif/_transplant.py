@@ -30,7 +30,6 @@ def transplant(exif_src, image, new_file=None):
             image_data = f.read()
         output_file = True
     segments = split_into_segments(image_data)
-    image_exif = get_exif_seg(segments)
     new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):

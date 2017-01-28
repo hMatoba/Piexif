@@ -34,7 +34,6 @@ def read_exif_from_file(filename):
         raise ValueError("Given data isn't JPEG.")
 
     head = data[2:6]
-    head_pos = 2
     HEAD_LENGTH = 4
     exif = None
     while 1:
