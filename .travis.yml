@@ -9,10 +9,10 @@ python:
  - 3.3
  - 3.4
  - 3.5
- - 3.6-dev
+ - 3.6
 
 install:
- - pip install pillow==2.9.0
+ - pip install pillow==4.0.0
  - pip install coveralls
 
 script:

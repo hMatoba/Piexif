@@ -7,4 +7,4 @@ from ._exif import *
 from ._exeptions import *
 
 
-VERSION = '1.0.11'
+VERSION = '1.0.12'
