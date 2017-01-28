@@ -596,7 +596,7 @@ class UTests(unittest.TestCase):
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
         er = piexif._load._ExifReader(b1 + b2)
         if er.tiftag[0:2] == b"II":
-            exifReader.endian_mark = "<"
+            er.endian_mark = "<"
         else:
             er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
