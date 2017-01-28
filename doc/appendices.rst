@@ -82,3 +82,21 @@ On GoogleAppEngine, it can't save files on disk. Therefore files must be handled
 
     # transplant
     piexif.transplant(jpg_data1, jpg_data2, output)
+
+Invalid EXIF Thumbnails
+-----------------------
+
+EXIF data will sometimes be either corrupted or written by non-compliant software. When this happens, it's possible
+that the thumbnail stored in EXIF cannot be found when attempting to dump the EXIF dictionary.
+
+A good solution would be to remove the thumbnail from the EXIF dictionary and then re-attempt the dump:
+
+::
+
+    try:
+        exif_bytes = piexif.dump(exif_dict)
+    except InvalidImageDataError:
+        del exif_dict["1st"]
+        del exif_dict["thumbnail"]
+        exif_bytes = piexif.dump(exif_dict)
+

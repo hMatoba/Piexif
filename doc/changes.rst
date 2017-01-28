@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0.12
+------
+
+- Added explicit InvalidImageDataError exception to aid users. Related to https://github.com/hMatoba/Piexif/issues/30.
+- Fixed minor issue with tests.
+- Removed minor amounts of unused logic.
+- Updated .travis.yml for Python and Pillow versions.
+
 1.0.11
 ------
 
