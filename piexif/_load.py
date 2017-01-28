@@ -1,6 +1,7 @@
 import struct
 
 from ._common import *
+from ._exeptions import InvalidImageDataError
 from ._exif import *
 
 
@@ -90,7 +91,7 @@ class _ExifReader(object):
                 with open(data, 'rb') as f:
                     self.tiftag = f.read()
             else:
-                raise ValueError("Given file is neither JPEG nor TIFF.")
+                raise InvalidImageDataError("Given file is neither JPEG nor TIFF.")
 
     def get_ifd_dict(self, pointer, ifd_name, read_unknown=False):
         ifd_dict = {}

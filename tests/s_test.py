@@ -9,7 +9,7 @@ import unittest
 
 from PIL import Image
 import piexif
-from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS
+from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
 
 
 print("piexif version: {0}".format(piexif.VERSION))
@@ -610,7 +610,7 @@ class UTests(unittest.TestCase):
             er.convert_value((None, None, None, None))
 
     def test_split_into_segments_fail1(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidImageDataError):
             _common.split_into_segments(b"I'm not JPEG")
 
     def test_split_into_segments_fail2(self):
