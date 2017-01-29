@@ -1,11 +1,13 @@
 import struct
 
+from ._exeptions import InvalidImageDataError
+
 
 def split_into_segments(data):
     """Slices JPEG meta data into a list from JPEG binary data.
     """
     if data[0:2] != b"\xff\xd8":
-        raise ValueError("Given data isn't JPEG.")
+        raise InvalidImageDataError("Given data isn't JPEG.")
 
     head = 2
     segments = [b"\xff\xd8"]
@@ -21,7 +23,7 @@ def split_into_segments(data):
             head = endPoint
 
         if (head >= len(data)):
-            raise ValueError("Wrong JPEG data.")
+            raise InvalidImageDataError("Wrong JPEG data.")
     return segments
 
 def read_exif_from_file(filename):
@@ -31,10 +33,9 @@ def read_exif_from_file(filename):
     data = f.read(6)
 
     if data[0:2] != b"\xff\xd8":
-        raise ValueError("Given data isn't JPEG.")
+        raise InvalidImageDataError("Given data isn't JPEG.")
 
     head = data[2:6]
-    head_pos = 2
     HEAD_LENGTH = 4
     exif = None
     while 1:

@@ -2,6 +2,7 @@ import io
 import struct
 
 from ._common import *
+from ._exeptions import InvalidImageDataError
 
 
 def insert(exif, image, new_file=None):
@@ -24,10 +25,9 @@ def insert(exif, image, new_file=None):
         with open(image, 'rb') as f:
             image_data = f.read()
         if image_data[0:2] != b"\xff\xd8":
-            raise ValueError
+            raise InvalidImageDataError
         output_file = True
     segments = split_into_segments(image_data)
-    image_exif = get_exif_seg(segments)
     new_data = merge_segments(segments, exif)
 
     if isinstance(new_file, io.BytesIO):

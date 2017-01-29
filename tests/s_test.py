@@ -9,7 +9,7 @@ import unittest
 
 from PIL import Image
 import piexif
-from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS
+from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
 
 
 print("piexif version: {0}".format(piexif.VERSION))
@@ -596,7 +596,7 @@ class UTests(unittest.TestCase):
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
         er = piexif._load._ExifReader(b1 + b2)
         if er.tiftag[0:2] == b"II":
-            exifReader.endian_mark = "<"
+            er.endian_mark = "<"
         else:
             er.endian_mark = ">"
         ifd = er.get_ifd_dict(8, "0th", True)
@@ -610,7 +610,7 @@ class UTests(unittest.TestCase):
             er.convert_value((None, None, None, None))
 
     def test_split_into_segments_fail1(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidImageDataError):
             _common.split_into_segments(b"I'm not JPEG")
 
     def test_split_into_segments_fail2(self):
