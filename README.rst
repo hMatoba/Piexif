@@ -79,7 +79,7 @@ License
 
 This software is released under the MIT License, see LICENSE.txt.
 
-.. |Build Status| image:: https://travis-ci.org/hMatoba/Piexif.svg?branch=masters
+.. |Build Status| image:: https://api.travis-ci.org/hMatoba/Piexif.svg?branch=master
    :target: https://travis-ci.org/hMatoba/Piexif
 .. |Windows Build| image:: https://ci.appveyor.com/api/projects/status/github/hMatoba/Piexif?branch=master&svg=true
    :target: https://ci.appveyor.com/project/hMatoba/piexif
