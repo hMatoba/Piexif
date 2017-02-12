@@ -79,11 +79,11 @@ License
 
 This software is released under the MIT License, see LICENSE.txt.
 
-.. |Build Status| image:: https://img.shields.io/travis/hMatoba/Piexif.svg?label=Linux%20build
+.. |Build Status| image:: https://travis-ci.org/hMatoba/Piexif.svg?branch=masters
    :target: https://travis-ci.org/hMatoba/Piexif
+.. |Windows Build| image:: https://ci.appveyor.com/api/projects/status/github/hMatoba/Piexif?branch=master&svg=true
+   :target: https://ci.appveyor.com/project/hMatoba/piexif
 .. |Coverage Status| image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
 .. |docs| image:: https://readthedocs.org/projects/piexif/badge/?version=latest
    :target: https://readthedocs.org/projects/piexif/
-.. |Windows Build| image:: https://img.shields.io/appveyor/ci/hmatoba/piexif.svg?label=Windows%20build
-   :target: https://ci.appveyor.com/project/hMatoba/piexif
