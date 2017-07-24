@@ -118,7 +118,7 @@ class ExifTests(unittest.TestCase):
         zeroth_ifd = exif["0th"]
         exif_bytes = piexif.dump({"0th":zeroth_ifd})
 
-        im = Image.new("RGBA", (8, 8))
+        im = Image.new("RGB", (8, 8))
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
@@ -133,7 +133,7 @@ class ExifTests(unittest.TestCase):
         zeroth_ifd = exif["0th"]
         exif_bytes = piexif.dump({"0th":zeroth_ifd})
 
-        im = Image.new("RGBA", (8, 8))
+        im = Image.new("RGB", (8, 8))
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
         im.close()
@@ -176,7 +176,7 @@ class ExifTests(unittest.TestCase):
                      "1st":FIRST_IFD,
                      "thumbnail":thumb_data}
         exif_bytes = piexif.dump(exif_dict)
-        im = Image.new("RGBA", (80, 80))
+        im = Image.new("RGB", (80, 80))
 
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
@@ -189,7 +189,7 @@ class ExifTests(unittest.TestCase):
     def test_no_exif_dump(self):
         o = io.BytesIO()
         exif_bytes = piexif.dump({})
-        i = Image.new("RGBA", (8, 8))
+        i = Image.new("RGB", (8, 8))
         i.save(o, format="jpeg", exif=exif_bytes)
         o.seek(0)
         exif_dict2 = load_exif_by_PIL(o)
@@ -201,7 +201,7 @@ class ExifTests(unittest.TestCase):
         exif_bytes = piexif.dump(exif_dict)
         t_cost = time.time() - t
         print("'dump': {0}[sec]".format(t_cost))
-        im = Image.new("RGBA", (8, 8))
+        im = Image.new("RGB", (8, 8))
 
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
@@ -243,7 +243,7 @@ class ExifTests(unittest.TestCase):
     def test_dump_and_load(self):
         exif_dict = {"0th":ZEROTH_IFD, "Exif":EXIF_IFD, "GPS":GPS_IFD}
         exif_bytes = piexif.dump(exif_dict)
-        im = Image.new("RGBA", (8, 8))
+        im = Image.new("RGB", (8, 8))
 
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
@@ -271,7 +271,7 @@ class ExifTests(unittest.TestCase):
                      "1st":FIRST_IFD,
                      "thumbnail":thumb_data}
         exif_bytes = piexif.dump(exif_dict)
-        im = Image.new("RGBA", (80, 80))
+        im = Image.new("RGB", (80, 80))
 
         o = io.BytesIO()
         im.save(o, format="jpeg", exif=exif_bytes)
@@ -646,7 +646,7 @@ class UTests(unittest.TestCase):
 
         # Insert exif to jpeg that has APP0 and Exif.
         o = io.BytesIO()
-        i = Image.new("RGBA", (8, 8))
+        i = Image.new("RGB", (8, 8))
         i.save(o, format="jpeg", exif=exif)
         o.seek(0)
         segments = _common.split_into_segments(o.getvalue())
