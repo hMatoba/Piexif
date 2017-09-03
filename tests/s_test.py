@@ -346,6 +346,24 @@ class ExifTests(unittest.TestCase):
             self.assertEqual(e["Exif"][ExifIFD.ISOSpeed], long_v[x])
             self.assertEqual(e["GPS"][GPSIFD.GPSVersionID], byte_v[x])
 
+    def test_dump_and_load_specials(self):
+        """test dump and load special types(SingedByte, SiginedShort, DoubleFloat)"""
+        self.assertEqual(1, None)
+        #exif_dict = {"0th":ZEROTH_IFD}
+        #exif_bytes = piexif.dump(exif_dict)
+        #im = Image.new("RGB", (8, 8))
+
+        #o = io.BytesIO()
+        #im.save(o, format="jpeg", exif=exif_bytes)
+        #im.close()
+        #o.seek(0)
+        #exif = piexif.load(o.getvalue())
+        #zeroth_ifd = exif["0th"]
+        #self.assertDictEqual(ZEROTH_IFD, zeroth_ifd)
+        #self.assertDictEqual(EXIF_IFD, exif_ifd)
+        #self.assertDictEqual(GPS_IFD, gps_ifd)
+
+
     def test_roundtrip_files(self):
         files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))
         for input_file in files:

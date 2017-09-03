@@ -67,8 +67,6 @@ def dump(exif_dict_original):
     if exif_is:
         exif_set = _dict_to_bytes(exif_ifd, "Exif", zeroth_length)
         exif_length = len(exif_set[0]) + interop_is * 12 + len(exif_set[1])
-        #exif_bytes = b"".join(exif_set)
-        #exif_length = len(exif_bytes)
     else:
         exif_bytes = b""
         exif_length = 0
