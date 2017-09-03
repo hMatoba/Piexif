@@ -10,6 +10,7 @@ import unittest
 from PIL import Image
 import piexif
 from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
+from piexif import _helper
 
 
 print("piexif version: {0}".format(piexif.VERSION))
@@ -679,6 +680,16 @@ class UTests(unittest.TestCase):
         self.assertNotEqual(segments[2][0:2], b"\xff\xe1")
         o = io.BytesIO(new_data)
         Image.open(o).close()
+
+    def test_dump_user_comment(self):
+        string = ""
+        result = _helper.dump_user_comment(string)
+        self.assertEqual(b"foobar", result)
+
+    def test_load_user_comment(self):
+        binary = b""
+        result = _helper.load_user_comment(binary)
+        self.assertEqual("foobar", result)
 
 
 def suite():
