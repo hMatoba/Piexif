@@ -348,20 +348,28 @@ class ExifTests(unittest.TestCase):
 
     def test_dump_and_load_specials(self):
         """test dump and load special types(SingedByte, SiginedShort, DoubleFloat)"""
-        self.assertEqual(1, None)
-        #exif_dict = {"0th":ZEROTH_IFD}
-        #exif_bytes = piexif.dump(exif_dict)
-        #im = Image.new("RGB", (8, 8))
+        zeroth_ifd_original = {
+            ImageIFD.ZZZTestSByte:-128,
+            ImageIFD.ZZZTestSShort:-32768,
+            ImageIFD.ZZZTestDFloat:1.0e-100,
+        }
+        exif_dict = {"0th":zeroth_ifd_original}
+        exif_bytes = piexif.dump(exif_dict)
 
-        #o = io.BytesIO()
-        #im.save(o, format="jpeg", exif=exif_bytes)
-        #im.close()
-        #o.seek(0)
-        #exif = piexif.load(o.getvalue())
-        #zeroth_ifd = exif["0th"]
-        #self.assertDictEqual(ZEROTH_IFD, zeroth_ifd)
-        #self.assertDictEqual(EXIF_IFD, exif_ifd)
-        #self.assertDictEqual(GPS_IFD, gps_ifd)
+        exif = piexif.load(exif_bytes)
+        zeroth_ifd = exif["0th"]
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestSByte],
+            zeroth_ifd[ImageIFD.ZZZTestSByte]
+        )
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestSShort],
+            zeroth_ifd[ImageIFD.ZZZTestSShort]
+        )
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestDFloat],
+            zeroth_ifd[ImageIFD.ZZZTestDFloat]
+        )
 
 
     def test_roundtrip_files(self):
