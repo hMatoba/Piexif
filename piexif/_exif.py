@@ -235,7 +235,7 @@ TAGS = {
              37386: {'name': 'FocalLength', 'type': TYPES.Rational},
              37396: {'name': 'SubjectArea', 'type': TYPES.Short},
              37500: {'name': 'MakerNote', 'type': TYPES.Undefined},
-             37510: {'name': 'UserComment', 'type': TYPES.Ascii},
+             37510: {'name': 'UserComment', 'type': TYPES.Undefined},
              37520: {'name': 'SubSecTime', 'type': TYPES.Ascii},
              37521: {'name': 'SubSecTimeOriginal', 'type': TYPES.Ascii},
              37522: {'name': 'SubSecTimeDigitized', 'type': TYPES.Ascii},

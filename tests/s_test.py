@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import copy
 import glob
 import io
@@ -708,14 +710,63 @@ class UTests(unittest.TestCase):
         Image.open(o).close()
 
     def test_dump_user_comment(self):
-        string = ""
+        # ascii
+        header = b"\x41\x53\x43\x49\x49\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("ascii")
         result = _helper.dump_user_comment(string)
-        self.assertEqual(b"foobar", result)
+        self.assertEqual(binary, result)
+
+        # jis
+        header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("jis")
+        result = _helper.dump_user_comment(string)
+        self.assertEqual(binary, result)
+
+        # unicode
+        header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
+        string = u"abcd"
+        binary = header + string.encode("unicode_escape")
+        result = _helper.dump_user_comment(string)
+        self.assertEqual(binary, result)
+
+        # undefined
+        header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("latin")
+        result = _helper.dump_user_comment(string)
+        self.assertEqual(binary, result)
+
 
     def test_load_user_comment(self):
-        binary = b""
+        # ascii
+        header = b"\x41\x53\x43\x49\x49\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("ascii")
         result = _helper.load_user_comment(binary)
-        self.assertEqual("foobar", result)
+        self.assertEqual(string, result)
+
+        # jis
+        header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("jis")
+        result = _helper.load_user_comment(binary)
+        self.assertEqual(string, result)
+
+        # unicode
+        header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
+        string = u"abcd"
+        binary = header + string.encode("unicode_escape")
+        result = _helper.load_user_comment(binary)
+        self.assertEqual(string, result)
+
+        # undefined
+        header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
+        string = u"abcd"
+        binary = header + string.encode("latin")
+        result = _helper.load_user_comment(binary)
+        self.assertEqual(string, result)
 
 
 def suite():
