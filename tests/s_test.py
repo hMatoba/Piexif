@@ -727,7 +727,7 @@ class UTests(unittest.TestCase):
         # unicode
         header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
         string = u"abcd"
-        binary = header + string.encode("unicode_escape")
+        binary = header + string.encode("utf16")
         result = _helper.dump_user_comment(string)
         self.assertEqual(binary, result)
 
@@ -757,7 +757,7 @@ class UTests(unittest.TestCase):
         # unicode
         header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
         string = u"abcd"
-        binary = header + string.encode("unicode_escape")
+        binary = header + string.encode("utf16")
         result = _helper.load_user_comment(binary)
         self.assertEqual(string, result)
 
