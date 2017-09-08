@@ -1,7 +1,7 @@
 import struct
 
 from ._common import *
-from ._exeptions import InvalidImageDataError
+from ._exceptions import InvalidImageDataError
 from ._exif import *
 
 
