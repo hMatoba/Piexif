@@ -133,20 +133,20 @@ class _ExifReader(object):
         length = val[1]
         value = val[2]
 
-        if t == 1: # BYTE
+        if t == TYPES.Byte: # BYTE
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = struct.unpack("B" * length,
                                      self.tiftag[pointer: pointer + length])
             else:
                 data = struct.unpack("B" * length, value[0:length])
-        elif t == 2: # ASCII
+        elif t == TYPES.Ascii: # ASCII
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = self.tiftag[pointer: pointer+length - 1]
             else:
                 data = value[0: length - 1]
-        elif t == 3: # SHORT
+        elif t == TYPES.Short: # SHORT
             if length > 2:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = struct.unpack(self.endian_mark + "H" * length,
@@ -154,7 +154,7 @@ class _ExifReader(object):
             else:
                 data = struct.unpack(self.endian_mark + "H" * length,
                                      value[0:length * 2])
-        elif t == 4: # LONG
+        elif t == TYPES.Long: # LONG
             if length > 1:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = struct.unpack(self.endian_mark + "L" * length,
@@ -162,7 +162,7 @@ class _ExifReader(object):
             else:
                 data = struct.unpack(self.endian_mark + "L" * length,
                                      value)
-        elif t == 5: # RATIONAL
+        elif t == TYPES.Rational: # RATIONAL
             pointer = struct.unpack(self.endian_mark + "L", value)[0]
             if length > 1:
                 data = tuple(
@@ -180,13 +180,19 @@ class _ExifReader(object):
                         struct.unpack(self.endian_mark + "L",
                                       self.tiftag[pointer + 4: pointer + 8]
                                       )[0])
-        elif t == 7: # UNDEFINED BYTES
+        elif t == TYPES.SByte: # SIGNED BYTES
+            pass
+            # implement here
+        elif t == TYPES.Undefined: # UNDEFINED BYTES
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = self.tiftag[pointer: pointer+length]
             else:
                 data = value[0:length]
-        elif t == 9: # SLONG
+        elif t == TYPES.Short: # SIGNED SHORT
+            pass
+            # implement here
+        elif t == TYPES.SLong: # SLONG
             if length > 1:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = struct.unpack(self.endian_mark + "l" * length,
@@ -194,7 +200,7 @@ class _ExifReader(object):
             else:
                 data = struct.unpack(self.endian_mark + "l" * length,
                                      value)
-        elif t == 10: # SRATIONAL
+        elif t == TYPES.SRational: # SRATIONAL
             pointer = struct.unpack(self.endian_mark + "L", value)[0]
             if length > 1:
                 data = tuple(
@@ -210,6 +216,12 @@ class _ExifReader(object):
                         struct.unpack(self.endian_mark + "l",
                                       self.tiftag[pointer + 4: pointer + 8]
                                       )[0])
+        elif t == TYPES.Float: # FLOAT
+            pass
+            # implement here
+        elif t == TYPES.DFloat: # DOUBLE
+            pass
+            # implement here
         else:
             raise ValueError("Exif might be wrong. Got incorrect value " +
                              "type to decode.\n" +

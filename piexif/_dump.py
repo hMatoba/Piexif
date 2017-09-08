@@ -263,6 +263,18 @@ def _value_to_bytes(raw_value, value_type, offset):
                 value_str = raw_value + b"\x00" * (4 - length)
             except TypeError:
                 raise ValueError("Got invalid type to convert.")
+    elif value_type == TYPES.SByte: # Signed Byte
+        # implement here
+        pass
+    elif value_type == TYPES.SShort: # Signed Short
+        # implement here
+        pass
+    elif value_type == TYPES.Float:
+        # implement here
+        pass
+    elif value_type == TYPES.DFloat: # Double
+        # implement here
+        pass
 
 
     length_str = struct.pack(">I", length)
