@@ -12,7 +12,7 @@ import unittest
 from PIL import Image
 import piexif
 from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
-from piexif import _helper
+from piexif import helper
 
 
 print("piexif version: {0}".format(piexif.VERSION))
@@ -714,29 +714,28 @@ class UTests(unittest.TestCase):
         header = b"\x41\x53\x43\x49\x49\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("ascii")
-        result = _helper.dump_user_comment(string)
+        result = helper.dump_user_comment(string, "ascii")
         self.assertEqual(binary, result)
 
         # jis
         header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("jis")
-        result = _helper.dump_user_comment(string)
+        result = helper.dump_user_comment(string, "jis")
         self.assertEqual(binary, result)
 
         # unicode
-        #header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
-        #string = u"abcd"
-        #binary = header + string.encode("utf-16-be")
-        #result = _helper.dump_user_comment(string)
-        #self.assertEqual(binary, result)
+        header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
+        string = u"abcd"
+        binary = header + string.encode("utf-16-be")
+        result = helper.dump_user_comment(string, "unicode")
+        self.assertEqual(binary, result)
 
         # undefined
         header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("latin")
-        result = _helper.dump_user_comment(string)
-        self.assertEqual(binary, result)
+        self.assertRaises(ValueError, helper.dump_user_comment(string, "undefined"))
 
 
     def test_load_user_comment(self):
@@ -744,29 +743,28 @@ class UTests(unittest.TestCase):
         header = b"\x41\x53\x43\x49\x49\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("ascii")
-        result = _helper.load_user_comment(binary)
+        result = helper.load_user_comment(binary)
         self.assertEqual(string, result)
 
         # jis
         header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("jis")
-        result = _helper.load_user_comment(binary)
+        result = helper.load_user_comment(binary)
         self.assertEqual(string, result)
 
         # unicode
-        #header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
-        #string = u"abcd"
-        #binary = header + string.encode("utf-16-be")
-        #result = _helper.load_user_comment(binary)
-        #self.assertEqual(string, result)
+        header = b"\x55\x4e\x49\x43\x4f\x44\x45\x00"
+        string = u"abcd"
+        binary = header + string.encode("utf-16-be")
+        result = helper.load_user_comment(binary)
+        self.assertEqual(string, result)
 
         # undefined
         header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
         string = u"abcd"
-        binary = header + string.encode("latin")
-        result = _helper.load_user_comment(binary)
-        self.assertEqual(string, result)
+        binary = header + string.encode("ascii")
+        self.assertRaises(ValueError, load_user_comment(binary))
 
 
 def suite():
