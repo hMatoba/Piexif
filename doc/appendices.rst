@@ -13,9 +13,13 @@ http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 +---------------+----------------------+
 | BYTE          | int                  |
 +---------------+----------------------+
+| SIGNED BYTE   | int                  |
++---------------+----------------------+
 | ASCII         | str                  |
 +---------------+----------------------+
 | SHORT         | int                  |
++---------------+----------------------+
+| SIGNED SHORT  | int                  |
 +---------------+----------------------+
 | LONG          | int                  |
 +---------------+----------------------+
@@ -24,6 +28,10 @@ http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 | UNDEFINED     | bytes                |
 +---------------+----------------------+
 | SRATIONAL     | (int, int)           |
++---------------+----------------------+
+| FLOAT         | float                |
++---------------+----------------------+
+| DOUBLE        | float                |
 +---------------+----------------------+
 
 If value type is number(BYTE, SHORT, LONG, RATIONAL, or SRATIONAL) and value count is two or more number, it is expressed with tuple.
