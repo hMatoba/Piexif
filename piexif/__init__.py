@@ -7,4 +7,4 @@ from ._exif import *
 from ._exceptions import *
 
 
-VERSION = '1.0.12'
+VERSION = '1.0.13'

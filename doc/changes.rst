@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.13
+------
+
+- Added helper function to read and write "UserComment".
+- Added to support for SignedByte, SigendShort, Float, and Double.
+
 1.0.12
 ------
 
