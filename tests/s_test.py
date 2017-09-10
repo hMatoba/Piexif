@@ -720,7 +720,7 @@ class UTests(unittest.TestCase):
         # jis
         header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
         string = u"abcd"
-        binary = header + string.encode("jis")
+        binary = header + string.encode("shift_jis")
         result = helper.dump_user_comment(string, "jis")
         self.assertEqual(binary, result)
 
@@ -735,7 +735,7 @@ class UTests(unittest.TestCase):
         header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("latin")
-        self.assertRaises(ValueError, helper.dump_user_comment(string, "undefined"))
+        self.assertRaises(ValueError, helper.dump_user_comment, string, "undefined")
 
 
     def test_load_user_comment(self):
@@ -749,7 +749,7 @@ class UTests(unittest.TestCase):
         # jis
         header = b"\x4a\x49\x53\x00\x00\x00\x00\x00"
         string = u"abcd"
-        binary = header + string.encode("jis")
+        binary = header + string.encode("shift_jis")
         result = helper.load_user_comment(binary)
         self.assertEqual(string, result)
 
@@ -764,7 +764,7 @@ class UTests(unittest.TestCase):
         header = b"\x00\x00\x00\x00\x00\x00\x00\x00"
         string = u"abcd"
         binary = header + string.encode("ascii")
-        self.assertRaises(ValueError, load_user_comment(binary))
+        self.assertRaises(ValueError, helper.load_user_comment, binary)
 
 
 class HelperTests(unittest.TestCase):
