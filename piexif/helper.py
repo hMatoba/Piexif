@@ -59,7 +59,6 @@ class UserComment:
         :rtype: bytes
         :raises: ValueError if the encoding is unsupported.
         """
-        print(dir(cls))
         if encoding not in cls.ENCODINGS:
             raise ValueError('encoding %r must be one of %r' % (encoding, cls.ENCODINGS))
         prefix = {cls.ASCII: cls._ASCII_PREFIX, cls.JIS: cls._JIS_PREFIX, cls.UNICODE: cls._UNICODE_PREFIX}[encoding]
