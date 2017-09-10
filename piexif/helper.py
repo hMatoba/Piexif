@@ -23,7 +23,7 @@ _UNICODE_PREFIX = b'\x55\x4e\x49\x43\x4f\x44\x45\x00'
 _UNDEFINED_PREFIX = b'\x00\x00\x00\x00\x00\x00\x00\x00'
 
 
-def load(data):
+def load_user_comment(data):
     """
     Convert "UserComment" value in exif format to str.
 
@@ -48,7 +48,7 @@ def load(data):
     return body.decode(encoding, errors='replace')
 
 
-def dump(data, encoding="ascii"):
+def dump_user_comment(data, encoding="ascii"):
     """
     Convert str to appropriate format for "UserComment".
 
@@ -63,13 +63,3 @@ def dump(data, encoding="ascii"):
     prefix = {ASCII: _ASCII_PREFIX, JIS: _JIS_PREFIX, UNICODE: _UNICODE_PREFIX}[encoding]
     internal_encoding = {UNICODE: _UNICODE, JIS: _JIS}.get(encoding, encoding)
     return prefix + data.encode(internal_encoding, errors='replace')
-
-
-# return "str"
-def dump_user_comment(string):
-    return None
-
-
-# return "bytes"
-def load_user_comment(binary):
-    return None
