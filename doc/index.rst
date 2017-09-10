@@ -19,6 +19,7 @@ To simplify exif manipulations with python. Writing, reading, and more... Piexif
    about
    installation
    functions
+   helper
    appendices
    sample
    changes
