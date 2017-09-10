@@ -35,7 +35,11 @@
     <Compile Include="piexif\_dump.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="piexif\_exceptions.py" />
     <Compile Include="piexif\_exif.py" />
+    <Compile Include="piexif\helper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="piexif\_insert.py" />
     <Compile Include="piexif\_load.py">
       <SubType>Code</SubType>

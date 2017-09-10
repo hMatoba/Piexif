@@ -4,7 +4,7 @@ from ._dump import dump
 from ._transplant import transplant
 from ._insert import insert
 from ._exif import *
-from ._exeptions import *
+from ._exceptions import *
 
 
-VERSION = '1.0.12'
+VERSION = '1.0.13'

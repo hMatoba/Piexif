@@ -1,6 +1,6 @@
 import struct
 
-from ._exeptions import InvalidImageDataError
+from ._exceptions import InvalidImageDataError
 
 
 def split_into_segments(data):

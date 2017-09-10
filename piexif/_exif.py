@@ -4,10 +4,13 @@ class TYPES:
     Short = 3
     Long = 4
     Rational = 5
+    SByte = 6
     Undefined = 7
+    SShort = 8
     SLong = 9
     SRational = 10
     Float = 11
+    DFloat = 12
 
 
 TAGS = {
@@ -196,7 +199,10 @@ TAGS = {
                51009: {'name': 'OpcodeList2', 'type': TYPES.Undefined},
                51022: {'name': 'OpcodeList3', 'type': TYPES.Undefined},
                60606: {'name': 'ZZZTestSlong1', 'type': TYPES.SLong},
-               60607: {'name': 'ZZZTestSlong2', 'type': TYPES.SLong}},
+               60607: {'name': 'ZZZTestSlong2', 'type': TYPES.SLong},
+               60608: {'name': 'ZZZTestSByte', 'type': TYPES.SByte},
+               60609: {'name': 'ZZZTestSShort', 'type': TYPES.SShort},
+               60610: {'name': 'ZZZTestDFloat', 'type': TYPES.DFloat},},
     'Exif': {33434: {'name': 'ExposureTime', 'type': TYPES.Rational},
              33437: {'name': 'FNumber', 'type': TYPES.Rational},
              34850: {'name': 'ExposureProgram', 'type': TYPES.Short},
@@ -229,7 +235,7 @@ TAGS = {
              37386: {'name': 'FocalLength', 'type': TYPES.Rational},
              37396: {'name': 'SubjectArea', 'type': TYPES.Short},
              37500: {'name': 'MakerNote', 'type': TYPES.Undefined},
-             37510: {'name': 'UserComment', 'type': TYPES.Ascii},
+             37510: {'name': 'UserComment', 'type': TYPES.Undefined},
              37520: {'name': 'SubSecTime', 'type': TYPES.Ascii},
              37521: {'name': 'SubSecTimeOriginal', 'type': TYPES.Ascii},
              37522: {'name': 'SubSecTimeDigitized', 'type': TYPES.Ascii},
@@ -503,6 +509,9 @@ class ImageIFD:
     NoiseProfile = 51041
     ZZZTestSlong1 = 60606
     ZZZTestSlong2 = 60607
+    ZZZTestSByte = 60608
+    ZZZTestSShort = 60609
+    ZZZTestDFloat = 60610
 
 
 class ExifIFD:
