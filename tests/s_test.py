@@ -373,6 +373,31 @@ class ExifTests(unittest.TestCase):
             zeroth_ifd[ImageIFD.ZZZTestDFloat]
         )
 
+    def test_dump_and_load_specials2(self):
+        """test dump and load special types(SingedByte, SiginedShort, DoubleFloat)"""
+        zeroth_ifd_original = {
+            ImageIFD.ZZZTestSByte:(-128, -128),
+            ImageIFD.ZZZTestSShort:(-32768, -32768),
+            ImageIFD.ZZZTestDFloat:(1.0e-100, 1.0e-100),
+        }
+        exif_dict = {"0th":zeroth_ifd_original}
+        exif_bytes = piexif.dump(exif_dict)
+
+        exif = piexif.load(exif_bytes)
+        zeroth_ifd = exif["0th"]
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestSByte],
+            zeroth_ifd[ImageIFD.ZZZTestSByte]
+        )
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestSShort],
+            zeroth_ifd[ImageIFD.ZZZTestSShort]
+        )
+        self.assertEqual(
+            zeroth_ifd_original[ImageIFD.ZZZTestDFloat],
+            zeroth_ifd[ImageIFD.ZZZTestDFloat]
+        )
+
 
     def test_roundtrip_files(self):
         files = glob.glob(os.path.join("tests", "images", "r_*.jpg"))

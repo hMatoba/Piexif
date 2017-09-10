@@ -161,17 +161,26 @@ def _get_thumbnail(jpeg):
 def _pack_byte(*args):
     return struct.pack("B" * len(args), *args)
 
+def _pack_signed_byte(*args):
+    return struct.pack("b" * len(args), *args)
 
 def _pack_short(*args):
     return struct.pack(">" + "H" * len(args), *args)
 
+def _pack_signed_short(*args):
+    return struct.pack(">" + "h" * len(args), *args)
 
 def _pack_long(*args):
     return struct.pack(">" + "L" * len(args), *args)
 
-
 def _pack_slong(*args):
     return struct.pack(">" + "l" * len(args), *args)
+
+def _pack_float(*args):
+    return struct.pack(">" + "f" * len(args), *args)
+
+def _pack_double(*args):
+    return struct.pack(">" + "d" * len(args), *args)
 
 
 def _value_to_bytes(raw_value, value_type, offset):
@@ -264,18 +273,32 @@ def _value_to_bytes(raw_value, value_type, offset):
             except TypeError:
                 raise ValueError("Got invalid type to convert.")
     elif value_type == TYPES.SByte: # Signed Byte
-        # implement here
-        pass
+        length = len(raw_value)
+        if length <= 4:
+            value_str = (_pack_signed_byte(*raw_value) +
+                            b"\x00" * (4 - length))
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = _pack_signed_byte(*raw_value)
     elif value_type == TYPES.SShort: # Signed Short
-        # implement here
-        pass
+        length = len(raw_value)
+        if length <= 2:
+            value_str = (_pack_signed_short(*raw_value) +
+                            b"\x00\x00" * (2 - length))
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = _pack_signed_short(*raw_value)
     elif value_type == TYPES.Float:
-        # implement here
-        pass
+        length = len(raw_value)
+        if length <= 1:
+            value_str = _pack_float(*raw_value)
+        else:
+            value_str = struct.pack(">I", offset)
+            four_bytes_over = _pack_float(*raw_value)
     elif value_type == TYPES.DFloat: # Double
-        # implement here
-        pass
-
+        length = len(raw_value)
+        value_str = struct.pack(">I", offset)
+        four_bytes_over = _pack_double(*raw_value)
 
     length_str = struct.pack(">I", length)
     return length_str, value_str, four_bytes_over
@@ -304,7 +327,7 @@ def _dict_to_bytes(ifd_dict, ifd, ifd_offset):
         type_str = struct.pack(">H", value_type)
         four_bytes_over = b""
 
-        if isinstance(raw_value, numbers.Integral):
+        if isinstance(raw_value, numbers.Integral) or isinstance(raw_value, float):
             raw_value = (raw_value,)
         offset = TIFF_HEADER_LENGTH + entries_length + ifd_offset + len(values)
 

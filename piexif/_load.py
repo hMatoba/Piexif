@@ -181,17 +181,26 @@ class _ExifReader(object):
                                       self.tiftag[pointer + 4: pointer + 8]
                                       )[0])
         elif t == TYPES.SByte: # SIGNED BYTES
-            pass
-            # implement here
+            if length > 4:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack("b" * length,
+                                     self.tiftag[pointer: pointer + length])
+            else:
+                data = struct.unpack("b" * length, value[0:length])
         elif t == TYPES.Undefined: # UNDEFINED BYTES
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
                 data = self.tiftag[pointer: pointer+length]
             else:
                 data = value[0:length]
-        elif t == TYPES.Short: # SIGNED SHORT
-            pass
-            # implement here
+        elif t == TYPES.SShort: # SIGNED SHORT
+            if length > 2:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "h" * length,
+                                     self.tiftag[pointer: pointer+length*2])
+            else:
+                data = struct.unpack(self.endian_mark + "h" * length,
+                                     value[0:length * 2])
         elif t == TYPES.SLong: # SLONG
             if length > 1:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
@@ -217,11 +226,17 @@ class _ExifReader(object):
                                       self.tiftag[pointer + 4: pointer + 8]
                                       )[0])
         elif t == TYPES.Float: # FLOAT
-            pass
-            # implement here
+            if length > 1:
+                pointer = struct.unpack(self.endian_mark + "L", value)[0]
+                data = struct.unpack(self.endian_mark + "f" * length,
+                                     self.tiftag[pointer: pointer+length*4])
+            else:
+                data = struct.unpack(self.endian_mark + "f" * length,
+                                     value)
         elif t == TYPES.DFloat: # DOUBLE
-            pass
-            # implement here
+            pointer = struct.unpack(self.endian_mark + "L", value)[0]
+            data = struct.unpack(self.endian_mark + "d" * length,
+                                    self.tiftag[pointer: pointer+length*8])
         else:
             raise ValueError("Exif might be wrong. Got incorrect value " +
                              "type to decode.\n" +
