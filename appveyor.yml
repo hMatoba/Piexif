@@ -2,14 +2,13 @@ build: false
 
 environment:
   matrix:
+  - PYTHON: C:/Python35-x64
   - PYTHON: C:/Python34-x64
   - PYTHON: C:/Python33-x64
   - PYTHON: C:/Python27-x64
 
 install:
-  - ps: (new-object net.webclient).DownloadFile('https://bootstrap.pypa.io/get-pip.py', 'C:/get-pip.py')
-  - "%PYTHON%/python.exe C:/get-pip.py"
-  - "%PYTHON%/Scripts/pip.exe install pillow==2.9.0"
+  - "%PYTHON%\python.exe -m pip install pillow==2.9.0"
 
 test_script:
   - '%PYTHON%\python.exe setup.py test'
