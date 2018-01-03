@@ -967,7 +967,7 @@ class WebpTests(unittest.TestCase):
         ]
 
         for filename in files:
-            piexif.remove(OUT_DIR + "r_" + filename, OUT_DIR + "rr_" + filename)
+            piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
             Image.open(OUT_DIR + "rr_" + filename)
 
     def test_insert(self):
