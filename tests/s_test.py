@@ -847,6 +847,12 @@ class HelperTests(unittest.TestCase):
 
 
 class WebpTests(unittest.TestCase):
+    def setUp(self):
+        try:
+            os.mkdir("tests/images/out")
+        except:
+            pass
+
     def test_merge_chunks(self):
         """Can PIL open our output WebP?"""
         IMAGE_DIR = "tests/images/"
