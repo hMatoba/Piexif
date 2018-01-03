@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.0b
+------
+
+- "load", "insert", and "remove" support WebP format.
+
 1.0.13
 ------
 
