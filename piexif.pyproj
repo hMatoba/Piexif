@@ -29,6 +29,7 @@
     <Folder Include="tests\" />
     <Folder Include="piexif\" />
     <Folder Include="tests\images\" />
+    <Folder Include="tests\images\out\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="piexif\_common.py" />
@@ -46,6 +47,9 @@
     </Compile>
     <Compile Include="piexif\_remove.py" />
     <Compile Include="piexif\_transplant.py" />
+    <Compile Include="piexif\_webp.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="piexif\__init__.py" />
     <Compile Include="tests\s_test.py" />
   </ItemGroup>
@@ -57,6 +61,12 @@
     <Content Include="tests\images\L02.jpg" />
     <Content Include="tests\images\noapp01.jpg" />
     <Content Include="tests\images\noexif.jpg" />
+    <Content Include="tests\images\pil1.webp" />
+    <Content Include="tests\images\pil2.webp" />
+    <Content Include="tests\images\pil3.webp" />
+    <Content Include="tests\images\pil_rgb.webp" />
+    <Content Include="tests\images\pil_rgba.webp" />
+    <Content Include="tests\images\tool1.webp" />
   </ItemGroup>
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in

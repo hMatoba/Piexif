@@ -101,3 +101,4 @@ load_sample.py
 doc/_build/
 run_coverage.bat
 up2pypi.bat
+out/

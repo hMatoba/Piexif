@@ -12,6 +12,7 @@ import unittest
 from PIL import Image
 import piexif
 from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
+from piexif import _webp
 from piexif import helper
 
 
@@ -855,11 +856,68 @@ class HelperTests(unittest.TestCase):
         self.assertRaises(ValueError, helper.UserComment.load, b'hello world')
 
 
+class WebpTests(unittest.TestCase):
+    def test_merge_chunks(self):
+        """Can PIL open our output WebP?"""
+        IMAGE_DIR = "tests/images/"
+        OUT_DIR = "tests/images/out/"
+        files = [
+            "tool1.webp",
+            "pil1.webp",
+            "pil2.webp",
+            "pil3.webp",
+            "pil_rgb.webp",
+            "pil_rgba.webp",
+        ]
+
+        exif_dict = {
+            "0th":{
+                piexif.ImageIFD.Software: b"PIL",
+                piexif.ImageIFD.Make: b"Make",
+            }
+        }
+
+        for filename in files:
+            Image.open(IMAGE_DIR + filename)
+
+            with open(IMAGE_DIR + filename, "rb") as f:
+                data = f.read()
+
+            chunks = _webp.split(data)
+            file_header, padded = _webp.get_file_header(chunks)
+            merged = _webp.merge_chunks(chunks)
+            if padded:
+                merged += b"\x00"
+            new_webp_bytes = file_header + merged
+            with open(OUT_DIR + "raw_" + filename, "wb") as f:
+                f.write(new_webp_bytes)
+            try:
+                Image.open(OUT_DIR + "raw_" + filename)
+            except Exception as e:
+                print(e.args)
+
+
+        files = glob.glob(OUT_DIR + "raw_*.webp")
+        result = ""
+        for filename in files:
+            with open(filename, "rb") as f:
+                data = f.read()
+            _webp.split(data)
+            try:
+                Image.open(filename)
+                result += "-"
+            except Exception as e:
+                print(e.args)
+                result += "!"
+
 def suite():
     suite = unittest.TestSuite()
-    suite.addTests([unittest.makeSuite(UTests),
-                    unittest.makeSuite(ExifTests),
-                    unittest.makeSuite(HelperTests)])
+    suite.addTests([
+        unittest.makeSuite(UTests),
+        unittest.makeSuite(ExifTests),
+        unittest.makeSuite(HelperTests),
+        unittest.makeSuite(WebpTests),
+    ])
     return suite
 
 
