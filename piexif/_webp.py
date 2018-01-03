@@ -8,7 +8,6 @@ def split(data):
 
     webp_length_bytes = data[4:8]
     webp_length = struct.unpack("<L", webp_length_bytes)[0]
-    print("webp length: {0}, {1}".format(webp_length, len(data[8:])))
     RIFF_HEADER_SIZE = 8
     file_size = RIFF_HEADER_SIZE + webp_length
 
@@ -25,16 +24,10 @@ def split(data):
         chunk_length = struct.unpack("<L", chunk_length_bytes)[0]
         pointer += LENGTH_BYTES_LENGTH
 
-
-
         chunk_data = data[pointer:pointer + chunk_length]
         chunks.append({"fourcc":fourcc, "length_bytes":chunk_length_bytes, "data":chunk_data})
 
-        print("{0} {1} {2} {3}".format(fourcc, chunk_length, len(chunk_data), chunk_data[-2:]))
-
-
         padding = 1 if chunk_length % 2 else 0
-
 
         pointer += chunk_length + padding
     return chunks
@@ -134,8 +127,6 @@ def set_vp8x(chunks):
     if chunks[0]["fourcc"] == b"VP8X":
         chunks.pop(0)
 
-    print(b"".join(flags))
-
     header_bytes = b"VP8X"
     length_bytes = b"\x0a\x00\x00\x00"
     flags_bytes = struct.pack("B", int(b"".join(flags), 2))
@@ -151,7 +142,6 @@ def set_vp8x(chunks):
     return chunks
 
 def get_file_header(chunks):
-    padded = False
     WEBP_HEADER_LENGTH = 4
     FOURCC_LENGTH = 4
     LENGTH_BYTES_LENGTH = 4
@@ -161,14 +151,11 @@ def get_file_header(chunks):
         data_length = struct.unpack("<L", chunk["length_bytes"])[0]
         data_length += 1 if data_length % 2 else 0
         length += FOURCC_LENGTH + LENGTH_BYTES_LENGTH + data_length
-    if length % 2:
-        length += 1
-        padded = True
     length_bytes = struct.pack("<L", length)
     riff = b"RIFF"
     webp_header = b"WEBP"
     file_header = riff + length_bytes + webp_header
-    return (file_header, padded)
+    return file_header
 
 
 
@@ -177,7 +164,7 @@ def get_exif(data):
         raise ValueError("Not WebP")
 
     if data[12:16] != b"VP8X":
-        raise ValueError("don't have exif")
+        raise ValueError("doesnot have exif")
 
     webp_length_bytes = data[4:8]
     webp_length = struct.unpack("<L", webp_length_bytes)[0]
@@ -196,12 +183,13 @@ def get_exif(data):
         pointer += CHUNK_FOURCC_LENGTH
         chunk_length_bytes = data[pointer:pointer + LENGTH_BYTES_LENGTH]
         chunk_length = struct.unpack("<L", chunk_length_bytes)[0]
+        if chunk_length % 2:
+            chunk_length += 1
         pointer += LENGTH_BYTES_LENGTH
         if fourcc == b"EXIF":
-            exif = data[pointer:pointer + chunk_length]
-            break
+            return data[pointer:pointer + chunk_length]
         pointer += chunk_length
-    return exif
+    return None  # if there isn't exif, return None.
 
 
 def insert_exif_into_chunks(chunks, exif_bytes):
@@ -231,120 +219,22 @@ def insert_exif_into_chunks(chunks, exif_bytes):
 
 
 def insert(webp_bytes, exif_bytes):
-    chunks = split(data)
+    chunks = split(webp_bytes)
     chunks = insert_exif_into_chunks(chunks, exif_bytes)
     chunks = set_vp8x(chunks)
-    file_header, padded = get_file_header(chunks)
-    print(b" ".join([chunk["fourcc"] for chunk in chunks]))
+    file_header = get_file_header(chunks)
     merged = merge_chunks(chunks)
-    if padded:
-        merged += b"\x00"
     new_webp_bytes = file_header + merged
-    print(file_header)
     return new_webp_bytes
 
 
 def remove(webp_bytes):
-    chunks = split(data)
+    chunks = split(webp_bytes)
     for index, chunk in enumerate(chunks):
         if chunk["fourcc"] == b"EXIF":
             chunks.pop(index)
     chunks = set_vp8x(chunks)
-    file_header, padded = get_file_header(chunks)
-    print(b" ".join([chunk["fourcc"] for chunk in chunks]))
+    file_header = get_file_header(chunks)
     merged = merge_chunks(chunks)
-    if padded:
-        merged += b"\x00"
     new_webp_bytes = file_header + merged
-    print(file_header)
     return new_webp_bytes
-
-if __name__ == "__main__":
-    import glob
-    import piexif
-    from PIL import Image
-
-    IMAGE_DIR = "images/"
-    OUT_DIR = "images/out/"
-    files = [
-        "web1.webp",
-        "web2.webp",
-        "web3.webp",
-        "web4.webp",
-        "tool1.webp",
-        "pil1.webp",
-        "pil2.webp",
-        "pil3.webp",
-        "pil_rgb.webp",
-        "pil_rgba.webp",
-    ]
-
-
-    exif_dict = {
-        "0th":{
-            piexif.ImageIFD.Software: b"PIL",
-            piexif.ImageIFD.Make: b"Make",
-        }
-    }
-
-    for filename in files:
-        print("\n\n\n**********\n" + filename)
-        Image.open(IMAGE_DIR + filename)
-
-        print("  -----------\n")
-        with open(IMAGE_DIR + filename, "rb") as f:
-            data = f.read()
-
-        chunks = split(data)
-        print(b" ".join([chunk["fourcc"] for chunk in chunks]))
-        file_header, padded = get_file_header(chunks)
-        merged = merge_chunks(chunks)
-        if padded:
-            merged += b"\x00"
-        new_webp_bytes = file_header + merged
-        print(file_header)
-        with open(OUT_DIR + "raw_" + filename, "wb") as f:
-            f.write(new_webp_bytes)
-        try:
-            Image.open(OUT_DIR + "raw_" + filename)
-        except Exception as e:
-            print(e.args)
-
-        print("  -----------\n")
-        exif_bytes = piexif.dump(exif_dict)
-        exif_inserted = insert(data, exif_bytes)
-        with open(OUT_DIR + "i_" + filename, "wb") as f:
-            f.write(exif_inserted)
-        try:
-            Image.open(OUT_DIR + "i_" + filename)
-        except Exception as e:
-            print(e.args)
-
-
-        print("  -----------\n")
-        with open(OUT_DIR + "i_" + filename, "rb") as f:
-            data = f.read()
-        exif_removed = remove(data)
-        with open(OUT_DIR + "r_" + filename, "wb") as f:
-            f.write(exif_removed)
-        try:
-            Image.open(OUT_DIR + "r_" + filename)
-        except Exception as e:
-            print(e.args)
-
-    files = glob.glob(OUT_DIR + "*.webp")
-    result = ""
-    for filename in files:
-        print("\n========================" + filename)
-        with open(filename, "rb") as f:
-            data = f.read()
-        split(data)
-        try:
-            Image.open(filename)
-            result += "-"
-        except Exception as e:
-            print(e.args)
-            result += "!"
-    print(result)
-
-    print("xxxxxxxxxxxxxxxxxxxxxxxx")
