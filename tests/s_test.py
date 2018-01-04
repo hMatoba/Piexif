@@ -858,7 +858,6 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -883,7 +882,6 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -912,7 +910,6 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -933,7 +930,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
+            "pil3.webp",
         ]
 
         for filename in files:
@@ -947,7 +944,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
+            "pil3.webp",
         ]
 
         for filename in files:
@@ -958,7 +955,6 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -976,7 +972,6 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
