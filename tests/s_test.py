@@ -858,6 +858,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
+            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -866,6 +867,12 @@ class WebpTests(unittest.TestCase):
         ]
 
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+
             with open(IMAGE_DIR + filename, "rb") as f:
                 data = f.read()
 
@@ -882,6 +889,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
+            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -897,6 +905,12 @@ class WebpTests(unittest.TestCase):
         }
 
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+
             with open(IMAGE_DIR + filename, "rb") as f:
                 data = f.read()
             exif_bytes = piexif.dump(exif_dict)
@@ -910,6 +924,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
+            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -918,6 +933,12 @@ class WebpTests(unittest.TestCase):
         ]
 
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+
             with open(IMAGE_DIR + filename, "rb") as f:
                 data = f.read()
             exif_removed = _webp.remove(data)
@@ -930,10 +951,16 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "pil3.webp",
+            "tool1.webp",
         ]
 
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+
             with open(IMAGE_DIR + filename, "rb") as f:
                 data = f.read()
             exif_bytes = _webp.get_exif(data)
@@ -944,10 +971,15 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
-            "pil3.webp",
+            "tool1.webp",
         ]
 
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
             print(piexif.load(IMAGE_DIR + filename))
 
     def test_remove(self):
@@ -955,6 +987,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
+            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -963,7 +996,11 @@ class WebpTests(unittest.TestCase):
         ]
 
         for filename in files:
-            Image.open(IMAGE_DIR + filename)
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
             piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
             Image.open(OUT_DIR + "rr_" + filename)
 
@@ -972,6 +1009,7 @@ class WebpTests(unittest.TestCase):
         IMAGE_DIR = "tests/images/"
         OUT_DIR = "tests/images/out/"
         files = [
+            "tool1.webp",
             "pil1.webp",
             "pil2.webp",
             "pil3.webp",
@@ -988,6 +1026,11 @@ class WebpTests(unittest.TestCase):
         exif_bytes = piexif.dump(exif_dict)
         
         for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
             piexif.insert(exif_bytes, IMAGE_DIR + filename, OUT_DIR + "ii_" + filename)
             Image.open(OUT_DIR + "ii_" + filename)
 
