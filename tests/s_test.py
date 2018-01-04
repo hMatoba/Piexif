@@ -967,6 +967,7 @@ class WebpTests(unittest.TestCase):
         ]
 
         for filename in files:
+            Image.open(IMAGE_DIR + filename)
             piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
             Image.open(OUT_DIR + "rr_" + filename)
 
