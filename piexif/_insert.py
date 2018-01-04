@@ -3,7 +3,7 @@ import struct
 
 from ._common import *
 from ._exceptions import InvalidImageDataError
-
+from piexif import _webp
 
 def insert(exif, image, new_file=None):
     """
@@ -21,14 +21,26 @@ def insert(exif, image, new_file=None):
     output_file = False
     if image[0:2] == b"\xff\xd8":
         image_data = image
+        file_type = "jpeg"
+    elif image[0:4] == b"RIFF" and image[8:12] == b"WEBP":
+        image_data = image
+        file_type = "webp"
     else:
         with open(image, 'rb') as f:
             image_data = f.read()
-        if image_data[0:2] != b"\xff\xd8":
+        if image_data[0:2] == b"\xff\xd8":
+            file_type = "jpeg"
+        elif image_data[0:4] == b"RIFF" and image_data[8:12] == b"WEBP":
+            file_type = "webp"
+        else:
             raise InvalidImageDataError
         output_file = True
-    segments = split_into_segments(image_data)
-    new_data = merge_segments(segments, exif)
+
+    if file_type == "jpeg":
+        segments = split_into_segments(image_data)
+        new_data = merge_segments(segments, exif)
+    elif file_type == "webp":
+        new_data = _webp.insert(image_data, exif)
 
     if isinstance(new_file, io.BytesIO):
         new_file.write(new_data)

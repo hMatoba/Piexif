@@ -11,7 +11,7 @@ python:
  - 3.6
 
 install:
- - pip install pillow==4.0.0
+ - pip install pillow==5.0.0
  - pip install coveralls
 
 script:
