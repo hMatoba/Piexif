@@ -13,7 +13,7 @@ load
 
    Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag/value). "thumbnail" value is JPEG as bytes.
 
-   :param str filename: JPEG or TIFF
+   :param str filename: JPEG, WebP, or TIFF
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
    :rtype: dict
 
@@ -36,7 +36,7 @@ load
 
    Return exif data as dict. The keys(IFD name), will be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". If there is no data to return, the key won't be contained. Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
 
-   :param bytes data: JPEG, TIFF, or Exif
+   :param bytes data: JPEG, WebP, TIFF, or Exif
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
    :rtype: dict
 
@@ -99,10 +99,10 @@ insert
 ------
 .. py:function:: piexif.insert(exif_bytes, filename)
 
-   Insert exif into JPEG.
+   Insert exif into JPEG, or WebP.
 
    :param bytes exif_bytes: Exif as bytes
-   :param str filename: JPEG
+   :param str filename: JPEG, or WebP
 
 ::
 
@@ -111,19 +111,19 @@ insert
 
 .. py:function:: piexif.insert(exif_bytes, data, output)
 
-   Insert exif into JPEG.
+   Insert exif into JPEG, or WebP.
 
    :param bytes exif_bytes: Exif as bytes
-   :param bytes data: JPEG data
+   :param bytes data: JPEG, or WebP data
    :param io.BytesIO output: ouput data
 
 remove
 ------
 .. py:function:: piexif.remove(filename)
 
-   Remove exif from JPEG.
+   Remove exif from JPEG, or WebP.
 
-   :param str filename: JPEG
+   :param str filename: JPEG, or WebP
 
 ::
 
@@ -131,9 +131,9 @@ remove
 
 .. py:function:: piexif.remove(data, output)
 
-   Remove exif from JPEG.
+   Remove exif from JPEG or WebP.
 
-   :param bytes data: JPEG data
+   :param bytes data: JPEG or WebP data
    :param io.BytesIO output: output data
 
 transplant

@@ -37,9 +37,9 @@ How to Use
 There are only just five functions.
 
 - *load(filename)* - Get exif data as *dict*.
-- *dump(exif_dict)* - Get exif as *bytes* to save with JPEG.
-- *insert(exif_bytes, filename)* - Insert exif into JPEG.
-- *remove(filename)* - Remove exif from JPEG.
+- *dump(exif_dict)* - Get exif as *bytes*.
+- *insert(exif_bytes, filename)* - Insert exif into JPEG, or WebP.
+- *remove(filename)* - Remove exif from JPEG, or WebP.
 - *transplant(filename, filename)* - Transplant exif from JPEG to JPEG.
 
 Example
