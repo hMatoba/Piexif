@@ -59,13 +59,13 @@ Rotate image by exif orientation tag and remove orientation tag.
                 elif orientation == 4:
                     img = img.rotate(180).transpose(Image.FLIP_LEFT_RIGHT)
                 elif orientation == 5:
-                    img = img.rotate(-90).transpose(Image.FLIP_LEFT_RIGHT)
+                    img = img.rotate(-90, expand=True).transpose(Image.FLIP_LEFT_RIGHT)
                 elif orientation == 6:
-                    img = img.rotate(-90)
+                    img = img.rotate(-90, expand=True)
                 elif orientation == 7:
-                    img = img.rotate(90).transpose(Image.FLIP_LEFT_RIGHT)
+                    img = img.rotate(90, expand=True).transpose(Image.FLIP_LEFT_RIGHT)
                 elif orientation == 8:
-                    img = img.rotate(90)
+                    img = img.rotate(90, expand=True)
 
                 img.save(filename, exif=exif_bytes)
 
