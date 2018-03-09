@@ -41,7 +41,7 @@ def remove(src, new_file=None):
             new_data = src_data
         except e:
             print(e.args)
-            raise ValueError("Error ocured.")
+            raise ValueError("Error occurred.")
 
     if isinstance(new_file, io.BytesIO):
         new_file.write(new_data)
@@ -53,4 +53,4 @@ def remove(src, new_file=None):
         with open(src, "wb+") as f:
             f.write(new_data)
     else:
-        raise ValueError("Give a second argment to 'remove' to output file")
+        raise ValueError("Give a second argument to 'remove' to output file")

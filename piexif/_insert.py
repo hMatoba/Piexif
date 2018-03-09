@@ -52,4 +52,4 @@ def insert(exif, image, new_file=None):
         with open(image, "wb+") as f:
             f.write(new_data)
     else:
-        raise ValueError("Give a 3rd argment to 'insert' to output file")
+        raise ValueError("Give a 3rd argument to 'insert' to output file")
