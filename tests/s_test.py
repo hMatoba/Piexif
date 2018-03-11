@@ -669,7 +669,7 @@ class UTests(unittest.TestCase):
         segments = _common.split_into_segments(original)
         new_data = _common.merge_segments(segments)
         segments = _common.split_into_segments(new_data)
-        self.assertFalse([1][0:2] == b"\xff\xe0"
+        self.assertFalse(segments[1][0:2] == b"\xff\xe0"
                         and segments[2][0:2] == b"\xff\xe1")
         self.assertEqual(segments[1][0:2], b"\xff\xe1")
         o = io.BytesIO(new_data)
