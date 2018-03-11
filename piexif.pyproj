@@ -32,6 +32,7 @@
     <Folder Include="tests\images\out\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="piexif\_png.py" />
     <Compile Include="piexif\_common.py" />
     <Compile Include="piexif\_dump.py">
       <SubType>Code</SubType>
