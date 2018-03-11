@@ -1,7 +1,7 @@
 import io
 
 from ._common import *
-from piexif import _webp
+from piexif import _webp, _png
 
 def remove(src, new_file=None):
     """
@@ -18,6 +18,9 @@ def remove(src, new_file=None):
     elif src[0:4] == b"RIFF" and src[8:12] == b"WEBP":
         src_data = src
         file_type = "webp"
+    elif src[0:len(_png.PNG_HEADER)] == _png.PNG_HEADER:
+        src_data = src
+        file_type = "png"
     else:
         with open(src, 'rb') as f:
             src_data = f.read()
@@ -26,6 +29,8 @@ def remove(src, new_file=None):
             file_type = "jpeg"
         elif src_data[0:4] == b"RIFF" and src_data[8:12] == b"WEBP":
             file_type = "webp"
+        elif src_data[0:len(_png.PNG_HEADER)] == _png.PNG_HEADER:
+            file_type = "png"
 
     if file_type == "jpeg":
         segments = split_into_segments(src_data)
@@ -40,6 +45,14 @@ def remove(src, new_file=None):
         except ValueError:
             new_data = src_data
         except e:
+            print(e.args)
+            raise ValueError("Error occurred.")
+    elif file_type == "png":
+        try:
+            new_data = _png.remove(src_data)
+        except ValueError:
+            new_data = src_data
+        except Exeption as e:
             print(e.args)
             raise ValueError("Error occurred.")
 
