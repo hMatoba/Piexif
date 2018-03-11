@@ -1035,6 +1035,72 @@ class WebpTests(unittest.TestCase):
             Image.open(OUT_DIR + "ii_" + filename)
 
 
+class PngTests(unittest.TestCase):
+    def setUp(self):
+        try:
+            os.mkdir("tests/images/out")
+        except:
+            pass
+
+    def test_load(self):
+        """Can we get exif from png?"""
+        IMAGE_DIR = "tests/images/"
+        OUT_DIR = "tests/images/out/"
+        files = [
+            "sample01.png",
+        ]
+
+        for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+            print(piexif.load(IMAGE_DIR + filename))
+
+    def test_remove(self):
+        """Can PIL open png that is removed exif?"""
+        IMAGE_DIR = "tests/images/"
+        OUT_DIR = "tests/images/out/"
+        files = [
+            "sample01.png",
+        ]
+
+        for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+            piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
+            Image.open(OUT_DIR + "rr_" + filename)
+
+    def test_insert(self):
+        """Can PIL open png that is inserted exif?"""
+        IMAGE_DIR = "tests/images/"
+        OUT_DIR = "tests/images/out/"
+        files = [
+            "sample01.png",
+        ]
+
+        exif_dict = {
+            "0th":{
+                piexif.ImageIFD.Software: b"PIL",
+                piexif.ImageIFD.Make: b"Make",
+            }
+        }
+        exif_bytes = piexif.dump(exif_dict)
+        
+        for filename in files:
+            try:
+                Image.open(IMAGE_DIR + filename)
+            except:
+                print("Pillow can't read {0}".format(filename))
+                continue
+            piexif.insert(exif_bytes, IMAGE_DIR + filename, OUT_DIR + "ii_" + filename)
+            Image.open(OUT_DIR + "ii_" + filename)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTests([
