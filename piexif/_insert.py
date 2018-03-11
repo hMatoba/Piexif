@@ -16,7 +16,6 @@ def insert(exif, image, new_file=None):
     """
     if exif[0:6] != b"\x45\x78\x69\x66\x00\x00":
         raise ValueError("Given data is not exif data")
-    exif = b"\xff\xe1" + struct.pack(">H", len(exif) + 2) + exif
 
     output_file = False
     if image[0:2] == b"\xff\xd8":
@@ -37,9 +36,11 @@ def insert(exif, image, new_file=None):
         output_file = True
 
     if file_type == "jpeg":
+        exif = b"\xff\xe1" + struct.pack(">H", len(exif) + 2) + exif
         segments = split_into_segments(image_data)
         new_data = merge_segments(segments, exif)
     elif file_type == "webp":
+        exif = exif[6:]
         new_data = _webp.insert(image_data, exif)
 
     if isinstance(new_file, io.BytesIO):
