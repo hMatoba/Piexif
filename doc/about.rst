@@ -5,12 +5,12 @@ About Piexif
 What for?
 ---------
 
-To simplify exif manipulations with python. Writing, reading, and more...
+To simplify exif manipulations with Python. Writing, reading, and more...
 
 How to Use
 ----------
 
-There are only just five functions.
+There are only five functions.
 
 - *load(filename)* - Get exif data as *dict*.
 - *dump(exif_dict)* - Get exif as *bytes* to save with JPEG.
@@ -26,7 +26,7 @@ Piexif doesn't depend on any third library.
 Environment
 -----------
 
-Tested on Python 2.7, 3.3, 3.4, 3.5, pypy, and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on GoogleAppEngine.
+Tested on Python 2.7, 3.3, 3.4, 3.5, 3.6, pypy, and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on GoogleAppEngine.
 
 License
 -------
