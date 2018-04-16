@@ -5,12 +5,12 @@ About Piexif
 What for?
 ---------
 
-To simplify exif manipulations with python. Writing, reading, and more...
+To simplify exif manipulations with Python. Writing, reading, and more...
 
 How to Use
 ----------
 
-There are only just five functions.
+There are only five functions.
 
 - *load(filename)* - Get exif data as *dict*.
 - *dump(exif_dict)* - Get exif as *bytes* to save with JPEG.
