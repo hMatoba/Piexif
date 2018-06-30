@@ -72,7 +72,7 @@ With PIL(Pillow)
 Environment
 -----------
 
-Tested on Python 2.7, 3.3, 3.4, 3.5, 3.6 and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on Google App Engine.
+Tested on Python 2.7, 3.4, 3.5, 3.6, 3.7 and pypy3. Piexif would run even on IronPython. Piexif is OS independent and can run on Google App Engine.
 
 License
 -------
