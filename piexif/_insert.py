@@ -1,5 +1,6 @@
 import io
 import struct
+import sys
 
 from ._common import *
 from ._exceptions import InvalidImageDataError
@@ -18,10 +19,13 @@ def insert(exif, image, new_file=None):
         raise ValueError("Given data is not exif data")
 
     output_file = False
-    if image[0:2] == b"\xff\xd8":
+    # Prevents "UnicodeWarning: Unicode equal comparison failed" warnings on Python 2
+    maybe_image = sys.version_info >= (3,0,0) or isinstance(image, str)
+
+    if maybe_image and image[0:2] == b"\xff\xd8":
         image_data = image
         file_type = "jpeg"
-    elif image[0:4] == b"RIFF" and image[8:12] == b"WEBP":
+    elif maybe_image and image[0:4] == b"RIFF" and image[8:12] == b"WEBP":
         image_data = image
         file_type = "webp"
     else:
