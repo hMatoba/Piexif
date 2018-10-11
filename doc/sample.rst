@@ -36,7 +36,7 @@ Check Containing Tag
 Rotate Image by Exif Orientation
 --------------------------------
 
-Rotate image by exif orientation tag and remove orientation tag.
+Example) rotate the image by its exif orientation tag value and remove the orientation tag from the image's exif data:
 
 ::
 
@@ -72,7 +72,7 @@ Rotate image by exif orientation tag and remove orientation tag.
 Piexif on Server
 ----------------
 
-Piexif loads exif data as dict from JPEG. Python dict is easy to convert to JSON, therefore piexif has a good compatible with AJAX, document oriented DB...
+Piexif stores the image's exif data as a dictionary. This dictionary is easy to convert to JSON for use with AJAX or for use with document oriented databases.
 
 ::
 
