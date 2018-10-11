@@ -2,7 +2,7 @@
 Functions
 =========
 
-.. warning:: Any value can be set as an exif value without it matching the actual value. For example, the XResolution value of 0 can be written while the actual XResolution is 300. This can cause conflicts.
+.. warning:: It could set any value in exif without actual value. For example, actual XResolution is 300, whereas XResolution value in exif is 0. Confliction might happen.
 .. warning:: To edit exif tags and values appropriately, read official document from P167-. http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 .. note:: This document is written for using Piexif on Python 3.x.
 
@@ -11,7 +11,7 @@ load
 ----
 .. py:function:: piexif.load(filename, key_is_name=False)
 
-   Returns exif data as a dictionary with the following keys: "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". All values are dictionaries except for "thumbnail" which has the value of either a JPEG as bytes or None if no thumbnail is stored in the exif data.
+   Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag/value). "thumbnail" value is JPEG as bytes.
 
    :param str filename: JPEG, WebP, or TIFF
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
@@ -34,7 +34,7 @@ load
 
 .. py:function:: piexif.load(data)
 
-   Return exif data as dict. The keys(IFD name), will be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". If there is no data to return, the key won't be contained. Without "thumbnail", the value is dict(tag name/tag value). "thumbnail" value is JPEG as bytes.
+   Returns exif data as a dictionary with the following keys unless its value does not exist in the file: "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". All values are dictionaries except for "thumbnail" which has the value of either a JPEG as bytes or None if no thumbnail is stored in the exif data.
 
    :param bytes data: JPEG, WebP, TIFF, or Exif
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
@@ -45,7 +45,7 @@ dump
 
 .. py:function:: piexif.dump(exif_dict)
 
-   Return exif as bytes.
+   Returns exif data as bytes.
 
    :param dict exif_dict: Exif data({"0th":0thIFD - dict, "Exif":ExifIFD - dict, "GPS":GPSIFD - dict, "Interop":InteroperabilityIFD - dict, "1st":1stIFD - dict, "thumbnail":JPEG data - bytes})
    :return: Exif
@@ -89,20 +89,20 @@ dump
     im.thumbnail((100, 100), Image.ANTIALIAS)
     im.save("out.jpg", exif=exif_bytes)
 
-Properties of *piexif.ImageIFD* help to make 0thIFD dict and 1stIFD dict. *piexif.ExifIFD* is for ExifIFD dict. *piexif.GPSIFD* is for GPSIFD dict. *piexif.InteropIFD* is for InteroperabilityIFD dict.
+The 0thIFD and 1stIFD dictionaries should be constructed using the properties of *piexif.ImageIFD*. Use the properties of *piexif.ExifIFD* for the ExifIFD dictionary, *piexif.GPSIFD* for the GPSIFD dictionary, and *piexif.InteropIFD* for the InteroperabilityIFD dictionary.
 
-.. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD automatically are set appropriate value.
-.. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD automatically are set appropriate value.
-.. note:: If 'thumbnail' is contained in dict, '1st' must be contained -- and vice versa. 1stIFD means thumbnail's information.
+.. note:: ExifTag(34665), GPSTag(34853), and InteroperabilityTag(40965) in 0thIFD are automatically set to the appropriate values.
+.. note:: JPEGInterchangeFormat(513), and JPEGInterchangeFormatLength(514) in 1stIFD are automatically set to the appropriate values.
+.. note:: If the value of key 'thumbnail' is a dictionary, then the value for key '1st' must also be a dictionary and vice versa. This is because 1stIFD stores the thumbnail's information.
 
 insert
 ------
 .. py:function:: piexif.insert(exif_bytes, filename)
 
-   Insert exif into JPEG, or WebP.
+   Inserts exif into JPEG or WebP.
 
    :param bytes exif_bytes: Exif as bytes
-   :param str filename: JPEG, or WebP
+   :param str filename: JPEG or WebP
 
 ::
 
@@ -111,19 +111,19 @@ insert
 
 .. py:function:: piexif.insert(exif_bytes, data, output)
 
-   Insert exif into JPEG, or WebP.
+   Inserts exif into JPEG or WebP.
 
    :param bytes exif_bytes: Exif as bytes
-   :param bytes data: JPEG, or WebP data
-   :param io.BytesIO output: ouput data
+   :param bytes data: JPEG or WebP data
+   :param io.BytesIO output: output data
 
 remove
 ------
 .. py:function:: piexif.remove(filename)
 
-   Remove exif from JPEG, or WebP.
+   Removes exif data from JPEG or WebP.
 
-   :param str filename: JPEG, or WebP
+   :param str filename: JPEG or WebP
 
 ::
 
@@ -131,7 +131,7 @@ remove
 
 .. py:function:: piexif.remove(data, output)
 
-   Remove exif from JPEG or WebP.
+   Removes exif data from JPEG or WebP.
 
    :param bytes data: JPEG or WebP data
    :param io.BytesIO output: output data
@@ -140,7 +140,7 @@ transplant
 ----------
 .. py:function:: piexif.transplant(filename1, filename2)
 
-   Transplant exif from filename1 to filename2.
+   Copies exif data from filename1 to filename2.
 
    :param str filename1: JPEG
    :param str filename2: JPEG
