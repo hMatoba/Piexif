@@ -5,7 +5,7 @@ Appendices
 Exif Data in Piexif
 -------------------
 
-Each exif tag has appropriate type of the value. BYTE, ASCII, SHORT, or... See the document of Exif.
+Each exif tag has an appropriate data type (BYTE, ASCII, SHORT, etc.). Please see the official Exif standards for full documentation:
 http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 
 +---------------+----------------------+
@@ -34,7 +34,7 @@ http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 | DOUBLE        | float                |
 +---------------+----------------------+
 
-If value type is number(BYTE, SHORT, LONG, RATIONAL, or SRATIONAL) and value count is two or more number, it is expressed with tuple.
+Values that are numerical (BYTE, SHORT, LONG, RATIONAL, or SRATIONAL) and that require two or more values should be expressed with a tuple.
 
 +---------------------+-------------------------------+
 | BYTE, SHORT, LONG   | (int, int, ...)               |
@@ -42,7 +42,7 @@ If value type is number(BYTE, SHORT, LONG, RATIONAL, or SRATIONAL) and value cou
 | RATIONAL, SRATIONAL | ((int, int), (int, int), ...) |
 +---------------------+-------------------------------+
 
-.. note:: If value type is number and value count is one, tuple that is length one value(e.g. (int,)) also be accepted. 
+.. note:: If the value type is numerical but only one value is required, a tuple of length 1 (e.g. (int,)) is also acceptable. 
 
 
 Exif in piexif example is below.
@@ -72,7 +72,7 @@ Exif in piexif example is below.
 On GoogleAppEngine
 ------------------
 
-On GoogleAppEngine, it can't save files on disk. Therefore files must be handled on memory.
+Files cannot be saved to disk when using GoogleAppEngine. Therefore, files must be handled in memory.
 
 ::
 
