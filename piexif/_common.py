@@ -43,6 +43,8 @@ def read_exif_from_file(filename):
 
         if head[:2] == b"\xff\xe1":
             segment_data = f.read(length - 2)
+            if segment_data[0:4] != b'Exif':
+                break
             exif = head + segment_data
             break
         elif head[0:1] == b"\xff":
