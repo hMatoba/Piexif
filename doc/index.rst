@@ -11,7 +11,7 @@ Welcome to Piexif's documentation!
 .. image:: https://coveralls.io/repos/hMatoba/Piexif/badge.svg?branch=master
    :target: https://coveralls.io/r/hMatoba/Piexif?branch=master
 
-To simplify exif manipulations with python. Writing, reading, and more... Piexif is pure Python. To everywhere with Python.
+Piexif simplifies interacting with EXIF data in Python. It includes the tools necessary for extracting, creating, manipulating, converting and writing EXIF data to JPEG, WebP and TIFF files.
 
 .. toctree::
    :maxdepth: 2
