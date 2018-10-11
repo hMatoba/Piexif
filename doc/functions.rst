@@ -2,7 +2,7 @@
 Functions
 =========
 
-.. warning:: It could set any value in exif without actual value. For example, actual XResolution is 300, whereas XResolution value in exif is 0. Confliction might happen.
+.. warning:: Any value can be set as an exif value without it matching the actual value. For example, the XResolution value of 0 can be written while the actual XResolution is 300. This can cause conflicts.
 .. warning:: To edit exif tags and values appropriately, read official document from P167-. http://www.cipa.jp/std/documents/e/DC-008-2012_E.pdf
 .. note:: This document is written for using Piexif on Python 3.x.
 
@@ -11,7 +11,7 @@ load
 ----
 .. py:function:: piexif.load(filename, key_is_name=False)
 
-   Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". Without "thumbnail", the value is dict(tag/value). "thumbnail" value is JPEG as bytes.
+   Returns exif data as a dictionary with the following keys: "0th", "Exif", "GPS", "Interop", "1st", and "thumbnail". All values are dictionaries except for "thumbnail" which has the value of either a JPEG as bytes or None if no thumbnail is stored in the exif data.
 
    :param str filename: JPEG, WebP, or TIFF
    :return: Exif data({"0th":dict, "Exif":dict, "GPS":dict, "Interop":dict, "1st":dict, "thumbnail":bytes})
