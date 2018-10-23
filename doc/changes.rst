@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.1
+-----
+
+- Ignore XMP segment. Related to https://github.com/hMatoba/Piexif/pull/74.
+
 1.1.0b
 ------
 

@@ -8,4 +8,4 @@ from ._exceptions import *
 
 
 
-VERSION = '1.1.0b'
+VERSION = '1.1.1'
