@@ -183,7 +183,6 @@ class ExifTests(unittest.TestCase):
         input_file = os.path.join(u"tests", u"images", u"r_sony.jpg")
         exif = piexif.load(input_file)
         e = load_exif_by_PIL(input_file)
-        print("********************\n" + input_file + "\n")
         self._compare_piexifDict_PILDict(exif, e, p=False)
 
 # dump ------
