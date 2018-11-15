@@ -1,4 +1,5 @@
 import struct
+import sys
 
 from ._common import *
 from ._exceptions import InvalidImageDataError
@@ -64,18 +65,21 @@ def load(input_data, key_is_name=False):
 
 class _ExifReader(object):
     def __init__(self, data):
-        if data[0:2] == b"\xff\xd8":  # JPEG
+        # Prevents "UnicodeWarning: Unicode equal comparison failed" warnings on Python 2
+        maybe_image = sys.version_info >= (3,0,0) or isinstance(data, str)
+
+        if maybe_image and data[0:2] == b"\xff\xd8":  # JPEG
             segments = split_into_segments(data)
             app1 = get_exif_seg(segments)
             if app1:
                 self.tiftag = app1[10:]
             else:
                 self.tiftag = None
-        elif data[0:2] in (b"\x49\x49", b"\x4d\x4d"):  # TIFF
+        elif maybe_image and data[0:2] in (b"\x49\x49", b"\x4d\x4d"):  # TIFF
             self.tiftag = data
-        elif data[0:4] == b"RIFF" and data[8:12] == b"WEBP":
+        elif maybe_image and data[0:4] == b"RIFF" and data[8:12] == b"WEBP":
             self.tiftag = _webp.get_exif(data)
-        elif data[0:4] == b"Exif":  # Exif
+        elif maybe_image and data[0:4] == b"Exif":  # Exif
             self.tiftag = data[6:]
         else:
             with open(data, 'rb') as f:
