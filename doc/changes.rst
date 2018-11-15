@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.2
+-----
+
+- Resolve issue. https://github.com/hMatoba/Piexif/issues/64
+
 1.1.1
 -----
 
