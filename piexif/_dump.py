@@ -1,12 +1,15 @@
 import copy
 import numbers
 import struct
+import sys
 
 from ._common import *
 from ._exif import *
 
 
 TIFF_HEADER_LENGTH = 8
+
+_PY2 = sys.version_info[0] == 2
 
 
 def dump(exif_dict_original):
@@ -190,8 +193,17 @@ def _value_to_bytes(raw_value, value_type, offset):
     if value_type == TYPES.Byte:
         length = len(raw_value)
         if length <= 4:
-            value_str = (_pack_byte(*raw_value) +
-                            b"\x00" * (4 - length))
+            if _PY2:
+                if isinstance(raw_value, str):
+                    raw_value_ints = struct.unpack('<' + ('B' * length), raw_value)
+                else:
+                    # assumes that it's a tuple/list of ints already
+                    raw_value_ints = raw_value
+            else:
+                # TODO: should we check for a bytes object in this case on python3?
+                raw_value_ints = raw_value
+            value_str = (_pack_byte(*raw_value_ints) +
+                                b"\x00" * (4 - length))
         else:
             value_str = struct.pack(">I", offset)
             four_bytes_over = _pack_byte(*raw_value)
