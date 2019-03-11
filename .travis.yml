@@ -14,7 +14,7 @@ matrix:
       dist: xenial
 
 install:
- - pip install pillow==5.0.0
+ - pip install pillow
  - pip install coveralls
 
 script:
