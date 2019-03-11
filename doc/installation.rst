@@ -2,7 +2,7 @@
 Installation
 ============
 
-.. note:: Piexif supports Python versions 2.7, 3.3, 3.4, Pypy, Pypy3
+.. note:: Piexif supports Python versions 2.7, 3.5+, PyPy, PyPy3
 
 
 'easy_install'::
