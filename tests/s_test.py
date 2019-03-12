@@ -16,7 +16,7 @@ from piexif import _webp
 from piexif import helper
 
 
-print("piexif version: {0}".format(piexif.VERSION))
+print("piexif version: {}".format(piexif.VERSION))
 
 
 INPUT_FILE1 = os.path.join("tests", "images", "01.jpg")
@@ -200,7 +200,7 @@ class ExifTests(unittest.TestCase):
         t = time.time()
         exif_bytes = piexif.dump(exif_dict)
         t_cost = time.time() - t
-        print("'dump': {0}[sec]".format(t_cost))
+        print("'dump': {}[sec]".format(t_cost))
         im = Image.new("RGB", (8, 8))
 
         o = io.BytesIO()
@@ -566,9 +566,9 @@ class ExifTests(unittest.TestCase):
         t = time.time()
         exif = piexif.load(INPUT_FILE_PEN)
         t_cost = time.time() - t
-        print("'load': {0}[sec]".format(t_cost))
+        print("'load': {}[sec]".format(t_cost))
         for ifd in ("0th", "Exif", "GPS", "Interop", "1st"):
-            print("\n{0} IFD:".format(ifd))
+            print("\n{} IFD:".format(ifd))
             d = exif[ifd]
             for key in sorted(d):
                 try:
@@ -876,7 +876,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
 
             with open(IMAGE_DIR + filename, "rb") as f:
@@ -914,7 +914,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
 
             with open(IMAGE_DIR + filename, "rb") as f:
@@ -942,7 +942,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
 
             with open(IMAGE_DIR + filename, "rb") as f:
@@ -964,7 +964,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
 
             with open(IMAGE_DIR + filename, "rb") as f:
@@ -984,7 +984,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
             print(piexif.load(IMAGE_DIR + filename))
 
@@ -1005,7 +1005,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
             piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
             Image.open(OUT_DIR + "rr_" + filename)
@@ -1035,7 +1035,7 @@ class WebpTests(unittest.TestCase):
             try:
                 Image.open(IMAGE_DIR + filename)
             except:
-                print("Pillow can't read {0}".format(filename))
+                print("Pillow can't read {}".format(filename))
                 continue
             piexif.insert(exif_bytes, IMAGE_DIR + filename, OUT_DIR + "ii_" + filename)
             Image.open(OUT_DIR + "ii_" + filename)

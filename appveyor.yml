@@ -2,12 +2,12 @@ build: false
 
 environment:
   matrix:
-  - PYTHON: C:/Python34-x64
-  - PYTHON: C:/Python33-x64
+  - PYTHON: C:/Python37-x64
+  - PYTHON: C:/Python35-x64
   - PYTHON: C:/Python27-x64
 
 install:
-  - "%PYTHON%/python.exe -m pip install pillow==2.9.0"
+  - "%PYTHON%/python.exe -m pip install pillow"
 
 test_script:
   - '%PYTHON%/python.exe setup.py test'
