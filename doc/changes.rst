@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.3
+-----
+
+- Fix failure to decode a minimal 1 x 1 pixel JPEG. Related to https://github.com/hMatoba/Piexif/pull/93.
+
 1.1.2
 -----
 
