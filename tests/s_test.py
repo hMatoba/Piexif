@@ -26,7 +26,7 @@ NOEXIF_FILE = os.path.join("tests", "images", "noexif.jpg")
 # JPEG without APP0 and APP1 segments
 NOAPP01_FILE = os.path.join("tests", "images", "noapp01.jpg")
 INPUT_FILE_TIF = os.path.join("tests", "images", "01.tif")
-
+BAD_EXIF_FILE = os.path.join("tests", "images", "bad_exif.bin")
 
 with open(INPUT_FILE1, "rb") as f:
     I1 = f.read()
@@ -560,6 +560,44 @@ class ExifTests(unittest.TestCase):
         with  self.assertRaises(ValueError):
             piexif.insert(exif_bytes, I1, False)
 
+    def test_invalid_ifd_pointer(self):
+        with open(BAD_EXIF_FILE, "rb") as exif_file:
+            data = exif_file.read()
+        exif = piexif.load(data, key_is_name=True)
+
+        self.assertEqual(exif['Interop'], {
+            '_errors': 'Bad SubDirectory start.',
+        })
+
+        self.assertDictContainsSubset({
+            'ExifVersion': '0230',
+            'PixelXDimension': 5184,
+            'PixelYDimension': 3456,
+            'DateTimeDigitized': '2018:06:02 15:56:53',
+            'LensModel': 'EF-S24mm f/2.8 STM',
+            'DateTimeOriginal': '2018:06:02 15:56:53',
+            'ISOSpeedRatings': 400,
+            'ExposureTime': (1, 80),
+        }, exif['Exif'])
+
+        self.assertDictContainsSubset({
+            'XResolution': (72, 1),
+            'YResolution': (72, 1),
+            'ResolutionUnit': 2,
+            'Make': 'Canon',
+            'DateTime': '2019:02:06 21:05:32',
+            'YCbCrPositioning': 2,
+            'Model': 'Canon EOS 700D',
+            'Orientation': 0,
+        }, exif['0th'])
+
+        self.assertDictContainsSubset({
+            'XResolution': (72, 1),
+            'YResolution': (72, 1),
+            'ResolutionUnit': 2,
+            'Compression': 6
+        }, exif['1st'])
+
 # ------
     def test_print_exif(self):
         print("\n**********************************************")
@@ -1030,7 +1068,7 @@ class WebpTests(unittest.TestCase):
             }
         }
         exif_bytes = piexif.dump(exif_dict)
-        
+
         for filename in files:
             try:
                 Image.open(IMAGE_DIR + filename)

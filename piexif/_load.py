@@ -105,8 +105,12 @@ class _ExifReader(object):
 
     def get_ifd_dict(self, pointer, ifd_name, read_unknown=False):
         ifd_dict = {}
-        tag_count = struct.unpack(self.endian_mark + "H",
-                                  self.tiftag[pointer: pointer+2])[0]
+        try:
+            tag_count = struct.unpack(self.endian_mark + "H",
+                                      self.tiftag[pointer: pointer + 2])[0]
+        except struct.error:
+            return {-1: b'Bad SubDirectory start.'}
+
         offset = pointer + 2
         if ifd_name in ["0th", "1st"]:
             t = "Image"
@@ -260,11 +264,11 @@ class _ExifReader(object):
 
 def _get_key_name_dict(exif_dict):
     new_dict = {
-        "0th":{TAGS["Image"][n]["name"]:value for n, value in exif_dict["0th"].items()},
-        "Exif":{TAGS["Exif"][n]["name"]:value for n, value in exif_dict["Exif"].items()},
-        "1st":{TAGS["Image"][n]["name"]:value for n, value in exif_dict["1st"].items()},
-        "GPS":{TAGS["GPS"][n]["name"]:value for n, value in exif_dict["GPS"].items()},
-        "Interop":{TAGS["Interop"][n]["name"]:value for n, value in exif_dict["Interop"].items()},
-        "thumbnail":exif_dict["thumbnail"],
+        ifd_name: {
+            TAGS[ifd_name][n]["name"]: value
+            for n, value in exif_dict[ifd_name].items()
+        }
+        for ifd_name in ("0th", "Exif", "1st", "GPS", "Interop")
     }
+    new_dict["thumbnail"] = exif_dict["thumbnail"]
     return new_dict

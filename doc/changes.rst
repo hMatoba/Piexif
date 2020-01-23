@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+- Added new ``TAG`` with code ``-1`` and name ``_errors`` to prevent some
+  exceptions during parse of corrupted EXIF.
+- Fixed exception in ``_ExifReader.get_ifd_dict()`` during parse of EXIF
+  with invalid IFD pointers. Instead it this method returns dictionary with
+  ``_errors`` key that has description of error.
+
 1.1.3
 -----
 
