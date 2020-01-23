@@ -566,37 +566,49 @@ class ExifTests(unittest.TestCase):
         exif = piexif.load(data, key_is_name=True)
 
         self.assertEqual(exif['Interop'], {
-            '_errors': 'Bad SubDirectory start.',
+            '_errors': b'Bad SubDirectory start.',
         })
 
-        self.assertDictContainsSubset({
-            'ExifVersion': '0230',
-            'PixelXDimension': 5184,
-            'PixelYDimension': 3456,
-            'DateTimeDigitized': '2018:06:02 15:56:53',
-            'LensModel': 'EF-S24mm f/2.8 STM',
-            'DateTimeOriginal': '2018:06:02 15:56:53',
-            'ISOSpeedRatings': 400,
-            'ExposureTime': (1, 80),
-        }, exif['Exif'])
+        self.assertTrue(
+            set(
+                {
+                    'ExifVersion': b'0230',
+                    'PixelXDimension': 5184,
+                    'PixelYDimension': 3456,
+                    'DateTimeDigitized': b'2018:06:02 15:56:53',
+                    'LensModel': b'EF-S24mm f/2.8 STM',
+                    'DateTimeOriginal': b'2018:06:02 15:56:53',
+                    'ISOSpeedRatings': 400,
+                    'ExposureTime': (1, 80),
+                }.items()
+            ).issubset(set(exif['Exif'].items()))
+        )
 
-        self.assertDictContainsSubset({
-            'XResolution': (72, 1),
-            'YResolution': (72, 1),
-            'ResolutionUnit': 2,
-            'Make': 'Canon',
-            'DateTime': '2019:02:06 21:05:32',
-            'YCbCrPositioning': 2,
-            'Model': 'Canon EOS 700D',
-            'Orientation': 0,
-        }, exif['0th'])
+        self.assertTrue(
+            set(
+                {
+                    'XResolution': (72, 1),
+                    'YResolution': (72, 1),
+                    'ResolutionUnit': 2,
+                    'Make': b'Canon',
+                    'DateTime': b'2019:02:06 21:05:32',
+                    'YCbCrPositioning': 2,
+                    'Model': b'Canon EOS 700D',
+                    'Orientation': 0,
+                }.items()
+            ).issubset(set(exif['0th'].items()))
+        )
 
-        self.assertDictContainsSubset({
-            'XResolution': (72, 1),
-            'YResolution': (72, 1),
-            'ResolutionUnit': 2,
-            'Compression': 6
-        }, exif['1st'])
+        self.assertTrue(
+            set(
+                {
+                    'XResolution': (72, 1),
+                    'YResolution': (72, 1),
+                    'ResolutionUnit': 2,
+                    'Compression': 6
+                }.items()
+            ).issubset(set(exif['1st'].items()))
+        )
 
 # ------
     def test_print_exif(self):
