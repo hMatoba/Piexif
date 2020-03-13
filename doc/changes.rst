@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+- Added new function ``safe_load()`` that do not stop parsing of EXIF
+  after any error in data. Instead it collects all errors into special
+  list. As a result the function returns tuple contains a dict with
+  parsed EXIF and  list of all errors.
+
 1.1.3
 -----
 
