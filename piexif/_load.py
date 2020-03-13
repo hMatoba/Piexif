@@ -12,7 +12,7 @@ LITTLE_ENDIAN = b"\x49\x49"
 
 def load(input_data, key_is_name=False):
     """
-    py:function:: piexif.load(filename)
+    py:function:: piexif.load(input_data, key_is_name=False)
 
     Return exif data as dict. Keys(IFD name), be contained, are "0th", "Exif", "GPS", "Interop",
     "1st", and "thumbnail". Without "thumbnail", the value is dict(tag name/tag value).
@@ -29,7 +29,7 @@ def load(input_data, key_is_name=False):
 
 def safe_load(input_data, key_is_name=False):
     """
-    py:function:: piexif.safe_load(filename)
+    py:function:: piexif.safe_load(input_data, key_is_name=False)
 
     Returns tuple with exif data as dict and list of errors.
     Keys(IFD name) of dictionary, be contained, are "0th", "Exif", "GPS", "Interop",
