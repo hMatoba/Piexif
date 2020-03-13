@@ -15,7 +15,6 @@ class TYPES:
 
 TAGS = {
     'Image': {
-        -1: {'name': '_errors', 'type': TYPES.Ascii},
         11: {'name': 'ProcessingSoftware', 'type': TYPES.Ascii},
         254: {'name': 'NewSubfileType', 'type': TYPES.Long},
         255: {'name': 'SubfileType', 'type': TYPES.Short},
@@ -207,7 +206,6 @@ TAGS = {
         60610: {'name': 'ZZZTestDFloat', 'type': TYPES.DFloat},
     },
     'Exif': {
-        -1: {'name': '_errors', 'type': TYPES.Ascii},
         33434: {'name': 'ExposureTime', 'type': TYPES.Rational},
         33437: {'name': 'FNumber', 'type': TYPES.Rational},
         34850: {'name': 'ExposureProgram', 'type': TYPES.Short},
@@ -289,7 +287,6 @@ TAGS = {
         42240: {'name': 'Gamma', 'type': TYPES.Rational},
     },
     'GPS': {
-        -1: {'name': '_errors', 'type': TYPES.Ascii},
         0: {'name': 'GPSVersionID', 'type': TYPES.Byte},
         1: {'name': 'GPSLatitudeRef', 'type': TYPES.Ascii},
         2: {'name': 'GPSLatitude', 'type': TYPES.Rational},
@@ -324,13 +321,13 @@ TAGS = {
         31: {'name': 'GPSHPositioningError', 'type': TYPES.Rational},
     },
     'Interop': {
-        -1: {'name': '_errors', 'type': TYPES.Ascii},
         1: {'name': 'InteroperabilityIndex', 'type': TYPES.Ascii},
     },
 }
 
 TAGS["0th"] = TAGS["Image"]
 TAGS["1st"] = TAGS["Image"]
+
 
 class ImageIFD:
     """Exif tag number reference - 0th IFD"""

@@ -4,11 +4,10 @@ Changelog
 Unreleased
 ----------
 
-- Added new ``TAG`` with code ``-1`` and name ``_errors`` to prevent some
-  exceptions during parse of corrupted EXIF.
-- Fixed exception in ``_ExifReader.get_ifd_dict()`` method during parse of EXIF
-  with invalid IFD pointers. Instead, the method returns dictionary with
-  ``_errors`` key that has description of error.
+- Added new function ``safe_load()`` that do not stop parsing of EXIF
+  after any error in data. Instead it collects all errors into special
+  list. As a result the function returns tuple contains a dict with
+  parsed EXIF and  list of all errors.
 
 1.1.3
 -----

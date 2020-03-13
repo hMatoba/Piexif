@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-
-import copy
 import glob
 import io
 import os
 import struct
-import sys
 import time
 import unittest
 
 from PIL import Image
+
 import piexif
-from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
-from piexif import _webp
-from piexif import helper
+from piexif import ExifIFD, GPSIFD, ImageIFD, InvalidImageDataError, TAGS, _common, _webp, helper
 
 
 print("piexif version: {}".format(piexif.VERSION))
@@ -563,11 +559,10 @@ class ExifTests(unittest.TestCase):
     def test_invalid_ifd_pointer(self):
         with open(BAD_EXIF_FILE, "rb") as exif_file:
             data = exif_file.read()
-        exif = piexif.load(data, key_is_name=True)
+        self.assertRaises(struct.error, piexif.load, data, key_is_name=True)
 
-        self.assertEqual(exif['Interop'], {
-            '_errors': b'Bad SubDirectory start.',
-        })
+        exif, errors = piexif.safe_load(data, key_is_name=True)
+        self.assertEqual(errors, [('Interop', None, 'Bad SubDirectory start.')])
 
         self.assertTrue(
             set(
@@ -696,11 +691,7 @@ class UTests(unittest.TestCase):
         b1 = b"MM\x00\x2a\x00\x00\x00\x08"
         b2 = b"\x00\x01" + b"\xff\xff\x00\x00\x00\x00" + b"\x00\x00\x00\x00"
         er = piexif._load._ExifReader(b1 + b2)
-        if er.tiftag[0:2] == b"II":
-            er.endian_mark = "<"
-        else:
-            er.endian_mark = ">"
-        ifd = er.get_ifd_dict(8, "0th", True)
+        ifd, _ = er.get_ifd_dict(8, "0th", True)
         self.assertEqual(ifd[65535][0], 0)
         self.assertEqual(ifd[65535][1], 0)
         self.assertEqual(ifd[65535][2], b"\x00\x00")
@@ -924,7 +915,7 @@ class WebpTests(unittest.TestCase):
 
         for filename in files:
             try:
-                Image.open(IMAGE_DIR + filename)
+                Image.open(IMAGE_DIR + filename).close()
             except:
                 print("Pillow can't read {}".format(filename))
                 continue
@@ -938,7 +929,7 @@ class WebpTests(unittest.TestCase):
             new_webp_bytes = file_header + merged
             with open(OUT_DIR + "raw_" + filename, "wb") as f:
                 f.write(new_webp_bytes)
-            Image.open(OUT_DIR + "raw_" + filename)
+            Image.open(OUT_DIR + "raw_" + filename).close()
 
     def test_insert_exif(self):
         """Can PIL open WebP that is inserted exif?"""
@@ -962,7 +953,7 @@ class WebpTests(unittest.TestCase):
 
         for filename in files:
             try:
-                Image.open(IMAGE_DIR + filename)
+                Image.open(IMAGE_DIR + filename).close()
             except:
                 print("Pillow can't read {}".format(filename))
                 continue
@@ -973,7 +964,7 @@ class WebpTests(unittest.TestCase):
             exif_inserted = _webp.insert(data, exif_bytes)
             with open(OUT_DIR + "i_" + filename, "wb") as f:
                 f.write(exif_inserted)
-            Image.open(OUT_DIR + "i_" + filename)
+            Image.open(OUT_DIR + "i_" + filename).close()
 
     def test_remove_exif(self):
         """Can PIL open WebP that is removed exif?"""
@@ -990,7 +981,7 @@ class WebpTests(unittest.TestCase):
 
         for filename in files:
             try:
-                Image.open(IMAGE_DIR + filename)
+                Image.open(IMAGE_DIR + filename).close()
             except:
                 print("Pillow can't read {}".format(filename))
                 continue
@@ -1000,7 +991,7 @@ class WebpTests(unittest.TestCase):
             exif_removed = _webp.remove(data)
             with open(OUT_DIR + "r_" + filename, "wb") as f:
                 f.write(exif_removed)
-            Image.open(OUT_DIR + "r_" + filename)
+            Image.open(OUT_DIR + "r_" + filename).close()
 
     def test_get_exif(self):
         """Can we get exif from WebP?"""
@@ -1053,12 +1044,12 @@ class WebpTests(unittest.TestCase):
 
         for filename in files:
             try:
-                Image.open(IMAGE_DIR + filename)
+                Image.open(IMAGE_DIR + filename).close()
             except:
                 print("Pillow can't read {}".format(filename))
                 continue
             piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
-            Image.open(OUT_DIR + "rr_" + filename)
+            Image.open(OUT_DIR + "rr_" + filename).close()
 
     def test_insert(self):
         """Can PIL open WebP that is inserted exif?"""
@@ -1083,12 +1074,12 @@ class WebpTests(unittest.TestCase):
 
         for filename in files:
             try:
-                Image.open(IMAGE_DIR + filename)
+                Image.open(IMAGE_DIR + filename).close()
             except:
                 print("Pillow can't read {}".format(filename))
                 continue
             piexif.insert(exif_bytes, IMAGE_DIR + filename, OUT_DIR + "ii_" + filename)
-            Image.open(OUT_DIR + "ii_" + filename)
+            Image.open(OUT_DIR + "ii_" + filename).close()
 
 
 def suite():
