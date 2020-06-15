@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.1.4
+-----
+
+- Fixed "local variable 'file_type' referenced before assignment" if image type wasn't known.
+- No longer write image back to source image file if nothing has changed for better performance.
+
 1.1.3
 -----
 
