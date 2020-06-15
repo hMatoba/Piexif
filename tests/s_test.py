@@ -1010,6 +1010,14 @@ class WebpTests(unittest.TestCase):
             piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
             Image.open(OUT_DIR + "rr_" + filename)
 
+    def test_remove_unknown_image_type(self):
+        """Does remove ignore unknown image types?"""
+        IMAGE_DIR = "tests/images/"
+        OUT_DIR = "tests/images/out/"
+        filename = "not_an_image.txt"
+        piexif.remove(IMAGE_DIR + filename, OUT_DIR + "rr_" + filename)
+        self.assertFalse(os.path.isfile(OUT_DIR + "rr_" + filename))
+
     def test_insert(self):
         """Can PIL open WebP that is inserted exif?"""
         IMAGE_DIR = "tests/images/"

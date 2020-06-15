@@ -1,0 +1,1 @@
+This tests _remove() handling of files that are not jpgs or webp
