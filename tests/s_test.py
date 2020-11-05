@@ -9,6 +9,7 @@ import sys
 import time
 import unittest
 
+import PIL
 from PIL import Image
 import piexif
 from piexif import _common, ImageIFD, ExifIFD, GPSIFD, TAGS, InvalidImageDataError
@@ -580,6 +581,17 @@ class ExifTests(unittest.TestCase):
 # test utility methods----------------------------------------------
 
     def _compare_value(self, v1, v2):
+        if isinstance(v2, PIL.TiffImagePlugin.IFDRational):
+            v2 = (v2.numerator, v2.denominator)
+        if isinstance(v2, tuple):
+            converted_v2 = []
+            for el in v2:
+                if isinstance(el, PIL.TiffImagePlugin.IFDRational):
+                    converted_v2.append((el.numerator, el.denominator))
+                else:
+                    converted_v2.append(el)
+            v2 = tuple(converted_v2)
+
         if type(v1) != type(v2):
             if isinstance(v1, tuple):
                 self.assertEqual(pack_byte(*v1), v2)
