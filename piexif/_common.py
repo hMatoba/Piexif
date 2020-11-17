@@ -66,7 +66,16 @@ def get_exif_seg(segments):
     return None
 
 
-def merge_segments(segments, exif=b""):
+def get_iptc_seg(segments):
+    """Returns iptc from JPEG meta data list
+    """
+    for seg in segments:
+        if seg[0:2] == b"\xff\xed":
+            return seg
+    return None
+
+
+def merge_segments(segments, exif=b"", iptc=b""):
     """Merges Exif with APP0 and APP1 manipulations.
     """
     if segments[1][0:2] == b"\xff\xe0" and \
@@ -91,4 +100,11 @@ def merge_segments(segments, exif=b""):
     else:
         if exif:
             segments.insert(1, exif)
+
+    if iptc:
+        if segments[4][0:2] == b"\xff\xed":
+            segments[4] = iptc
+        else:
+            segments.insert(4, iptc)
+
     return b"".join(segments)
