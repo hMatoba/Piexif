@@ -138,12 +138,13 @@ remove
 
 transplant
 ----------
-.. py:function:: piexif.transplant(filename1, filename2)
+.. py:function:: piexif.transplant(filename1, filename2, include_iptc=False)
 
    Copies exif data from filename1 to filename2.
 
    :param str filename1: JPEG
    :param str filename2: JPEG
+   :param bool include_iptc: copy iptc data
 
 ::
 

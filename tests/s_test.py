@@ -452,6 +452,25 @@ class ExifTests(unittest.TestCase):
                          piexif.load("transplant.jpg"))
         os.remove("transplant.jpg")
 
+    def test_transplant_with_iptc_data(self):
+        piexif.transplant(INPUT_FILE1, INPUT_FILE_PEN, "transplant.jpg", include_iptc=True)
+        i = Image.open("transplant.jpg")
+        i.close()
+        with open(INPUT_FILE1, 'rb') as f:
+            original_segments = _common.split_into_segments(f.read())
+        with open("transplant.jpg", 'rb') as f:
+            copy_segments = _common.split_into_segments(f.read())
+
+        self.assertEqual(
+            _common.get_iptc_seg(original_segments),
+            _common.get_iptc_seg(copy_segments)
+        )
+        self.assertNotEqual(
+            _common.get_iptc_seg(copy_segments),
+            None
+        )
+        os.remove("transplant.jpg")
+
     def test_transplant_m(self):
         """'transplant' on memory.
         """
