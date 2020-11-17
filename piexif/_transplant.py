@@ -3,7 +3,7 @@ import io
 from ._common import *
 
 
-def transplant(exif_src, image, new_file=None):
+def transplant(exif_src, image, new_file=None, include_iptc=False):
     """
     py:function:: piexif.transplant(filename1, filename2)
 
@@ -22,6 +22,8 @@ def transplant(exif_src, image, new_file=None):
     if exif is None:
         raise ValueError("not found exif in input")
 
+    iptc = get_iptc_seg(segments) if include_iptc else b""
+
     output_file = False
     if image[0:2] == b"\xff\xd8":
         image_data = image
@@ -30,7 +32,7 @@ def transplant(exif_src, image, new_file=None):
             image_data = f.read()
         output_file = True
     segments = split_into_segments(image_data)
-    new_data = merge_segments(segments, exif)
+    new_data = merge_segments(segments, exif, iptc)
 
     if isinstance(new_file, io.BytesIO):
         new_file.write(new_data)
