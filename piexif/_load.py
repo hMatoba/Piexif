@@ -153,7 +153,8 @@ class _ExifReader(object):
         elif t == TYPES.Ascii: # ASCII
             if length > 4:
                 pointer = struct.unpack(self.endian_mark + "L", value)[0]
-                data = self.tiftag[pointer: pointer+length - 1]
+                data = self.tiftag[pointer: pointer+length]
+                data = data.split(b'\x00', 1)[0]
             else:
                 data = value[0: length - 1]
         elif t == TYPES.Short: # SHORT
