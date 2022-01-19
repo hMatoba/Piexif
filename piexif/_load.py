@@ -112,20 +112,18 @@ class _ExifReader(object):
             t = "Image"
         else:
             t = ifd_name
-        p_and_value = []
         for x in range(tag_count):
             pointer = offset + 12 * x
             tag, value_type, value_num = unpack_from(
                 self.endian_mark + "HHL", self.tiftag, pointer)
             value = self.tiftag[pointer+8: pointer+12]
-            p_and_value.append((pointer, value_type, value_num, value))
             v_set = (value_type, value_num, value, tag)
             if tag in TAGS[t]:
                 ifd_dict[tag] = self.convert_value(v_set)
             elif read_unknown:
                 ifd_dict[tag] = (v_set[0], v_set[1], v_set[2], self.tiftag)
-            #else:
-            #    pass
+            else:
+                pass
 
         if ifd_name == "0th":
             pointer = offset + 12 * tag_count
