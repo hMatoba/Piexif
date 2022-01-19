@@ -164,15 +164,11 @@ class _ExifReader(object):
                 data = unpack_from(self.endian_mark + "L" * length, value)
         elif t == TYPES.Rational: # RATIONAL
             pointer = unpack_from(self.endian_mark + "L", value)[0]
-            if length > 1:
-                data = tuple(
-                    unpack_from(self.endian_mark + "LL",
-                                self.tiftag, pointer + x * 8)
-                    for x in range(length)
-                )
-            else:
-                data = unpack_from(self.endian_mark + "LL",
-                                   self.tiftag, pointer)
+            data = tuple(
+                unpack_from(self.endian_mark + "LL",
+                            self.tiftag, pointer + x * 8)
+                for x in range(length)
+            )
         elif t == TYPES.SByte: # SIGNED BYTES
             if length > 4:
                 pointer = unpack_from(self.endian_mark + "L", value)[0]
@@ -201,15 +197,11 @@ class _ExifReader(object):
                 data = unpack_from(self.endian_mark + "l" * length, value)
         elif t == TYPES.SRational: # SRATIONAL
             pointer = unpack_from(self.endian_mark + "L", value)[0]
-            if length > 1:
-                data = tuple(
-                  unpack_from(self.endian_mark + "ll",
-                              self.tiftag, pointer + x * 8)
-                  for x in range(length)
-                )
-            else:
-                data = unpack_from(self.endian_mark + "ll",
-                                   self.tiftag, pointer)
+            data = tuple(
+              unpack_from(self.endian_mark + "ll",
+                          self.tiftag, pointer + x * 8)
+              for x in range(length)
+            )
         elif t == TYPES.Float: # FLOAT
             if length > 1:
                 pointer = unpack_from(self.endian_mark + "L", value)[0]
