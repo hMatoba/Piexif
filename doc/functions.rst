@@ -43,11 +43,12 @@ load
 dump
 ----
 
-.. py:function:: piexif.dump(exif_dict)
+.. py:function:: piexif.dump(exif_dict, strict=True)
 
    Returns exif data as bytes.
 
    :param dict exif_dict: Exif data({"0th":0thIFD - dict, "Exif":ExifIFD - dict, "GPS":GPSIFD - dict, "Interop":InteroperabilityIFD - dict, "1st":1stIFD - dict, "thumbnail":JPEG data - bytes})
+   :param boolean strict: Defaults to True, if set to false dump function will ignore broken tags
    :return: Exif
    :rtype: bytes
 
