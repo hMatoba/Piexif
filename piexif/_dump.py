@@ -9,7 +9,7 @@ from ._exif import *
 TIFF_HEADER_LENGTH = 8
 
 
-def dump(exif_dict_original):
+def dump(exif_dict_original,strict = True):
     """
     py:function:: piexif.load(data)
 
@@ -60,18 +60,18 @@ def dump(exif_dict_original):
         exif_dict["1st"][ImageIFD.JPEGInterchangeFormatLength] = 1
         first_ifd = exif_dict["1st"]
 
-    zeroth_set = _dict_to_bytes(zeroth_ifd, "0th", 0)
+    zeroth_set = _dict_to_bytes(zeroth_ifd, "0th", 0, strict)
     zeroth_length = (len(zeroth_set[0]) + exif_is * 12 + gps_is * 12 + 4 +
                      len(zeroth_set[1]))
 
     if exif_is:
-        exif_set = _dict_to_bytes(exif_ifd, "Exif", zeroth_length)
+        exif_set = _dict_to_bytes(exif_ifd, "Exif", zeroth_length, strict)
         exif_length = len(exif_set[0]) + interop_is * 12 + len(exif_set[1])
     else:
         exif_bytes = b""
         exif_length = 0
     if gps_is:
-        gps_set = _dict_to_bytes(gps_ifd, "GPS", zeroth_length + exif_length)
+        gps_set = _dict_to_bytes(gps_ifd, "GPS", zeroth_length + exif_length, strict)
         gps_bytes = b"".join(gps_set)
         gps_length = len(gps_bytes)
     else:
@@ -79,7 +79,7 @@ def dump(exif_dict_original):
         gps_length = 0
     if interop_is:
         offset = zeroth_length + exif_length + gps_length
-        interop_set = _dict_to_bytes(interop_ifd, "Interop", offset)
+        interop_set = _dict_to_bytes(interop_ifd, "Interop", offset, strict)
         interop_bytes = b"".join(interop_set)
         interop_length = len(interop_bytes)
     else:
@@ -87,7 +87,7 @@ def dump(exif_dict_original):
         interop_length = 0
     if first_is:
         offset = zeroth_length + exif_length + gps_length + interop_length
-        first_set = _dict_to_bytes(first_ifd, "1st", offset)
+        first_set = _dict_to_bytes(first_ifd, "1st", offset, strict)
         thumbnail = _get_thumbnail(exif_dict["thumbnail"])
         thumbnail_max_size = 64000
         if len(thumbnail) > thumbnail_max_size:
@@ -303,7 +303,7 @@ def _value_to_bytes(raw_value, value_type, offset):
     length_str = struct.pack(">I", length)
     return length_str, value_str, four_bytes_over
 
-def _dict_to_bytes(ifd_dict, ifd, ifd_offset):
+def _dict_to_bytes(ifd_dict, ifd, ifd_offset, strict=False):
     tag_count = len(ifd_dict)
     entry_header = struct.pack(">H", tag_count)
     if ifd in ("0th", "1st"):
@@ -335,11 +335,13 @@ def _dict_to_bytes(ifd_dict, ifd, ifd_offset):
             length_str, value_str, four_bytes_over = _value_to_bytes(raw_value,
                                                                      value_type,
                                                                      offset)
-        except ValueError:
-            raise ValueError(
-                '"dump" got wrong type of exif value.\n' +
-                '{} in {} IFD. Got as {}.'.format(key, ifd, type(ifd_dict[key]))
-            )
+        except Exception:
+            error = '"dump" got wrong type of exif value.\n {} in {} IFD. Got as {}.'.format(key, ifd, type(ifd_dict[key]))
+            if strict:
+                raise Exception(error) 
+            else:
+                print(error)
+               
 
         entries += key_str + type_str + length_str + value_str
         values += four_bytes_over
